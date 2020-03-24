@@ -2,12 +2,17 @@ package pdfcoverters;
 
 import model.BankStmtEntry;
 import operationtype.OperationType;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import pdfconverters.BankStmtConverter;
 import pdfconverters.BankStmtConverterFactory;
 
 import java.util.List;
 import java.util.Locale;
+import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -16,56 +21,58 @@ import static utils.Constants.PKO_DATE_FORMAT;
 import static utils.Util.*;
 
 public class PKOBankStmtConverterTest {
-    private String bankName = "PKO";
+    static BankStmtConverter bankStmtConverter;
+    private static String bankName = "PKO";
+
+    //Correct PKO Bank Statement data
+    private static String correctID = "SOME_ID_123456789";
+    private static String correctDate = "20.11.2018";
+    private static String correctTypeDescription = DEBIT_CARD_PAYMENT_RESOLVER_TXT_PL;
+    private static String correctAmount = "-4 655,45";
+    private static String correctDescLine1 = "SOME_OPERATION_DESCRIPTION";
+    private static String correctDescLine2 = "SOME_OPERATION_DESCRIPTION";
+
+    @BeforeAll
+    public static void setupSuite(){
+        bankStmtConverter = new BankStmtConverterFactory().match( bankName );
+    }
+
     @Test
-    public void should_CorrectlyConvert_When_CorrectBankStmtPdfGiven(){
+    public void should_Add_Entry_When_Correct_Entry_Given(){
         //GIVEN
-        //PKO Bank Statement data
-        String id = "SOME_ID_123456789";
-        String date = "20.11.2018";
-        String typeDescription = DEBIT_CARD_PAYMENT_RESOLVER_TXT_PL;
-        String amount = "-4 655,45";
-        String descLine1 = "SOME_OPERATION_DESCRIPTION";
-        String descLine2 = "SOME_OPERATION_DESCRIPTION";
-
-        PKOBankStmtEntryPdfMock.Builder entryPdfMockBuilder = new PKOBankStmtEntryPdfMock.Builder();
-        entryPdfMockBuilder.setDate( date ).setID( id ).setTypeDescription( typeDescription ).setAmount( amount );
-        entryPdfMockBuilder.setDescLine1( descLine1 );
-        entryPdfMockBuilder.setDescLine2(descLine2);
-
-        PKOBankStmtEntryPdfMock stmtEntryPdfMock = entryPdfMockBuilder.build();
+        PKOBankStmtEntryPdfMock stmtEntryPdfMock = getCorrectEntry();
 
         PKOBankStmtPdfMock bankStmtPdfMock = new PKOBankStmtPdfMock().addEntry(stmtEntryPdfMock).summarize();
-        BankStmtConverter bankStmtConverter = new BankStmtConverterFactory().match( bankName );
 
         //WHEN
         List<BankStmtEntry> converted = bankStmtConverter.convert( bankStmtPdfMock.getContent() );
 
         //THEN
-        assertTrue(converted.size() == 1);
+        assertEquals(1, converted.size());
         BankStmtEntry convertedEntry = converted.get(0);
-        assertEquals(id, convertedEntry.getID());
-        assertEquals(parseDate(date, PKO_DATE_FORMAT), convertedEntry.getDate());
+        assertEquals(correctID, convertedEntry.getID());
+        assertEquals(parseDate(correctDate, PKO_DATE_FORMAT), convertedEntry.getDate());
         assertEquals(OperationType.DEBIT_CARD_PAYMENT, convertedEntry.getType());
-        assertEquals(getNumberBasedOnLocale(amount, Locale.FRANCE).doubleValue(),convertedEntry.getAmount());
-        assertEquals( combineString( descLine1, descLine2), convertedEntry.getDesc() );
+        assertEquals(getNumberBasedOnLocale(correctAmount, Locale.FRANCE).doubleValue(),convertedEntry.getAmount());
+        assertEquals( combineString( correctDescLine1, correctDescLine2), convertedEntry.getDesc() );
     }
 
-    @Test
-    public void should_Skip_Entry_When_No_Id_Found(){
+    private  PKOBankStmtEntryPdfMock getCorrectEntry(){
+        return new PKOBankStmtEntryPdfMock.Builder()
+                .setID(correctID)
+                .setDate(correctDate)
+                .setTypeDescription(correctTypeDescription)
+                .setAmount(correctAmount)
+                .setDescLine1(correctDescLine1)
+                .setDescLine2(correctDescLine2)
+                .build();
+    }
+
+    @ParameterizedTest
+    @MethodSource("incompletePKOStmtEntries")
+    public void should_Skip_Entry_When_Incomplete( PKOBankStmtEntryPdfMock stmtEntryPdfMock ){
         //GIVEN
-        //PKO Bank Statement data
-        String ID = "";
-        String date = "20.11.2018";
-        String typeDescription = "SOME_OPERATION_TYPE_DESCRIPTION";
-
-        PKOBankStmtEntryPdfMock.Builder entryPdfMockBuilder = new PKOBankStmtEntryPdfMock.Builder();
-        entryPdfMockBuilder.setID(ID).setDate( date ).setTypeDescription( typeDescription );
-
-        PKOBankStmtEntryPdfMock stmtEntryPdfMock = entryPdfMockBuilder.build();
-
         PKOBankStmtPdfMock bankStmtPdfMock = new PKOBankStmtPdfMock().addEntry(stmtEntryPdfMock).summarize();
-        BankStmtConverter bankStmtConverter = new BankStmtConverterFactory().match( bankName );
 
         //WHEN
         List<BankStmtEntry> converted = bankStmtConverter.convert( bankStmtPdfMock.getContent() );
@@ -74,50 +81,55 @@ public class PKOBankStmtConverterTest {
         assertTrue(converted.isEmpty());
     }
 
-    @Test
-    public void should_Skip_Entry_When_Wron_Date_Given() {
-        //GIVEN
-        //PKO Bank Statement data
-        String id = "SOME_ID_123456789";
-        String date = "wr.on.gDate";
-        String typeDescription = DEBIT_CARD_PAYMENT_RESOLVER_TXT_PL;
-
-        PKOBankStmtEntryPdfMock.Builder entryPdfMockBuilder = new PKOBankStmtEntryPdfMock.Builder();
-        entryPdfMockBuilder.setDate( date ).setID( id ).setTypeDescription( typeDescription );
-
-        PKOBankStmtEntryPdfMock stmtEntryPdfMock = entryPdfMockBuilder.build();
-
-        PKOBankStmtPdfMock bankStmtPdfMock = new PKOBankStmtPdfMock().addEntry(stmtEntryPdfMock).summarize();
-        BankStmtConverter bankStmtConverter = new BankStmtConverterFactory().match( bankName );
-
-        //WHEN
-        List<BankStmtEntry> converted = bankStmtConverter.convert( bankStmtPdfMock.getContent() );
-
-        //THEN
-        assertTrue(converted.isEmpty());
+    private static Stream<Arguments> incompletePKOStmtEntries(){
+        return Stream.of(
+                Arguments.of(getEntryWithWrongAmount()),
+                Arguments.of(getEntryWithWrongDate()),
+                Arguments.of(getEntryWithoutID()),
+                Arguments.of(getEntryWithoutDescription())
+        );
     }
 
-    @Test
-    public void should(){
-        //GIVEN
-        //PKO Bank Statement data
-        String id = "SOME_ID_123456789";
-        String date = "20.11.2018";
-        String typeDescription = DEBIT_CARD_PAYMENT_RESOLVER_TXT_PL;
-        String amount = "WRONG_AMOUNT";
+    private static PKOBankStmtEntryPdfMock getEntryWithoutID(){
+        return new PKOBankStmtEntryPdfMock.Builder()
+                .setID("")
+                .setDate(correctDate)
+                .setTypeDescription(correctTypeDescription)
+                .setAmount(correctAmount)
+                .setDescLine1(correctDescLine1)
+                .setDescLine2(correctDescLine2)
+                .build();
+    }
 
-        PKOBankStmtEntryPdfMock.Builder entryPdfMockBuilder = new PKOBankStmtEntryPdfMock.Builder();
-        entryPdfMockBuilder.setDate( date ).setID( id ).setTypeDescription( typeDescription ).setAmount( amount );
+    private static PKOBankStmtEntryPdfMock getEntryWithWrongDate(){
+        return new PKOBankStmtEntryPdfMock.Builder()
+                .setID(correctID)
+                .setDate("wr.on.gDate")
+                .setTypeDescription(correctTypeDescription)
+                .setAmount(correctAmount)
+                .setDescLine1(correctDescLine1)
+                .setDescLine2(correctDescLine2)
+                .build();
+    }
 
-        PKOBankStmtEntryPdfMock stmtEntryPdfMock = entryPdfMockBuilder.build();
+    private static PKOBankStmtEntryPdfMock getEntryWithWrongAmount(){
+        return new PKOBankStmtEntryPdfMock.Builder()
+                .setID(correctID)
+                .setDate(correctDate)
+                .setTypeDescription(correctTypeDescription)
+                .setAmount("WRONG_AMOUNT")
+                .setDescLine1(correctDescLine1)
+                .setDescLine2(correctDescLine2)
+                .build();
+    }
 
-        PKOBankStmtPdfMock bankStmtPdfMock = new PKOBankStmtPdfMock().addEntry(stmtEntryPdfMock).summarize();
-        BankStmtConverter bankStmtConverter = new BankStmtConverterFactory().match( bankName );
-
-        //WHEN
-        List<BankStmtEntry> converted = bankStmtConverter.convert( bankStmtPdfMock.getContent() );
-
-        //THEN
-        assertTrue(converted.isEmpty());
+    private static PKOBankStmtEntryPdfMock getEntryWithoutDescription(){
+        return new PKOBankStmtEntryPdfMock.Builder()
+                .setID(correctID)
+                .setDate(correctDate)
+                .setTypeDescription(correctTypeDescription)
+                .setAmount(correctAmount)
+                .setDescLine1("")
+                .build();
     }
 }

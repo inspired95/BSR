@@ -94,11 +94,24 @@ public class BankStmtEntry {
 
         public boolean isValid()
         {
+            return validID() && validOperationType() && validAmount() && validDescription();
+        }
+
+        private boolean validDescription() {
+            return !desc.isEmpty();
+        }
+
+        private boolean validAmount() {
+            return !amount.equals(Double.NaN);
+        }
+
+        private boolean validOperationType() {
+            return !type.equals(OperationType.NOT_RESOLVED);
+        }
+
+        private boolean validID() {
             return !ID.isEmpty() &&
-                    ID.length() == 17 &&
-                    !type.equals(OperationType.NOT_RESOLVED) &&
-                    !amount.equals(Double.NaN) &&
-                    !desc.isEmpty();
+                    ID.length() == 17;
         }
 
         public BankStmtEntry build()

@@ -1,0 +1,5 @@
+package operationtype;
+
+public enum OperationType {
+    INCOME_TRANSFER, OUTGOING_TRANSFER, DEBIT_CARD_PAYMENT, MOBILE_CODE_PAYMENT, NOT_RESOLVED
+}

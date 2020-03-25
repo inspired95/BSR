@@ -4,34 +4,49 @@ import operationtype.OperationType;
 
 import java.time.LocalDate;
 
-public class BankStmtEntry {
+
+public class BankStmtEntry
+{
     LocalDate date;
     String ID;
     OperationType type;
     Double amount;
     String desc;
 
-    public LocalDate getDate() {
+
+    public LocalDate getDate()
+    {
         return date;
     }
 
-    public String getID() {
+
+    public String getID()
+    {
         return ID;
     }
 
-    public OperationType getType() {
+
+    public OperationType getType()
+    {
         return type;
     }
 
-    public Double getAmount() {
+
+    public Double getAmount()
+    {
         return amount;
     }
 
-    public String getDesc() {
+
+    public String getDesc()
+    {
         return desc;
     }
 
-    protected BankStmtEntry(LocalDate date, String ID, OperationType type, Double amount, String desc){
+
+    protected BankStmtEntry(
+        LocalDate date, String ID, OperationType type, Double amount, String desc )
+    {
         this.date = date;
         this.ID = ID;
         this.type = type;
@@ -39,16 +54,21 @@ public class BankStmtEntry {
         this.desc = desc;
     }
 
-    public static final class Builder {
+
+    public static final class Builder
+    {
         LocalDate date;
         String ID;
         OperationType type;
         Double amount;
         String desc;
 
-        public Builder( String ID ){
+
+        public Builder( String ID )
+        {
             this.ID = ID;
         }
+
 
         public Builder setDate( LocalDate date )
         {
@@ -56,10 +76,13 @@ public class BankStmtEntry {
             return this;
         }
 
-        public Builder setType( OperationType type ){
+
+        public Builder setType( OperationType type )
+        {
             this.type = type;
             return this;
         }
+
 
         public Builder setAmount( Double amount )
         {
@@ -67,69 +90,85 @@ public class BankStmtEntry {
             return this;
         }
 
-        public Builder setDesc( String desc ){
+
+        public Builder setDesc( String desc )
+        {
             this.desc = desc;
             return this;
         }
 
-        public LocalDate getDate() {
+
+        public LocalDate getDate()
+        {
             return date;
         }
 
-        public String getID() {
+
+        public String getID()
+        {
             return ID;
         }
 
-        public OperationType getType() {
+
+        public OperationType getType()
+        {
             return type;
         }
 
-        public Double getAmount() {
+
+        public Double getAmount()
+        {
             return amount;
         }
 
-        public String getDesc() {
+
+        public String getDesc()
+        {
             return desc;
         }
+
 
         public boolean isValid()
         {
             return validID() && validOperationType() && validAmount() && validDescription();
         }
 
-        private boolean validDescription() {
+
+        private boolean validDescription()
+        {
             return !desc.isEmpty();
         }
 
-        private boolean validAmount() {
-            return !amount.equals(Double.NaN);
+
+        private boolean validAmount()
+        {
+            return !amount.equals( Double.NaN );
         }
 
-        private boolean validOperationType() {
-            return !type.equals(OperationType.NOT_RESOLVED);
+
+        private boolean validOperationType()
+        {
+            return !type.equals( OperationType.NOT_RESOLVED );
         }
 
-        private boolean validID() {
-            return !ID.isEmpty() &&
-                    ID.length() == 17;
+
+        private boolean validID()
+        {
+            return !ID.isEmpty() && ID.length() == 17;
         }
+
 
         public BankStmtEntry build()
         {
-            return new BankStmtEntry(date, ID, type, amount, desc);
+            return new BankStmtEntry( date, ID, type, amount, desc );
         }
     }
 
 
-
     @Override
-    public String toString() {
-        return "BankStmtEntry{" +
-                "\n\tdate=" + date +
-                "\n\tID='" + ID + '\'' +
-                "\n\ttype='" + type + '\'' +
-                "\n\tamount=" + amount +
-                "\n\tdesc='" + desc + '\'' +
-                "\n}";
+    public String toString()
+    {
+        return "BankStmtEntry{" + "\n\tdate=" + date + "\n\tID='" + ID + '\'' + "\n\ttype='" +
+            type + '\'' + "\n\tamount=" + amount + "\n\tdesc='" + desc + '\'' + "\n}";
     }
 }

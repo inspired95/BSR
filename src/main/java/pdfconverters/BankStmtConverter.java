@@ -4,6 +4,8 @@ import model.BankStmtEntry;
 
 import java.util.List;
 
-public interface BankStmtConverter {
-    List<BankStmtEntry> convert(String statement );
+
+public interface BankStmtConverter
+{
+    List<BankStmtEntry> convert( String statement );
 }

@@ -8,6 +8,7 @@ import java.time.format.DateTimeParseException;
 import java.util.Locale;
 import java.util.Optional;
 import java.util.StringJoiner;
+import java.util.function.DoubleBinaryOperator;
 import java.util.logging.Logger;
 
 import static java.util.logging.Logger.GLOBAL_LOGGER_NAME;
@@ -60,38 +61,60 @@ public class Util
     }
 
 
-    public static Number getNumberBasedOnLocale( Optional<String> number, Locale locale )
+    public static Number getNumberBasedOnLocale( Optional<String> number )
     {
         if( number.isPresent() )
         {
-            NumberFormat format = NumberFormat.getInstance( locale );
+            NumberFormat format = NumberFormat.getInstance();
             try
             {
                 return format.parse( number.get().replaceAll( "\\s", "" ) );
             }
             catch( ParseException e )
             {
-                LOGGER.warning(
-                    "Can not parse number:" + number.get() + " with locale: " + locale.toString() );
+                LOGGER.warning( "Cannot parse number:" + number.get() );
             }
         }
         return Double.NaN;
     }
 
 
-    public static String combineString( String[] words, int firstWordIdx, int lastWordIdx )
+    public static String combineString(
+        Optional<String[]> words, int firstWordIdx, int lastWordIdx )
     {
-        StringJoiner combinedString = new StringJoiner( " " );
-        for( int currentWordIdx = firstWordIdx; currentWordIdx <= lastWordIdx; currentWordIdx++ )
+        if( lastWordIdx < firstWordIdx )
         {
-            combinedString.add( words[currentWordIdx] );
+            LOGGER.warning( "Given last index is lower than first index" );
+            return "";
         }
-        return combinedString.toString();
+        if( words.isPresent() )
+        {
+            StringJoiner combinedString = new StringJoiner( " " );
+            for( int currentWordIdx = firstWordIdx; currentWordIdx <= lastWordIdx; currentWordIdx++ )
+            {
+                combinedString.add( words.get()[currentWordIdx] );
+            }
+            return combinedString.toString();
+        }
+        LOGGER.warning( "Cannot combine null" );
+        return "";
     }
 
 
-    public static String combineString( String string1, String string2 )
+    public static String combineString( Optional<String> string1, Optional<String> string2 )
     {
-        return new StringJoiner( " " ).add( string1 ).add( string2 ).toString();
+        if( string1.isPresent() && string2.isPresent() )
+        {
+            return new StringJoiner( " " ).add( string1.get() ).add( string2.get() ).toString();
+        }else if( string1.isPresent() && !string2.isPresent() ){
+            LOGGER.warning( "Second string is null" );
+            return string1.get();
+        }else if( !string1.isPresent() && string2.isPresent() ){
+            LOGGER.warning( "First string is null" );
+            return string2.get();
+        }
+        LOGGER.warning( "Cannot combine nulls" );
+        return "";
+
     }
 }

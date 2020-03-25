@@ -39,10 +39,8 @@ public class UtilTest
     @Test
     public void should_Return_Empty_Array_When_Null_Given()
     {
-        //GIVEN
-        String textToSplit = null;
         //WHEN
-        String[] splittedStrings = split( Optional.ofNullable( textToSplit ), " " );
+        String[] splittedStrings = split( Optional.empty(), " " );
 
         //THEN
         assertEquals( 0, splittedStrings.length );
@@ -72,9 +70,7 @@ public class UtilTest
         String format = "dd.MM.yyyy";
 
         //WHEN&THEN
-        Assertions.assertThrows( DateTimeParseException.class, () -> {
-            parseDate( Optional.of( dateToParse ), format );
-        } );
+        Assertions.assertThrows( DateTimeParseException.class, () -> parseDate( Optional.of( dateToParse ), format ) );
 
     }
 
@@ -83,11 +79,10 @@ public class UtilTest
     public void should_Return_LocalDate_MIN_When_Null_Given()
     {
         //GIVEN
-        String dateToParse = null;
         String format = "dd.MM.yyyy";
 
         //WHEN
-        LocalDate date = parseDate( Optional.ofNullable( dateToParse ), format );
+        LocalDate date = parseDate( Optional.empty(), format );
 
         //THEN
         assertEquals( LocalDate.MIN, date );
@@ -98,11 +93,10 @@ public class UtilTest
     public void should_Return_False_When_Null_Given()
     {
         //GIVEN
-        String dateToParse = null;
         String format = "dd.MM.yyyy";
 
         //WHEN
-        Boolean validity = isValidDate( Optional.ofNullable( dateToParse ), format );
+        Boolean validity = isValidDate( Optional.empty(), format );
 
         //THEN
         assertEquals( false, validity );
@@ -117,7 +111,7 @@ public class UtilTest
         String format = "dd.MM.yyyy";
 
         //WHEN
-        Boolean validity = isValidDate( Optional.ofNullable( dateToParse ), format );
+        Boolean validity = isValidDate( Optional.of( dateToParse ), format );
 
         //THEN
         assertEquals( false, validity );
@@ -132,7 +126,7 @@ public class UtilTest
         String format = "dd.MM.yyyy";
 
         //WHEN
-        Boolean validity = isValidDate( Optional.ofNullable( dateToParse ), format );
+        Boolean validity = isValidDate( Optional.of( dateToParse ), format );
 
         //THEN
         assertEquals( true, validity );
@@ -140,16 +134,101 @@ public class UtilTest
 
 
     @Test
-    public void should_Parse_Correctly_When_Number_In_Locale_Given()
+    public void should_Return_NaN_When_Wrong_Number_Given()
     {
         //GIVEN
-        String numberToParse = "9 999,99";
-        Locale locale = Locale.FRANCE;
+        String numberToParse = "O.SD";
 
         //WHEN
-        Number parsedNumber = getNumberBasedOnLocale( Optional.of( numberToParse ), locale );
+        Number parsedNumber = getNumberBasedOnLocale( Optional.of( numberToParse ) );
 
         //THEN
-        assertEquals( 9999.99, parsedNumber );
+        assertEquals( Double.NaN, parsedNumber );
     }
+
+
+    @Test
+    public void should_Combine_String_When_Correct_Parameters_Given()
+    {
+        //GIVEN
+        String[] strings = { "Ala", "ma", "kota", "a", "ja", "mam", "psa" };
+
+        //WHEN
+        String combinedString = combineString( Optional.of( strings ), 1, 3 );
+
+        //THEN
+        assertEquals( "ma kota a", combinedString );
+    }
+
+
+    @Test
+    public void should_Return_Empty_String_When_Null_As_Array_Given()
+    {
+        //WHEN
+        String combinedString = combineString( Optional.empty(), 1, 3 );
+
+        //THEN
+        assertEquals( "", combinedString );
+    }
+
+    @Test
+    public void should_Return_Empty_String_When_Given_LastIdx_Is_Lower_Then_FirstIdx()
+    {
+        //WHEN
+        String combinedString = combineString( Optional.empty(), 4, 3 );
+
+        //THEN
+        assertEquals( "", combinedString );
+    }
+
+    @Test
+    public void should_Combine_When_Strings_Given()
+    {
+        //GIVEN
+        String string1 = "Ala";
+        String string2 = "ma kota";
+
+        //WHEN
+        String combinedString = combineString( Optional.of( string1 ),Optional.of( string2 ) );
+
+        //THEN
+        assertEquals( "Ala ma kota", combinedString );
+    }
+
+    @Test
+    public void should_Return_String1_When_Null_As_String2_Given()
+    {
+        //GIVEN
+        String string1 = "Ala";
+
+        //WHEN
+        String combinedString = combineString( Optional.of( string1 ), Optional.empty() );
+
+        //THEN
+        assertEquals( "Ala", combinedString );
+    }
+
+    @Test
+    public void should_Return_String2_When_Null_As_String1_Given()
+    {
+        //GIVEN
+        String string2 = "ma kota";
+
+        //WHEN
+        String combinedString = combineString( Optional.empty(), Optional.of( string2 ) );
+
+        //THEN
+        assertEquals( "ma kota", combinedString );
+    }
+
+    @Test
+    public void should_Return_Empty_String_When_Nulls_As_Strings_Given()
+    {
+        //WHEN
+        String combinedString = combineString( Optional.empty(), Optional.empty() );
+
+        //THEN
+        assertEquals( "", combinedString );
+    }
+
 }

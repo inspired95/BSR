@@ -60,6 +60,7 @@ public class PKOBankStmtConverter
                 bankStmtEntryBuilder.setDesc(
                     getDescription( currentLineNumber, splittedSecondLineIntoWords,
                         bankStmtLines ) );
+
                 if( bankStmtEntryBuilder.isValid() )
                     bankStmtEntries.add( bankStmtEntryBuilder.build() );
                 else
@@ -95,7 +96,7 @@ public class PKOBankStmtConverter
 
     private OperationType getType( String[] splittedLineIntoWords )
     {
-        return operationTypeResolver.resolve( getOperationTypeDesc( splittedLineIntoWords ) );
+        return operationTypeResolver.resolve( getOperationTypeDesc( Optional.ofNullable( splittedLineIntoWords ) ) );
     }
 
 
@@ -156,17 +157,22 @@ public class PKOBankStmtConverter
         if( matches.size() == 2 )
         {
             Optional<String> numberToParse = Optional.ofNullable( matches.get( 0 ).group( 0 ) );
-            return getNumberBasedOnLocale( numberToParse, Locale.FRANCE ).doubleValue();
+            return getNumberBasedOnLocale( numberToParse ).doubleValue();
         }
-        LOGGER.warning( "Amount could't be read correctly." );
+        LOGGER.warning( "Amount could not be read correctly." );
         return Double.NaN;
     }
 
 
-    private String getOperationTypeDesc( String[] splittedLineIntoWords )
+    private String getOperationTypeDesc( Optional<String[]> splittedLineIntoWords )
     {
-        int lastWordIdx = findLastWordIndexOfOperationTypeDesc( 2, splittedLineIntoWords );
-        return combineString( splittedLineIntoWords, 2, lastWordIdx );
+        if( splittedLineIntoWords.isPresent() )
+        {
+            int lastWordIdx = findLastWordIndexOfOperationTypeDesc( 2, splittedLineIntoWords.get() );
+            return combineString( splittedLineIntoWords, 2, lastWordIdx );
+        }
+        LOGGER.warning( "Cannot get description" );
+        return "";
     }
 
 

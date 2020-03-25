@@ -63,10 +63,11 @@ public class PKOBankStmtConverterTest
             parseDate( Optional.of( correctDate ), PKO_DATE_FORMAT ), convertedEntry.getDate() );
         assertEquals( OperationType.DEBIT_CARD_PAYMENT, convertedEntry.getType() );
         assertEquals(
-            getNumberBasedOnLocale( Optional.of( correctAmount ), Locale.FRANCE ).doubleValue(),
+            getNumberBasedOnLocale( Optional.of( correctAmount ) ).doubleValue(),
             convertedEntry.getAmount() );
         assertEquals(
-            combineString( correctDescLine1, correctDescLine2 ), convertedEntry.getDesc() );
+            combineString( Optional.of( correctDescLine1 ), Optional.of( correctDescLine2 )),
+            convertedEntry.getDesc() );
     }
 
 
@@ -97,8 +98,11 @@ public class PKOBankStmtConverterTest
     private static Stream<Arguments> incompletePKOStmtEntries()
     {
         return Stream
-            .of( Arguments.of( getEntryWithWrongAmount() ), Arguments.of( getEntryWithWrongDate() ),
-                Arguments.of( getEntryWithoutID() ), Arguments.of( getEntryWithoutDescription() ) );
+            .of( Arguments.of( getEntryWithWrongAmount() ),
+                Arguments.of( getEntryWithWrongDate() ),
+                Arguments.of( getEntryWithoutID() ),
+                Arguments.of( getEntryWithoutDescription() )
+            );
     }
 
 
@@ -121,7 +125,7 @@ public class PKOBankStmtConverterTest
     private static PKOBankStmtEntryPdfMock getEntryWithWrongAmount()
     {
         return new PKOBankStmtEntryPdfMock.Builder().setID( correctID ).setDate( correctDate )
-            .setTypeDescription( correctTypeDescription ).setAmount( "WRONG_AMOUNT" )
+            .setTypeDescription( correctTypeDescription ).setAmount( "WR0NG_AM0UNT" )
             .setDescLine1( correctDescLine1 ).setDescLine2( correctDescLine2 ).build();
     }
 

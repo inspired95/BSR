@@ -64,7 +64,7 @@ public class PKOBankStmtConverter
                 if( bankStmtEntryBuilder.isValid() )
                     bankStmtEntries.add( bankStmtEntryBuilder.build() );
                 else
-                    LOGGER.warning( "Can not convert entry: \n" + currentLine );
+                    LOGGER.warning( "Cannot convert entry: \n" + currentLine );
             }
         }
         LOGGER.info( "Converting finished" );
@@ -109,10 +109,10 @@ public class PKOBankStmtConverter
         }
         catch( DateTimeParseException e )
         {
-            LOGGER.warning( "Can not parse date: " + date );
+            LOGGER.warning( "Cannot parse date: " + date );
         }
         if( parsedDate.equals( LocalDate.MIN ) )
-            LOGGER.warning( "Can not parse date: " + date );
+            LOGGER.warning( "Cannot parse date: " + date );
         return parseDate( Optional.ofNullable( date ), PKO_DATE_FORMAT );
     }
 
@@ -159,7 +159,7 @@ public class PKOBankStmtConverter
             Optional<String> numberToParse = Optional.ofNullable( matches.get( 0 ).group( 0 ) );
             return getNumberBasedOnLocale( numberToParse ).doubleValue();
         }
-        LOGGER.warning( "Amount could not be read correctly." );
+        LOGGER.warning( "Amount cannot be read correctly." );
         return Double.NaN;
     }
 

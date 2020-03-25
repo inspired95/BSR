@@ -1,5 +1,6 @@
 package executors;
 
+import exceptions.BankStmtConverterNotFoundException;
 import gui.BankStatementChooser;
 import pdfconverters.BankStmtConverter;
 import pdfconverters.BankStmtConverterFactory;
@@ -9,6 +10,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
+import java.util.StringJoiner;
 import java.util.logging.Logger;
 
 import static reader.PDFReader.read;
@@ -53,8 +55,20 @@ public class BankStmtChooserBtnListener
             LOGGER.info( "Bank statement reading finished" );
             if( !bankStmtPdf.isEmpty() )
             {
-                BankStmtConverter bankStmtConverter =
-                    new BankStmtConverterFactory().match( chosenBank );
+                BankStmtConverter bankStmtConverter = null;
+                try
+                {
+                    bankStmtConverter =
+                        new BankStmtConverterFactory().match( chosenBank );
+                }catch( BankStmtConverterNotFoundException e ){
+                    String errorMsg =
+                        new StringJoiner( " " ).add( "Cannot match bank statement converter for" )
+                            .add( chosenBank ).toString();
+                    LOGGER.warning( errorMsg );
+                    JOptionPane.showMessageDialog(null, errorMsg, "Error", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+
                 bankStmtConverter.convert( bankStmtPdf );
             }
         }

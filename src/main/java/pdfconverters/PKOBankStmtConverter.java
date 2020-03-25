@@ -12,9 +12,9 @@ import java.util.regex.MatchResult;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+import static utils.Util.*;
 import static java.util.logging.Logger.*;
 import static utils.Constants.*;
-import static utils.Util.*;
 
 public class PKOBankStmtConverter implements BankStmtConverter {
     private final static Logger LOGGER = getLogger(GLOBAL_LOGGER_NAME);
@@ -26,15 +26,15 @@ public class PKOBankStmtConverter implements BankStmtConverter {
     }
 
     @Override
-    public List<BankStmtEntry> convert( String bankStatementPdf ) {
+    public List<BankStmtEntry> convert( String bankStatementPdf) {
         LOGGER.info("Converting started");
-        String[] bankStmtLines = splitIntoLines(bankStatementPdf);
+        String[] bankStmtLines = split(Optional.ofNullable(bankStatementPdf), "\\r?\\n");
         List<BankStmtEntry> bankStmtEntries = new ArrayList<>();
 
         for (int currentLineNumber = 0; currentLineNumber < bankStmtLines.length; currentLineNumber++) {
             String currentLine = bankStmtLines[currentLineNumber];
             if (isFirstRowInEntry(currentLine)) {
-                String[] splittedFirstLineIntoWords = splitIntoWord(currentLine);
+                String[] splittedFirstLineIntoWords = split(Optional.ofNullable(currentLine)," ");
 
                 BankStmtEntry.Builder bankStmtEntryBuilder = new BankStmtEntry.Builder(splittedFirstLineIntoWords[1]);
                 bankStmtEntryBuilder.setDate( getDate(splittedFirstLineIntoWords[0]) );
@@ -42,10 +42,10 @@ public class PKOBankStmtConverter implements BankStmtConverter {
                 bankStmtEntryBuilder.setAmount( getAmount(currentLine) );
 
                 currentLineNumber++;
-                String[] splittedSecondLineIntoWords = splitIntoWord(bankStmtLines[currentLineNumber]);
+                String[] splittedSecondLineIntoWords = split(Optional.ofNullable(bankStmtLines[currentLineNumber]), " ");
 
+                System.out.println(bankStmtEntryBuilder.build());
                 bankStmtEntryBuilder.setDesc(getDescription(currentLineNumber, splittedSecondLineIntoWords, bankStmtLines));
-
                 if ( bankStmtEntryBuilder.isValid() )
                     bankStmtEntries.add( bankStmtEntryBuilder.build() );
                 else
@@ -78,24 +78,26 @@ public class PKOBankStmtConverter implements BankStmtConverter {
     }
 
     private LocalDate getDate(String date) {
+        LocalDate parsedDate = LocalDate.MIN;
         try {
-            return parseDate(date, PKO_DATE_FORMAT);
-        } catch (DateTimeParseException e) {
-            LOGGER.warning("Date could't be read.");
-
+            parsedDate = parseDate(Optional.ofNullable(date), PKO_DATE_FORMAT);
+        }catch (DateTimeParseException e){
+            LOGGER.warning("Can not parse date: " + date);
         }
-        return LocalDate.MIN;
+        if (parsedDate.equals(LocalDate.MIN))
+            LOGGER.warning("Can not parse date: " + date);
+        return parseDate(Optional.ofNullable(date), PKO_DATE_FORMAT);
     }
 
 
     private boolean isFirstRowInEntry(String line) {
-        String[] splittedWords = splitIntoWord(line);
+        String[] splittedWords = split(Optional.ofNullable(line), " ");
         if (splittedWords.length < 3) return false;
         return isFirstWordDate(splittedWords[0]) && isSecondWordOperationID(splittedWords[1]);
     }
 
     private boolean isFirstWordDate(String date) {
-        return isValidDate(date, PKO_DATE_FORMAT);
+        return isValidDate(Optional.ofNullable(date), PKO_DATE_FORMAT);
     }
 
     private boolean isSecondWordOperationID(String word) {
@@ -113,7 +115,8 @@ public class PKOBankStmtConverter implements BankStmtConverter {
     private Double getAmount(String line ) {
         List<MatchResult> matches = Pattern.compile(REGEX_AMOUNT).matcher(line).results().collect(Collectors.toList());
         if (matches.size() == 2){
-            return getNumberBasedOnLocale(matches.get( 0 ).group( 0 ), Locale.FRANCE).doubleValue();
+            Optional<String> numberToParse = Optional.ofNullable(matches.get( 0 ).group( 0 ));
+            return getNumberBasedOnLocale(numberToParse, Locale.FRANCE).doubleValue();
         }
         LOGGER.warning("Amount could't be read correctly.");
         return Double.NaN;

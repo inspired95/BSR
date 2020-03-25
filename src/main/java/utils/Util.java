@@ -6,38 +6,52 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.Locale;
+import java.util.Optional;
 import java.util.StringJoiner;
+import java.util.logging.Logger;
+
+import static java.util.logging.Logger.GLOBAL_LOGGER_NAME;
+import static java.util.logging.Logger.getLogger;
 
 public class Util {
-    public static String[] splitIntoLines(String bankStmt) {
-        return bankStmt.split("\\r?\\n");
+    private final static Logger LOGGER = getLogger(GLOBAL_LOGGER_NAME);
+
+    public static String[] split(Optional<String> string, String regex) {
+        if (string.isPresent())
+            return string.get().split(regex);
+        LOGGER.warning("Can not split null");
+        return new String[0];
     }
 
-    public static String[] splitIntoWord(String line) {
-        return line.split(" ");
-    }
-
-    public static LocalDate parseDate(String dateStr, String format) throws DateTimeParseException{
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(format);
-        return LocalDate.parse(dateStr, formatter);
-    }
-
-    public static boolean isValidDate(String dateStr, String format) {
-        try {
-            parseDate(dateStr, format);
-        } catch (DateTimeParseException e) {
-            return false;
+    public static LocalDate parseDate(Optional<String> date, String format) throws DateTimeParseException{
+        if (date.isPresent()){
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern(format);
+            return LocalDate.parse(date.get(), formatter);
         }
-        return true;
+        return LocalDate.MIN;
     }
 
-    public static Number getNumberBasedOnLocale(String number, Locale locale)
-    {
-        NumberFormat format = NumberFormat.getInstance( locale );
-        try {
-            return format.parse(number.replaceAll("\\s", ""));
-        } catch (ParseException e) {
-            e.printStackTrace();
+    public static boolean isValidDate(Optional<String> date, String format) {
+        if (date.isPresent()) {
+            LocalDate parsedDate = LocalDate.MIN;
+            try {
+                parsedDate = parseDate(Optional.of(date.get()), format);
+            }catch (DateTimeParseException e){
+
+            }
+            if (!parsedDate.equals(LocalDate.MIN)) return true;
+        }
+        return false;
+    }
+
+    public static Number getNumberBasedOnLocale(Optional<String> number, Locale locale) {
+        if (number.isPresent()){
+            NumberFormat format = NumberFormat.getInstance( locale );
+            try {
+                return format.parse(number.get().replaceAll("\\s", ""));
+            } catch (ParseException e) {
+                LOGGER.warning( "Can not parse number:" + number.get() + " with locale: " + locale.toString() );
+            }
         }
         return Double.NaN;
     }

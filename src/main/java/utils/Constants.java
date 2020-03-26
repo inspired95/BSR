@@ -1,5 +1,7 @@
 package utils;
 
+import javax.swing.filechooser.FileSystemView;
+import java.nio.file.Paths;
 import java.util.List;
 
 import static java.util.Arrays.asList;
@@ -7,6 +9,7 @@ import static java.util.Arrays.asList;
 
 public class Constants
 {
+    public static String BSR = "BSR";
     public static String APP_TITLE = "BSR - Bank Statement Reader";
     public static String SELECT_BANK_TXT = "Select bank";
     public static String SELECT_BANK_STATEMENT_TXT = "Select bank statement";
@@ -29,4 +32,9 @@ public class Constants
     public static String REGEX_AMOUNT = "-?[0-9 ]+,\\d{2}";
 
     public static char DOT = '.';
+
+    public static String CONFIGURATION_PATH =
+        Paths.get(System.getProperty("user.home"),BSR).toString();
+
+    public static String CATEGORIES_CONFIGURATION_FILE_NAME="categoryConfiguration.json";
 }

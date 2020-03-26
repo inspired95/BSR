@@ -44,7 +44,7 @@ public class MainFrame
     {
         openBankStmtChooserBtn = new JButton( SELECT_BANK_STATEMENT_TXT );
         openBankStmtChooserBtn.addActionListener(
-            new BankStmtChooserBtnListener( (String)selectBankComboBox.getSelectedItem() ) );
+            new BankStmtChooserBtnListener( (String)selectBankComboBox.getSelectedItem(), this ) );
         add( openBankStmtChooserBtn );
     }
 
@@ -56,5 +56,7 @@ public class MainFrame
         selectBankComboBox = new JComboBox( new String[] { PKO } );
         add( selectBankComboBox );
     }
+
+
 }
 

@@ -1,12 +1,11 @@
 package categories;
 
 import app.Configuration;
-import model.CategoriesConfiguration;
 import model.Category;
 
 import java.util.Arrays;
 
-import static model.Category.*;
+import static model.Category.OTHER_CATEGORY;
 
 
 public class OperationCategoryResolverImpl
@@ -21,9 +20,9 @@ public class OperationCategoryResolverImpl
         String descriptionCaseLowered = operationDescription.toLowerCase();
         for( Category category : categories )
         {
-            if( Arrays.stream(category.getKeywords()).parallel().anyMatch(
-                keyword -> descriptionCaseLowered.contains( keyword.toLowerCase() ) ) )
-            return category;
+            if( Arrays.stream( category.getKeywords() ).parallel()
+                .anyMatch( keyword -> descriptionCaseLowered.contains( keyword.toLowerCase() ) ) )
+                return category;
         }
         return OTHER_CATEGORY;
     }

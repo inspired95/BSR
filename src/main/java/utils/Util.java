@@ -5,10 +5,8 @@ import java.text.ParseException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
-import java.util.Locale;
 import java.util.Optional;
 import java.util.StringJoiner;
-import java.util.function.DoubleBinaryOperator;
 import java.util.logging.Logger;
 
 import static java.util.logging.Logger.GLOBAL_LOGGER_NAME;
@@ -90,7 +88,8 @@ public class Util
         if( words.isPresent() )
         {
             StringJoiner combinedString = new StringJoiner( " " );
-            for( int currentWordIdx = firstWordIdx; currentWordIdx <= lastWordIdx; currentWordIdx++ )
+            for( int currentWordIdx = firstWordIdx;
+                 currentWordIdx <= lastWordIdx; currentWordIdx++ )
             {
                 combinedString.add( words.get()[currentWordIdx] );
             }
@@ -106,10 +105,14 @@ public class Util
         if( string1.isPresent() && string2.isPresent() )
         {
             return new StringJoiner( " " ).add( string1.get() ).add( string2.get() ).toString();
-        }else if( string1.isPresent() && !string2.isPresent() ){
+        }
+        else if( string1.isPresent() && !string2.isPresent() )
+        {
             LOGGER.warning( "Second string is null" );
             return string1.get();
-        }else if( !string1.isPresent() && string2.isPresent() ){
+        }
+        else if( !string1.isPresent() && string2.isPresent() )
+        {
             LOGGER.warning( "First string is null" );
             return string2.get();
         }

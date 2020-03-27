@@ -2,8 +2,6 @@ package app;
 
 import model.CategoriesConfiguration;
 
-import java.util.Optional;
-
 
 public class Configuration
 {

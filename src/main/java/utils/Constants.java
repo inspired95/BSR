@@ -33,7 +33,7 @@ public class Constants
     public static final char DOT = '.';
 
     public static final String CONFIGURATION_PATH =
-        Paths.get(System.getProperty("user.home"),BSR).toString();
+        Paths.get( System.getProperty( "user.home" ), BSR ).toString();
 
-    public static final String CATEGORIES_CONFIGURATION_FILE_NAME="categoryConfiguration.json";
+    public static final String CATEGORIES_CONFIGURATION_FILE_NAME = "categoryConfiguration.json";
 }

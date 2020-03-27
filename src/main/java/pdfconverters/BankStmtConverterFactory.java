@@ -1,7 +1,6 @@
 package pdfconverters;
 
 import exceptions.BankStmtConverterNotFoundException;
-import operationtype.PKOOperationTypeResolver;
 
 import static utils.Constants.PKO;
 
@@ -12,7 +11,7 @@ public class BankStmtConverterFactory
     {
         if( PKO.equals( chosenBank ) )
         {
-            return new PKOBankStmtConverter( );
+            return new PKOBankStmtConverter();
         }
         throw new BankStmtConverterNotFoundException();
     }

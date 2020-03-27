@@ -55,6 +55,5 @@ public class MainFrame
         add( selectBankComboBox );
     }
 
-
 }
 

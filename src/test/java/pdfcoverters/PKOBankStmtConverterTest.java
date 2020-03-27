@@ -59,11 +59,10 @@ public class PKOBankStmtConverterTest
         assertEquals( correctID, convertedEntry.getID() );
         assertEquals(
             parseDate( Optional.of( correctDate ), PKO_DATE_FORMAT ), convertedEntry.getDate() );
-        assertEquals(
-            getNumberBasedOnLocale( Optional.of( correctAmount ) ).doubleValue(),
+        assertEquals( getNumberBasedOnLocale( Optional.of( correctAmount ) ).doubleValue(),
             convertedEntry.getAmount() );
         assertEquals(
-            combineString( Optional.of( correctDescLine1 ), Optional.of( correctDescLine2 )),
+            combineString( Optional.of( correctDescLine1 ), Optional.of( correctDescLine2 ) ),
             convertedEntry.getDesc() );
     }
 
@@ -95,11 +94,8 @@ public class PKOBankStmtConverterTest
     private static Stream<Arguments> incompletePKOStmtEntries()
     {
         return Stream
-            .of( Arguments.of( getEntryWithWrongAmount() ),
-                Arguments.of( getEntryWithWrongDate() ),
-                Arguments.of( getEntryWithoutID() ),
-                Arguments.of( getEntryWithoutDescription() )
-            );
+            .of( Arguments.of( getEntryWithWrongAmount() ), Arguments.of( getEntryWithWrongDate() ),
+                Arguments.of( getEntryWithoutID() ), Arguments.of( getEntryWithoutDescription() ) );
     }
 
 

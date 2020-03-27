@@ -6,7 +6,8 @@ import javax.swing.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import static app.ConfigurationLoader.*;
+import static app.ConfigurationLoader.isConfigurationLoadedSuccessfully;
+import static app.ConfigurationLoader.loadConfiguration;
 import static java.util.logging.Logger.GLOBAL_LOGGER_NAME;
 import static java.util.logging.Logger.getLogger;
 
@@ -34,7 +35,7 @@ public class Main
         }
         else
         {
-            JOptionPane.showMessageDialog(null, "", "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog( null, "", "Error", JOptionPane.ERROR_MESSAGE );
         }
 
     }

@@ -4,15 +4,19 @@ import model.RawOperation;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.StringJoiner;
 import java.util.logging.Logger;
 import java.util.regex.MatchResult;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-import static utils.Util.*;
-import static java.util.logging.Logger.*;
+import static java.util.logging.Logger.GLOBAL_LOGGER_NAME;
+import static java.util.logging.Logger.getLogger;
 import static utils.Constants.*;
+import static utils.Util.*;
 
 
 public class PKOBankStmtConverter
@@ -45,7 +49,8 @@ public class PKOBankStmtConverter
                 RawOperation.Builder operationBuilder =
                     new RawOperation.Builder( splittedFirstLineIntoWords[1] );
                 operationBuilder.setDate( getDate( splittedFirstLineIntoWords[0] ) );
-                operationBuilder.setType( getOperationTypeDesc( Optional.ofNullable( splittedFirstLineIntoWords ) ) );
+                operationBuilder.setType(
+                    getOperationTypeDesc( Optional.ofNullable( splittedFirstLineIntoWords ) ) );
                 operationBuilder.setAmount( getAmount( currentLine ) );
 
                 currentLineNumber++;
@@ -157,7 +162,8 @@ public class PKOBankStmtConverter
     {
         if( splittedLineIntoWords.isPresent() )
         {
-            int lastWordIdx = findLastWordIndexOfOperationTypeDesc( 2, splittedLineIntoWords.get() );
+            int lastWordIdx =
+                findLastWordIndexOfOperationTypeDesc( 2, splittedLineIntoWords.get() );
             return combineString( splittedLineIntoWords, 2, lastWordIdx );
         }
         LOGGER.warning( "Cannot get description" );

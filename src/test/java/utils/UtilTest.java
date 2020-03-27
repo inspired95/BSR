@@ -5,7 +5,6 @@ import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
-import java.util.Locale;
 import java.util.Optional;
 import java.util.StringJoiner;
 
@@ -70,7 +69,8 @@ public class UtilTest
         String format = "dd.MM.yyyy";
 
         //WHEN&THEN
-        Assertions.assertThrows( DateTimeParseException.class, () -> parseDate( Optional.of( dateToParse ), format ) );
+        Assertions.assertThrows( DateTimeParseException.class,
+            () -> parseDate( Optional.of( dateToParse ), format ) );
 
     }
 
@@ -171,6 +171,7 @@ public class UtilTest
         assertEquals( "", combinedString );
     }
 
+
     @Test
     public void should_Return_Empty_String_When_Given_LastIdx_Is_Lower_Then_FirstIdx()
     {
@@ -181,6 +182,7 @@ public class UtilTest
         assertEquals( "", combinedString );
     }
 
+
     @Test
     public void should_Combine_When_Strings_Given()
     {
@@ -189,11 +191,12 @@ public class UtilTest
         String string2 = "ma kota";
 
         //WHEN
-        String combinedString = combineString( Optional.of( string1 ),Optional.of( string2 ) );
+        String combinedString = combineString( Optional.of( string1 ), Optional.of( string2 ) );
 
         //THEN
         assertEquals( "Ala ma kota", combinedString );
     }
+
 
     @Test
     public void should_Return_String1_When_Null_As_String2_Given()
@@ -208,6 +211,7 @@ public class UtilTest
         assertEquals( "Ala", combinedString );
     }
 
+
     @Test
     public void should_Return_String2_When_Null_As_String1_Given()
     {
@@ -220,6 +224,7 @@ public class UtilTest
         //THEN
         assertEquals( "ma kota", combinedString );
     }
+
 
     @Test
     public void should_Return_Empty_String_When_Nulls_As_Strings_Given()

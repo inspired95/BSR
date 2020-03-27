@@ -2,9 +2,9 @@ package gui;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileSystemView;
-import java.io.File;
 
-import static utils.Constants.*;
+import static utils.Constants.BANK_STMT_ALLOWED_EXTENSIONS;
+import static utils.Constants.SELECT_BANK_STATEMENT_TXT;
 
 
 public class BankStatementChooser

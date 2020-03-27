@@ -14,12 +14,16 @@ public class OperationTransformer
     private OperationTypeResolver operationTypeResolver;
     private OperationCategoryResolver operationCategoryResolver;
 
-    public OperationTransformer( OperationTypeResolver operationTypeResolver ){
+
+    public OperationTransformer( OperationTypeResolver operationTypeResolver )
+    {
         this.operationTypeResolver = operationTypeResolver;
         this.operationCategoryResolver = new OperationCategoryResolverImpl();
     }
 
-    public Operation transform( RawOperation rawOperation ){
+
+    public Operation transform( RawOperation rawOperation )
+    {
 
         OperationType operationType = operationTypeResolver.resolve( rawOperation.getType() );
         Category category = operationCategoryResolver.resolve( rawOperation.getDesc() );

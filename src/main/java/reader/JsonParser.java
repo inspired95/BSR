@@ -25,8 +25,8 @@ public class JsonParser
         {
             try
             {
-                return Optional.of( gson
-                    .fromJson( categoryConfigurationJson.get(), CategoriesConfiguration.class ));
+                return Optional.of( gson.fromJson( categoryConfigurationJson.get(),
+                    CategoriesConfiguration.class ) );
             }
             catch( JsonSyntaxException e )
             {

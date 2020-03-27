@@ -5,11 +5,11 @@ import java.time.LocalDate;
 
 public class RawOperation
 {
-    LocalDate date;
-    String ID;
-    String type;
-    Double amount;
-    String desc;
+    private LocalDate date;
+    private String ID;
+    private String type;
+    private Double amount;
+    private String desc;
 
 
     public LocalDate getDate()
@@ -55,11 +55,11 @@ public class RawOperation
 
     public static final class Builder
     {
-        LocalDate date;
-        String ID;
-        String type;
-        Double amount;
-        String desc;
+        private LocalDate date;
+        private String ID;
+        private String type;
+        private Double amount;
+        private String desc;
 
 
         public Builder( String ID )

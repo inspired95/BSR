@@ -1,7 +1,12 @@
 package model;
 
-
 public class CategoriesConfiguration
 {
-    Category[] categories;
+    private Category[] categories;
+
+
+    public Category[] getCategories()
+    {
+        return categories;
+    }
 }

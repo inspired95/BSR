@@ -1,6 +1,6 @@
 package pdfcoverters;
 
-import model.Operation;
+import model.RawOperation;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -51,11 +51,11 @@ public class PKOBankStmtConverterTest
             new PKOBankStmtPdfMock().addEntry( stmtEntryPdfMock ).summarize();
 
         //WHEN
-        List<Operation> converted = bankStmtConverter.convert( bankStmtPdfMock.getContent() );
+        List<RawOperation> converted = bankStmtConverter.convert( bankStmtPdfMock.getContent() );
 
         //THEN
         assertEquals( 1, converted.size() );
-        Operation convertedEntry = converted.get( 0 );
+        RawOperation convertedEntry = converted.get( 0 );
         assertEquals( correctID, convertedEntry.getID() );
         assertEquals(
             parseDate( Optional.of( correctDate ), PKO_DATE_FORMAT ), convertedEntry.getDate() );
@@ -85,7 +85,7 @@ public class PKOBankStmtConverterTest
             new PKOBankStmtPdfMock().addEntry( stmtEntryPdfMock ).summarize();
 
         //WHEN
-        List<Operation> converted = bankStmtConverter.convert( bankStmtPdfMock.getContent() );
+        List<RawOperation> converted = bankStmtConverter.convert( bankStmtPdfMock.getContent() );
 
         //THEN
         assertTrue( converted.isEmpty() );

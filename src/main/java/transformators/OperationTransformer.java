@@ -1,5 +1,6 @@
 package transformators;
 
+import app.Configuration;
 import categories.OperationCategoryResolver;
 import categories.OperationCategoryResolverImpl;
 import model.Category;
@@ -8,6 +9,9 @@ import model.RawOperation;
 import operationtype.OperationType;
 import operationtype.OperationTypeResolver;
 
+import java.util.ArrayList;
+import java.util.List;
+
 
 public class OperationTransformer
 {
@@ -15,20 +19,25 @@ public class OperationTransformer
     private OperationCategoryResolver operationCategoryResolver;
 
 
-    public OperationTransformer( OperationTypeResolver operationTypeResolver )
+    public OperationTransformer( OperationTypeResolver operationTypeResolver, Category[] categories )
     {
         this.operationTypeResolver = operationTypeResolver;
-        this.operationCategoryResolver = new OperationCategoryResolverImpl();
+        this.operationCategoryResolver = new OperationCategoryResolverImpl( categories );
     }
 
 
-    public Operation transform( RawOperation rawOperation )
+    public List<Operation> transform( List<RawOperation> rawOperations )
     {
+        List<Operation> operations = new ArrayList<>();
+        for( RawOperation rawOperation : rawOperations )
+        {
+            OperationType operationType = operationTypeResolver.resolve( rawOperation.getType() );
+            Category category = operationCategoryResolver.resolve( rawOperation.getDesc() );
 
-        OperationType operationType = operationTypeResolver.resolve( rawOperation.getType() );
-        Category category = operationCategoryResolver.resolve( rawOperation.getDesc() );
+            operations.add( new Operation( rawOperation.getID(), rawOperation.getDate(), operationType,
+                rawOperation.getAmount(), category ) );
+        }
 
-        return new Operation( rawOperation.getID(), rawOperation.getDate(), operationType,
-            rawOperation.getAmount(), category );
+        return operations;
     }
 }

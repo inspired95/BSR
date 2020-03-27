@@ -6,28 +6,36 @@ import org.apache.pdfbox.text.PDFTextStripperByArea;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Optional;
+import java.util.logging.Logger;
+
+import static java.util.logging.Logger.GLOBAL_LOGGER_NAME;
+import static java.util.logging.Logger.getLogger;
 
 
 public class PDFReader
 {
-    public static String read( String path ) throws IOException
+    private final static Logger LOGGER = getLogger( GLOBAL_LOGGER_NAME );
+
+    public static Optional<String> read( String path )
     {
-        try (PDDocument document = PDDocument.load( new File( path ) ))
+        try
         {
-
-            document.getClass();
-
+            PDDocument document = PDDocument.load( new File( path ) );
             if( !document.isEncrypted() )
             {
-
                 PDFTextStripperByArea stripper = new PDFTextStripperByArea();
                 stripper.setSortByPosition( true );
 
                 PDFTextStripper tStripper = new PDFTextStripper();
-
-                return tStripper.getText( document );
+                String stripperText = tStripper.getText( document );
+                document.close();
+                return Optional.of( stripperText );
             }
+        }catch( IOException e ){
+            LOGGER.warning( "PDF cannot be read" );
+            e.printStackTrace();
         }
-        throw new IOException();
+        return Optional.empty();
     }
 }

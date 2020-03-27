@@ -16,44 +16,45 @@ public class ConfigurationLoader
 {
     private final static Logger LOGGER = getLogger( GLOBAL_LOGGER_NAME );
 
-    private static boolean configurationLoadedSuccessfully = false;
+    private static boolean categoriesConfigurationLoadedSuccessfully = false;
 
-    public static void loadConfiguration(){
+
+    public static void loadConfiguration()
+    {
         LOGGER.info( "Configuration loading" );
 
-        Optional<String> categoriesConfig = readCategoriesFConfigurationJson();
-        Optional<CategoriesConfiguration> categoriesConfiguration =
-            parseCategoriesConfigurationJson( categoriesConfig );
-        setCategoriesConfiguration( categoriesConfiguration );
+        Optional<String> categoriesConfig = readCategoriesConfigurationJson();
+        if( categoriesConfig.isPresent() )
+        {
+            Optional<CategoriesConfiguration> categoriesConfiguration =
+                parseCategoriesConfigurationJson( categoriesConfig.get() );
+            if( categoriesConfiguration.isPresent() )
+            {
+                setCategoriesConfiguration( categoriesConfiguration.get() );
+            }
+        }
 
         LOGGER.info( "Configuration loading has been finished" );
     }
 
 
     private static void setCategoriesConfiguration(
-        Optional<CategoriesConfiguration> categoriesConfiguration )
+        CategoriesConfiguration categoriesConfiguration )
     {
-        if( categoriesConfiguration.isPresent() ){
-            Configuration.setCategoriesConfiguration( categoriesConfiguration.get() );
-            configurationLoadedSuccessfully = true;
-            LOGGER.info( "Categories configuration loading has been finished" );
-        }
+        Configuration.setCategoriesConfiguration( categoriesConfiguration );
+        categoriesConfigurationLoadedSuccessfully = true;
+        LOGGER.info( "Categories configuration loading has been finished" );
     }
 
 
     private static Optional<CategoriesConfiguration> parseCategoriesConfigurationJson(
-        Optional<String> categoriesConfig )
+        String categoriesConfig )
     {
-        Optional<CategoriesConfiguration> categoriesConfiguration = Optional.empty();
-        if( categoriesConfig.isPresent() ){
-            categoriesConfiguration =
-                JsonParser.parseJsonToCategoryConfiguration( categoriesConfig );
-        }
-        return categoriesConfiguration;
+        return JsonParser.parseJsonToCategoryConfiguration( categoriesConfig );
     }
 
 
-    private static Optional<String> readCategoriesFConfigurationJson()
+    private static Optional<String> readCategoriesConfigurationJson()
     {
         Optional<String> categoriesConfig = Optional.empty();
         LOGGER.info( "Categories configuration loading" );
@@ -71,6 +72,6 @@ public class ConfigurationLoader
 
     public static boolean isConfigurationLoadedSuccessfully()
     {
-        return configurationLoadedSuccessfully;
+        return categoriesConfigurationLoadedSuccessfully;
     }
 }

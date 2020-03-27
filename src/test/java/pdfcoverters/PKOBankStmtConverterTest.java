@@ -37,7 +37,7 @@ public class PKOBankStmtConverterTest
     @BeforeAll
     public static void setupSuite()
     {
-        bankStmtConverter = new BankStmtConverterFactory().match( bankName );
+        bankStmtConverter = new BankStmtConverterFactory().match( bankName ).get();
     }
 
 

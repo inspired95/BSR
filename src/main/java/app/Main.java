@@ -14,14 +14,13 @@ import static java.util.logging.Logger.getLogger;
 
 public class Main
 {
+    private final static Logger LOGGER = getLogger( GLOBAL_LOGGER_NAME );
+
 
     public static void main( String[] args )
     {
         startApplication();
     }
-
-
-    private final static Logger LOGGER = getLogger( GLOBAL_LOGGER_NAME );
 
 
     private static void startApplication()
@@ -35,8 +34,20 @@ public class Main
         }
         else
         {
-            JOptionPane.showMessageDialog( null, "", "Error", JOptionPane.ERROR_MESSAGE );
+            reportLoadingConfigErr( getLoadingConfigErrMsg() );
         }
+    }
 
+
+    private static String getLoadingConfigErrMsg()
+    {
+        return "Configuration has not been loaded successfully";
+    }
+
+
+    private static void reportLoadingConfigErr( String errMsg )
+    {
+        LOGGER.warning( errMsg );
+        JOptionPane.showMessageDialog( null, errMsg, "Error", JOptionPane.ERROR_MESSAGE );
     }
 }

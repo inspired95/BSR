@@ -120,7 +120,7 @@ public class PKOOperationTypeResolverTest
 
     private static Stream<Arguments> notCorrectOperationDescriptions()
     {
-        return Stream.of( Arguments.of( "Plasddgnfoasdf" ), Arguments.of( "przelewik" ) );
+        return Stream.of( Arguments.of( "qwertyuiop" ), Arguments.of( "zxcvbnm" ) );
     }
 
 }

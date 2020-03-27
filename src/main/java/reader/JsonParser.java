@@ -19,20 +19,17 @@ public class JsonParser
 
 
     public static Optional<CategoriesConfiguration> parseJsonToCategoryConfiguration(
-        Optional<String> categoryConfigurationJson )
+        String categoryConfigurationJson )
     {
-        if( categoryConfigurationJson.isPresent() )
+        try
         {
-            try
-            {
-                return Optional.of( gson.fromJson( categoryConfigurationJson.get(),
-                    CategoriesConfiguration.class ) );
-            }
-            catch( JsonSyntaxException e )
-            {
-                LOGGER.warning(
-                    "Error while reading categories configuration: " + e.getCause().toString() );
-            }
+            return Optional.of( gson.fromJson( categoryConfigurationJson,
+                CategoriesConfiguration.class ) );
+        }
+        catch( JsonSyntaxException e )
+        {
+            LOGGER.warning(
+                "Error while parsing JSON categories configuration: " + e.getCause().toString() );
         }
         return Optional.empty();
     }

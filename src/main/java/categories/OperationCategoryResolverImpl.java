@@ -1,6 +1,5 @@
 package categories;
 
-import app.Configuration;
 import model.Category;
 
 import java.util.Arrays;
@@ -11,8 +10,11 @@ import static model.Category.OTHER_CATEGORY;
 public class OperationCategoryResolverImpl
     implements OperationCategoryResolver
 {
-    Category[] categories = Configuration.getCategoriesConfiguration().getCategories();
+    Category[] categories;
 
+    public OperationCategoryResolverImpl( Category[] categories ){
+        this.categories = categories;
+    }
 
     @Override
     public Category resolve( String operationDescription )

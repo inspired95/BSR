@@ -1,6 +1,6 @@
 package pdfconverters;
 
-import model.Operation;
+import model.RawOperation;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
@@ -27,11 +27,11 @@ public class PKOBankStmtConverter
 
 
     @Override
-    public List<Operation> convert( String bankStatementPdf )
+    public List<RawOperation> convert( String bankStatementPdf )
     {
         LOGGER.info( "Converting started" );
         String[] bankStmtLines = split( Optional.ofNullable( bankStatementPdf ), "\\r?\\n" );
-        List<Operation> bankStmtEntries = new ArrayList<>();
+        List<RawOperation> bankStmtEntries = new ArrayList<>();
 
         for( int currentLineNumber = 0;
              currentLineNumber < bankStmtLines.length; currentLineNumber++ )
@@ -42,8 +42,8 @@ public class PKOBankStmtConverter
                 String[] splittedFirstLineIntoWords =
                     split( Optional.ofNullable( currentLine ), " " );
 
-                Operation.Builder operationBuilder =
-                    new Operation.Builder( splittedFirstLineIntoWords[1] );
+                RawOperation.Builder operationBuilder =
+                    new RawOperation.Builder( splittedFirstLineIntoWords[1] );
                 operationBuilder.setDate( getDate( splittedFirstLineIntoWords[0] ) );
                 operationBuilder.setType( getOperationTypeDesc( Optional.ofNullable( splittedFirstLineIntoWords ) ) );
                 operationBuilder.setAmount( getAmount( currentLine ) );

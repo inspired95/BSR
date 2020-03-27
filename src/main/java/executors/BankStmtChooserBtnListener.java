@@ -1,14 +1,10 @@
 package executors;
 
-import app.Configuration;
 import exceptions.BankStmtConverterNotFoundException;
 import gui.BankStatementChooser;
-import model.Operation;
-import model.CategoriesConfiguration;
+import model.RawOperation;
 import pdfconverters.BankStmtConverter;
 import pdfconverters.BankStmtConverterFactory;
-import reader.FileReader;
-import reader.JsonParser;
 
 import javax.swing.*;
 import java.awt.*;
@@ -78,7 +74,7 @@ public class BankStmtChooserBtnListener
                     return;
                 }
 
-                List<Operation> convert = bankStmtConverter.convert( bankStmtPdf );
+                List<RawOperation> convert = bankStmtConverter.convert( bankStmtPdf );
             }
         }
         updateGlassPaneVisibility( false );

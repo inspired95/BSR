@@ -3,7 +3,7 @@ package model;
 import java.time.LocalDate;
 
 
-public class Operation
+public class RawOperation
 {
     LocalDate date;
     String ID;
@@ -42,7 +42,7 @@ public class Operation
     }
 
 
-    protected Operation(
+    protected RawOperation(
         LocalDate date, String ID, String type, Double amount, String desc )
     {
         this.date = date;
@@ -156,9 +156,9 @@ public class Operation
         }
 
 
-        public Operation build()
+        public RawOperation build()
         {
-            return new Operation( date, ID, type, amount, desc );
+            return new RawOperation( date, ID, type, amount, desc );
         }
     }
 

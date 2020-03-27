@@ -31,13 +31,19 @@ public class OperationTransformer
         List<Operation> operations = new ArrayList<>();
         for( RawOperation rawOperation : rawOperations )
         {
-            OperationType operationType = operationTypeResolver.resolve( rawOperation.getType() );
-            Category category = operationCategoryResolver.resolve( rawOperation.getDesc() );
-
-            operations.add( new Operation( rawOperation.getID(), rawOperation.getDate(), operationType,
-                rawOperation.getAmount(), category ) );
+            operations.add(transform( rawOperation ));
         }
 
         return operations;
+    }
+
+
+    private Operation transform( RawOperation rawOperation )
+    {
+        OperationType operationType = operationTypeResolver.resolve( rawOperation.getType() );
+        Category category = operationCategoryResolver.resolve( rawOperation.getDesc() );
+
+        return new Operation( rawOperation.getID(), rawOperation.getDate(), operationType,
+            rawOperation.getAmount(), category );
     }
 }

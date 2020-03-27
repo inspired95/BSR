@@ -1,8 +1,6 @@
 package pdfconverters;
 
-import model.BankStmtEntry;
-import operationtype.OperationType;
-import operationtype.OperationTypeResolver;
+import model.Operation;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
@@ -22,21 +20,18 @@ public class PKOBankStmtConverter
 {
     private final static Logger LOGGER = getLogger( GLOBAL_LOGGER_NAME );
 
-    private OperationTypeResolver operationTypeResolver;
 
-
-    public PKOBankStmtConverter( OperationTypeResolver operationTypeResolver )
+    public PKOBankStmtConverter()
     {
-        this.operationTypeResolver = operationTypeResolver;
     }
 
 
     @Override
-    public List<BankStmtEntry> convert( String bankStatementPdf )
+    public List<Operation> convert( String bankStatementPdf )
     {
         LOGGER.info( "Converting started" );
         String[] bankStmtLines = split( Optional.ofNullable( bankStatementPdf ), "\\r?\\n" );
-        List<BankStmtEntry> bankStmtEntries = new ArrayList<>();
+        List<Operation> bankStmtEntries = new ArrayList<>();
 
         for( int currentLineNumber = 0;
              currentLineNumber < bankStmtLines.length; currentLineNumber++ )
@@ -47,22 +42,22 @@ public class PKOBankStmtConverter
                 String[] splittedFirstLineIntoWords =
                     split( Optional.ofNullable( currentLine ), " " );
 
-                BankStmtEntry.Builder bankStmtEntryBuilder =
-                    new BankStmtEntry.Builder( splittedFirstLineIntoWords[1] );
-                bankStmtEntryBuilder.setDate( getDate( splittedFirstLineIntoWords[0] ) );
-                bankStmtEntryBuilder.setType( getType( splittedFirstLineIntoWords ) );
-                bankStmtEntryBuilder.setAmount( getAmount( currentLine ) );
+                Operation.Builder operationBuilder =
+                    new Operation.Builder( splittedFirstLineIntoWords[1] );
+                operationBuilder.setDate( getDate( splittedFirstLineIntoWords[0] ) );
+                operationBuilder.setType( getOperationTypeDesc( Optional.ofNullable( splittedFirstLineIntoWords ) ) );
+                operationBuilder.setAmount( getAmount( currentLine ) );
 
                 currentLineNumber++;
                 String[] splittedSecondLineIntoWords =
                     split( Optional.ofNullable( bankStmtLines[currentLineNumber] ), " " );
 
-                bankStmtEntryBuilder.setDesc(
+                operationBuilder.setDesc(
                     getDescription( currentLineNumber, splittedSecondLineIntoWords,
                         bankStmtLines ) );
 
-                if( bankStmtEntryBuilder.isValid() )
-                    bankStmtEntries.add( bankStmtEntryBuilder.build() );
+                if( operationBuilder.isValid() )
+                    bankStmtEntries.add( operationBuilder.build() );
                 else
                     LOGGER.warning( "Cannot convert entry: \n" + currentLine );
             }
@@ -91,12 +86,6 @@ public class PKOBankStmtConverter
             desc.add( nextLine );
         }
         return desc.toString();
-    }
-
-
-    private OperationType getType( String[] splittedLineIntoWords )
-    {
-        return operationTypeResolver.resolve( getOperationTypeDesc( Optional.ofNullable( splittedLineIntoWords ) ) );
     }
 
 

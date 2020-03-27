@@ -1,11 +1,11 @@
 package pdfconverters;
 
-import model.BankStmtEntry;
+import model.Operation;
 
 import java.util.List;
 
 
 public interface BankStmtConverter
 {
-    List<BankStmtEntry> convert( String statement );
+    List<Operation> convert( String statement );
 }

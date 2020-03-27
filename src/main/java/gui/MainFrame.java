@@ -26,7 +26,7 @@ public class MainFrame
         setup();
         drawBankSelectorComboBox();
         drawBankStmtChooserButton();
-        LOGGER.info( "Main frame loaded" );
+        LOGGER.info( "app.Main frame loaded" );
     }
 
 

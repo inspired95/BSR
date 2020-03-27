@@ -1,7 +1,6 @@
 package pdfcoverters;
 
-import model.BankStmtEntry;
-import operationtype.OperationType;
+import model.Operation;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -11,7 +10,6 @@ import pdfconverters.BankStmtConverter;
 import pdfconverters.BankStmtConverterFactory;
 
 import java.util.List;
-import java.util.Locale;
 import java.util.Optional;
 import java.util.stream.Stream;
 
@@ -53,15 +51,14 @@ public class PKOBankStmtConverterTest
             new PKOBankStmtPdfMock().addEntry( stmtEntryPdfMock ).summarize();
 
         //WHEN
-        List<BankStmtEntry> converted = bankStmtConverter.convert( bankStmtPdfMock.getContent() );
+        List<Operation> converted = bankStmtConverter.convert( bankStmtPdfMock.getContent() );
 
         //THEN
         assertEquals( 1, converted.size() );
-        BankStmtEntry convertedEntry = converted.get( 0 );
+        Operation convertedEntry = converted.get( 0 );
         assertEquals( correctID, convertedEntry.getID() );
         assertEquals(
             parseDate( Optional.of( correctDate ), PKO_DATE_FORMAT ), convertedEntry.getDate() );
-        assertEquals( OperationType.DEBIT_CARD_PAYMENT, convertedEntry.getType() );
         assertEquals(
             getNumberBasedOnLocale( Optional.of( correctAmount ) ).doubleValue(),
             convertedEntry.getAmount() );
@@ -88,7 +85,7 @@ public class PKOBankStmtConverterTest
             new PKOBankStmtPdfMock().addEntry( stmtEntryPdfMock ).summarize();
 
         //WHEN
-        List<BankStmtEntry> converted = bankStmtConverter.convert( bankStmtPdfMock.getContent() );
+        List<Operation> converted = bankStmtConverter.convert( bankStmtPdfMock.getContent() );
 
         //THEN
         assertTrue( converted.isEmpty() );

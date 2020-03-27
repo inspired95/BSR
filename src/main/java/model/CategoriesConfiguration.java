@@ -1,7 +1,7 @@
 package model;
 
 
-public class CategoryConfiguration
+public class CategoriesConfiguration
 {
     Category[] categories;
 }

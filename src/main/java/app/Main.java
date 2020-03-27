@@ -1,10 +1,12 @@
+package app;
+
 import gui.MainFrame;
 
 import javax.swing.*;
-import javax.swing.filechooser.FileSystemView;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import static app.ConfigurationLoader.*;
 import static java.util.logging.Logger.GLOBAL_LOGGER_NAME;
 import static java.util.logging.Logger.getLogger;
 
@@ -25,6 +27,15 @@ public class Main
     {
         LOGGER.setLevel( Level.ALL );
         LOGGER.info( "BSR staring" );
-        SwingUtilities.invokeLater( () -> new MainFrame() );
+        loadConfiguration();
+        if( isConfigurationLoadedSuccessfully() )
+        {
+            SwingUtilities.invokeLater( () -> new MainFrame() );
+        }
+        else
+        {
+            JOptionPane.showMessageDialog(null, "", "Error", JOptionPane.ERROR_MESSAGE);
+        }
+
     }
 }

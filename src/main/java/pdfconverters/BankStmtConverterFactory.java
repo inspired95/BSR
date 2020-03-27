@@ -12,7 +12,7 @@ public class BankStmtConverterFactory
     {
         if( PKO.equals( chosenBank ) )
         {
-            return new PKOBankStmtConverter( new PKOOperationTypeResolver() );
+            return new PKOBankStmtConverter( );
         }
         throw new BankStmtConverterNotFoundException();
     }

@@ -1,15 +1,13 @@
 package model;
 
-import operationtype.OperationType;
-
 import java.time.LocalDate;
 
 
-public class BankStmtEntry
+public class Operation
 {
     LocalDate date;
     String ID;
-    OperationType type;
+    String type;
     Double amount;
     String desc;
 
@@ -26,7 +24,7 @@ public class BankStmtEntry
     }
 
 
-    public OperationType getType()
+    public String getType()
     {
         return type;
     }
@@ -44,8 +42,8 @@ public class BankStmtEntry
     }
 
 
-    protected BankStmtEntry(
-        LocalDate date, String ID, OperationType type, Double amount, String desc )
+    protected Operation(
+        LocalDate date, String ID, String type, Double amount, String desc )
     {
         this.date = date;
         this.ID = ID;
@@ -59,7 +57,7 @@ public class BankStmtEntry
     {
         LocalDate date;
         String ID;
-        OperationType type;
+        String type;
         Double amount;
         String desc;
 
@@ -77,7 +75,7 @@ public class BankStmtEntry
         }
 
 
-        public Builder setType( OperationType type )
+        public Builder setType( String type )
         {
             this.type = type;
             return this;
@@ -110,7 +108,7 @@ public class BankStmtEntry
         }
 
 
-        public OperationType getType()
+        public String getType()
         {
             return type;
         }
@@ -148,7 +146,7 @@ public class BankStmtEntry
 
         private boolean validOperationType()
         {
-            return !type.equals( OperationType.NOT_RESOLVED );
+            return !type.isEmpty();
         }
 
 
@@ -158,9 +156,9 @@ public class BankStmtEntry
         }
 
 
-        public BankStmtEntry build()
+        public Operation build()
         {
-            return new BankStmtEntry( date, ID, type, amount, desc );
+            return new Operation( date, ID, type, amount, desc );
         }
     }
 

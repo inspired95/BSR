@@ -22,7 +22,7 @@ public class OperationCategoryResolverImpl
         for( Category category : categories )
         {
             if( Arrays.stream(category.getKeywords()).parallel().anyMatch(
-                descriptionCaseLowered::contains ) )
+                keyword -> descriptionCaseLowered.contains( keyword.toLowerCase() ) ) )
             return category;
         }
         return OTHER_CATEGORY;

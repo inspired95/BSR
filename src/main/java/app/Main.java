@@ -27,7 +27,7 @@ public class Main
     {
         LOGGER.setLevel( Level.ALL );
         LOGGER.info( "BSR staring" );
-        loadConfiguration();
+        loadConfiguration( true );
         if( isConfigurationLoadedSuccessfully() )
         {
             SwingUtilities.invokeLater( () -> new MainFrame() );

@@ -20,7 +20,7 @@ public class BankStatementChooser
     private void setup()
     {
         setDialogTitle( SELECT_BANK_STATEMENT_TXT );
-        setMultiSelectionEnabled( false );
+        setMultiSelectionEnabled( true );
         setFileSelectionMode( JFileChooser.FILES_ONLY );
         setExtensionFilter();
     }

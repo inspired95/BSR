@@ -53,40 +53,50 @@ public class BankStmtChooserBtnListener
 
         if( status == JFileChooser.APPROVE_OPTION )
         {
-            File selectedFile = bankStatementChooser.getSelectedFile();
+            File[] selectedFiles = bankStatementChooser.getSelectedFiles();
+            //File selectedFile = bankStatementChooser.getSelectedFile();
 
-            LOGGER.info( "Bank of which statement to be converted: " + chosenBank );
-            LOGGER.info( "File to be convert: " + selectedFile );
-            LOGGER.info( "Bank statement reading started" );
-
-            Optional<String> bankStmtPdf = read( selectedFile.getAbsolutePath() );
-
-            LOGGER.info( "Bank statement reading finished" );
-
-            if( bankStmtPdf.isPresent() )
+            for( File selectedFile : selectedFiles )
             {
-                Optional<BankStmtConverter> bankStmtConverter =
-                    new BankStmtConverterFactory().match( chosenBank );
-                if( bankStmtConverter.isPresent() )
-                {
-                    List<RawOperation> rawOperations =
-                        bankStmtConverter.get().convert( bankStmtPdf.get() );
-
-                    Optional<OperationTypeResolver> operationTypeResolver =
-                        new OperationTypeResolverFactory().match( chosenBank );
-
-                    if( !rawOperations.isEmpty() && operationTypeResolver.isPresent() )
-                    {
-                        OperationTransformer transformer = new OperationTransformer(
-                            operationTypeResolver.get(), new OperationCategoryResolverImpl(
-                            getCategoriesConfiguration().getCategories() ) );
-                        this.operations = transformer.transform( rawOperations );
-                    }
-                }
+                handleSelectedBankStmtPdf( selectedFile );
             }
-            root.updateResults( operations );
         }
         updateGlassPaneVisibility( false );
+    }
+
+
+    private void handleSelectedBankStmtPdf( File selectedFile )
+    {
+        LOGGER.info( "Bank of which statement to be converted: " + chosenBank );
+        LOGGER.info( "File to be convert: " + selectedFile );
+        LOGGER.info( "Bank statement reading started" );
+
+        Optional<String> bankStmtPdf = read( selectedFile.getAbsolutePath() );
+
+        LOGGER.info( "Bank statement reading finished" );
+
+        if( bankStmtPdf.isPresent() )
+        {
+            Optional<BankStmtConverter> bankStmtConverter =
+                new BankStmtConverterFactory().match( chosenBank );
+            if( bankStmtConverter.isPresent() )
+            {
+                List<RawOperation> rawOperations =
+                    bankStmtConverter.get().convert( bankStmtPdf.get() );
+
+                Optional<OperationTypeResolver> operationTypeResolver =
+                    new OperationTypeResolverFactory().match( chosenBank );
+
+                if( !rawOperations.isEmpty() && operationTypeResolver.isPresent() )
+                {
+                    OperationTransformer transformer = new OperationTransformer(
+                        operationTypeResolver.get(), new OperationCategoryResolverImpl(
+                        getCategoriesConfiguration().getCategories() ) );
+                    this.operations = transformer.transform( rawOperations );
+                }
+            }
+        }
+        root.updateResults( operations );
     }
 
 

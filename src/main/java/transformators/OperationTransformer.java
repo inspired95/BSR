@@ -1,8 +1,6 @@
 package transformators;
 
-import app.Configuration;
 import categories.OperationCategoryResolver;
-import categories.OperationCategoryResolverImpl;
 import model.Category;
 import model.Operation;
 import model.RawOperation;
@@ -11,30 +9,41 @@ import operationtype.OperationTypeResolver;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
+
+import static java.util.List.of;
+import static java.util.logging.Logger.GLOBAL_LOGGER_NAME;
+import static java.util.logging.Logger.getLogger;
 
 
 public class OperationTransformer
 {
+    private final static Logger LOGGER = getLogger( GLOBAL_LOGGER_NAME );
+
     private OperationTypeResolver operationTypeResolver;
     private OperationCategoryResolver operationCategoryResolver;
 
 
-    public OperationTransformer( OperationTypeResolver operationTypeResolver, Category[] categories )
+    public OperationTransformer( OperationTypeResolver operationTypeResolver,
+                                 OperationCategoryResolver operationCategoryResolver )
     {
         this.operationTypeResolver = operationTypeResolver;
-        this.operationCategoryResolver = new OperationCategoryResolverImpl( categories );
+        this.operationCategoryResolver = operationCategoryResolver;
     }
 
 
     public List<Operation> transform( List<RawOperation> rawOperations )
     {
-        List<Operation> operations = new ArrayList<>();
-        for( RawOperation rawOperation : rawOperations )
-        {
-            operations.add(transform( rawOperation ));
+        if( rawOperations != null){
+            List<Operation> operations = new ArrayList<>();
+            for( RawOperation rawOperation : rawOperations )
+            {
+                operations.add(transform( rawOperation ));
+            }
+            return operations;
         }
-
-        return operations;
+        LOGGER.warning( "Cannot transform null" );
+        return of();
     }
 
 

@@ -24,8 +24,9 @@ public class OperationTransformer
     private OperationCategoryResolver operationCategoryResolver;
 
 
-    public OperationTransformer( OperationTypeResolver operationTypeResolver,
-                                 OperationCategoryResolver operationCategoryResolver )
+    public OperationTransformer(
+        OperationTypeResolver operationTypeResolver,
+        OperationCategoryResolver operationCategoryResolver )
     {
         this.operationTypeResolver = operationTypeResolver;
         this.operationCategoryResolver = operationCategoryResolver;
@@ -34,11 +35,12 @@ public class OperationTransformer
 
     public List<Operation> transform( List<RawOperation> rawOperations )
     {
-        if( rawOperations != null){
+        if( rawOperations != null )
+        {
             List<Operation> operations = new ArrayList<>();
             for( RawOperation rawOperation : rawOperations )
             {
-                operations.add(transform( rawOperation ));
+                operations.add( transform( rawOperation ) );
             }
             return operations;
         }

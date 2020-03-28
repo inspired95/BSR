@@ -28,8 +28,8 @@ public class OperationTypeResolverFactory
 
     private String getErrorMessage( String chosenBank )
     {
-        return new StringJoiner( " " ).add( "Cannot match operation type resolver for" ).add( chosenBank )
-            .toString();
+        return new StringJoiner( " " ).add( "Cannot match operation type resolver for" )
+            .add( chosenBank ).toString();
     }
 
 

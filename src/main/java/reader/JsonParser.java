@@ -23,13 +23,12 @@ public class JsonParser
     {
         try
         {
-            return Optional.of( gson.fromJson( categoryConfigurationJson,
-                CategoriesConfiguration.class ) );
+            return Optional
+                .of( gson.fromJson( categoryConfigurationJson, CategoriesConfiguration.class ) );
         }
         catch( JsonSyntaxException | NullPointerException e )
         {
-            LOGGER.warning(
-                "Error while parsing JSON categories configuration"  );
+            LOGGER.warning( "Error while parsing JSON categories configuration" );
         }
         return Optional.empty();
     }

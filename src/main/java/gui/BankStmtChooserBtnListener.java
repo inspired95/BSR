@@ -1,5 +1,6 @@
 package gui;
 
+import categories.OperationCategoryResolverImpl;
 import model.Operation;
 import model.RawOperation;
 import operationtype.OperationTypeResolver;
@@ -9,11 +10,12 @@ import pdfconverters.BankStmtConverterFactory;
 import transformators.OperationTransformer;
 
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.logging.Logger;
@@ -30,7 +32,7 @@ public class BankStmtChooserBtnListener
     private final static Logger LOGGER = getLogger( GLOBAL_LOGGER_NAME );
 
     private String chosenBank;
-    private JFrame root;
+    private MainFrame root;
 
     private List<Operation> operations;
 
@@ -38,7 +40,7 @@ public class BankStmtChooserBtnListener
     public BankStmtChooserBtnListener( String chosenBank, JFrame root )
     {
         this.chosenBank = chosenBank;
-        this.root = root;
+        this.root = (MainFrame)root;
     }
 
 
@@ -65,7 +67,6 @@ public class BankStmtChooserBtnListener
             {
                 Optional<BankStmtConverter> bankStmtConverter =
                     new BankStmtConverterFactory().match( chosenBank );
-
                 if( bankStmtConverter.isPresent() )
                 {
                     List<RawOperation> rawOperations =
@@ -74,20 +75,18 @@ public class BankStmtChooserBtnListener
                     Optional<OperationTypeResolver> operationTypeResolver =
                         new OperationTypeResolverFactory().match( chosenBank );
 
-                    if( operationTypeResolver.isPresent() ){
-                        OperationTransformer transformer =
-                            new OperationTransformer( operationTypeResolver.get(),
-                                getCategoriesConfiguration().getCategories() );
+                    if( !rawOperations.isEmpty() && operationTypeResolver.isPresent() )
+                    {
+                        OperationTransformer transformer = new OperationTransformer(
+                            operationTypeResolver.get(), new OperationCategoryResolverImpl(
+                            getCategoriesConfiguration().getCategories() ) );
                         this.operations = transformer.transform( rawOperations );
                     }
                 }
             }
+            root.updateResults( operations );
         }
         updateGlassPaneVisibility( false );
-    }
-
-    public List<Operation> getOperations(){
-        return this.operations;
     }
 
 

@@ -17,14 +17,18 @@ public class OperationCategoryResolverImpl
 
     private Category[] categories;
 
-    public OperationCategoryResolverImpl( Category[] categories ){
+
+    public OperationCategoryResolverImpl( Category[] categories )
+    {
         this.categories = categories;
     }
+
 
     @Override
     public Category resolve( String operationDescription )
     {
-        if( operationDescription == null || operationDescription.isEmpty() ){
+        if( operationDescription == null || operationDescription.isEmpty() )
+        {
             LOGGER.info( "Operation description is null or empty" );
             return OTHER_CATEGORY;
         }

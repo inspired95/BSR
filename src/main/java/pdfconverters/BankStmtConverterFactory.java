@@ -1,6 +1,5 @@
 package pdfconverters;
 
-import javax.swing.*;
 import java.util.Optional;
 import java.util.StringJoiner;
 import java.util.logging.Logger;
@@ -21,18 +20,14 @@ public class BankStmtConverterFactory
         {
             return Optional.of( new PKOBankStmtConverter() );
         }
-        reportError( getErrorMessage( chosenBank ) );
+        LOGGER.warning( getErrorMessage( chosenBank ) );
         return Optional.empty();
     }
 
-    private String getErrorMessage( String chosenBank ){
+
+    private String getErrorMessage( String chosenBank )
+    {
         return new StringJoiner( " " ).add( "Cannot match bank statement converter for" )
             .add( chosenBank ).toString();
     }
-
-    private void reportError( String errorMessage ){
-        LOGGER.warning( errorMessage );
-        JOptionPane.showMessageDialog( null, errorMessage, "Error", JOptionPane.ERROR_MESSAGE );
-    }
-
 }

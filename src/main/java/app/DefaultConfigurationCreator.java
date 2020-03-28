@@ -24,7 +24,7 @@ public class DefaultConfigurationCreator
         try (InputStream defaultConfigurationStream = DefaultConfigurationCreator.class
             .getResourceAsStream( "/defaultCategoryConfiguration.json" ))
         {
-            checkDirectory();
+            createDirectoryIfNeeded();
 
             File categoriesConfigurationFile =
                 new File( CONFIGURATION_PATH, CATEGORIES_CONFIGURATION_FILE_NAME );
@@ -40,7 +40,7 @@ public class DefaultConfigurationCreator
     }
 
 
-    private static void checkDirectory()
+    private static void createDirectoryIfNeeded()
     {
         File bsrConfigurationDirectory = new File( CONFIGURATION_PATH );
         if( !bsrConfigurationDirectory.exists() )

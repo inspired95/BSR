@@ -17,6 +17,7 @@ public class PDFReader
 {
     private final static Logger LOGGER = getLogger( GLOBAL_LOGGER_NAME );
 
+
     public static Optional<String> read( String path )
     {
         try
@@ -32,7 +33,9 @@ public class PDFReader
                 document.close();
                 return Optional.of( stripperText );
             }
-        }catch( IOException e ){
+        }
+        catch( IOException e )
+        {
             LOGGER.warning( "PDF cannot be read" );
             e.printStackTrace();
         }

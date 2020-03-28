@@ -1,11 +1,10 @@
 package app;
 
-import org.apache.commons.io.FileUtils;
-
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.file.Paths;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 import java.util.logging.Logger;
 
 import static java.util.logging.Logger.GLOBAL_LOGGER_NAME;
@@ -18,21 +17,35 @@ public class DefaultConfigurationCreator
 {
     private final static Logger LOGGER = getLogger( GLOBAL_LOGGER_NAME );
 
+
     public static void createDefaultCategoriesConfiguration()
     {
         LOGGER.info( "Attempt to create default categories configuration file" );
-        try (InputStream resourceAsStream = DefaultConfigurationCreator.class
-            .getResourceAsStream( "/defaultCategoryConfiguration.json" )) {
+        try (InputStream defaultConfigurationStream = DefaultConfigurationCreator.class
+            .getResourceAsStream( "/defaultCategoryConfiguration.json" ))
+        {
+            checkDirectory();
 
-            File file = new File( Paths.get( CONFIGURATION_PATH,
-                CATEGORIES_CONFIGURATION_FILE_NAME ).toString());
+            File categoriesConfigurationFile =
+                new File( CONFIGURATION_PATH, CATEGORIES_CONFIGURATION_FILE_NAME );
 
-            FileUtils.copyInputStreamToFile(resourceAsStream, file);
+            Files.copy( defaultConfigurationStream, categoriesConfigurationFile.toPath(),
+                StandardCopyOption.REPLACE_EXISTING );
         }
         catch( IOException e )
         {
-            LOGGER.warning( "Error during an attempt to create default categories configuration " +
-                "file" );
+            LOGGER.warning(
+                "Error during an attempt to create default categories configuration " + "file" );
+        }
+    }
+
+
+    private static void checkDirectory()
+    {
+        File bsrConfigurationDirectory = new File( CONFIGURATION_PATH );
+        if( !bsrConfigurationDirectory.exists() )
+        {
+            bsrConfigurationDirectory.mkdir();
         }
     }
 }

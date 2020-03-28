@@ -3,13 +3,14 @@ package app;
 import model.CategoriesConfiguration;
 import reader.JsonParser;
 
+import javax.swing.*;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.Optional;
 import java.util.logging.Logger;
 
-import static app.DefaultConfigurationCreator.*;
+import static app.DefaultConfigurationCreator.createDefaultCategoriesConfiguration;
 import static java.util.logging.Logger.GLOBAL_LOGGER_NAME;
 import static java.util.logging.Logger.getLogger;
 import static reader.FileReader.readCategoriesConfigJson;
@@ -35,7 +36,8 @@ public class ConfigurationLoader
     private static void loadCategoriesConfiguration( Boolean isFirstConfigurationLoadingAttempt )
     {
         LOGGER.info( "Categories configuration loading" );
-        if( checkIfCategoriesConfigurationExists() ){
+        if( checkIfCategoriesConfigurationExists() )
+        {
             Optional<String> categoriesConfig = readCategoriesConfigurationJson();
             if( categoriesConfig.isPresent() )
             {
@@ -47,11 +49,21 @@ public class ConfigurationLoader
                 }
             }
             LOGGER.info( "Configuration loading has been finished" );
-        }else if( isFirstConfigurationLoadingAttempt ){
+        }
+        else if( isFirstConfigurationLoadingAttempt )
+        {
             LOGGER.info( "Categories configuration does not exist" );
-            createDefaultCategoriesConfiguration();
-            loadCategoriesConfiguration( false );
-        }else {
+            int input = JOptionPane.showConfirmDialog(
+                null, "Categories configuration does not exist! \nThe default configuration" +
+                    " will be created...", "Are you agree?", JOptionPane.YES_NO_OPTION );
+            if( input == 0 )
+            {
+                createDefaultCategoriesConfiguration();
+                loadCategoriesConfiguration( false );
+            }
+        }
+        else
+        {
             LOGGER.warning( "Categories configuration cannot be loaded" );
         }
     }
@@ -93,9 +105,11 @@ public class ConfigurationLoader
         return categoriesConfigurationLoadedSuccessfully;
     }
 
-    private static boolean checkIfCategoriesConfigurationExists(){
-        File categoriesConfigurationFile = new File( Paths.get( CONFIGURATION_PATH,
-            CATEGORIES_CONFIGURATION_FILE_NAME ).toString());
+
+    private static boolean checkIfCategoriesConfigurationExists()
+    {
+        File categoriesConfigurationFile = new File(
+            Paths.get( CONFIGURATION_PATH, CATEGORIES_CONFIGURATION_FILE_NAME ).toString() );
         return categoriesConfigurationFile.exists();
     }
 }

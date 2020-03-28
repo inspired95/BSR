@@ -35,6 +35,7 @@ public class Main
         else
         {
             reportLoadingConfigErr( getLoadingConfigErrMsg() );
+            System.exit(-1);
         }
     }
 

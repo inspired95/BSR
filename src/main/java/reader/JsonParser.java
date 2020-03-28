@@ -26,10 +26,10 @@ public class JsonParser
             return Optional.of( gson.fromJson( categoryConfigurationJson,
                 CategoriesConfiguration.class ) );
         }
-        catch( JsonSyntaxException e )
+        catch( JsonSyntaxException | NullPointerException e )
         {
             LOGGER.warning(
-                "Error while parsing JSON categories configuration: " + e.getCause().toString() );
+                "Error while parsing JSON categories configuration"  );
         }
         return Optional.empty();
     }

@@ -22,6 +22,7 @@ public class Constants
     public static final String MOBILE_CODE_PAYMENT_RESOLVER_TXT_PL = "KOD MOBILNY";
     public static final String CASH_WITHDRAWAL = "WYPŁATA W BANKOMACIE";
     public static final String COMMISSION = "PROWIZJA";
+    public static final String REFUND = "ZWROT TOWARU";
 
     public static final String PKO = "PKO";
     public static final String PKO_BANK_STMT_BALANCE_SUMMARY_TXT = "Saldo końcowe";

@@ -31,6 +31,12 @@ public class PKOOperationTypeResolver
             return OperationType.CASH_WITHDRAWAL;
         else if( typeOperationDesc.contains( COMMISSION ) )
             return OperationType.COMMISSION;
+        else if( typeOperationDesc.contains( REFUND ) ){
+            return OperationType.REFUND;
+        }
+        System.out.println(
+            typeOperationDesc
+        );
         LOGGER.warning( "Operation type can not be resolved" );
         return OperationType.NOT_RESOLVED;
     }

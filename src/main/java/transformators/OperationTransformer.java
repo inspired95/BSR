@@ -14,6 +14,8 @@ import java.util.logging.Logger;
 import static java.util.List.of;
 import static java.util.logging.Logger.GLOBAL_LOGGER_NAME;
 import static java.util.logging.Logger.getLogger;
+import static model.Category.OTHER_CATEGORY;
+import static operationtype.OperationType.INCOME_TRANSFER;
 
 
 public class OperationTransformer
@@ -53,6 +55,11 @@ public class OperationTransformer
     {
         OperationType operationType = operationTypeResolver.resolve( rawOperation.getType() );
         Category category = operationCategoryResolver.resolve( rawOperation.getDesc() );
+        if( category.getCategoryName().equals( OTHER_CATEGORY.getCategoryName() ) &&
+            operationType.equals( INCOME_TRANSFER ) )
+        {
+            LOGGER.info( "Cannot resolve category of\n" + rawOperation.getDesc() );
+        }
 
         return new Operation( rawOperation.getID(), rawOperation.getDate(), operationType,
             rawOperation.getAmount(), category );

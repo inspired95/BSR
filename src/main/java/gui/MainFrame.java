@@ -1,6 +1,7 @@
 package gui;
 
 import model.Operation;
+import operationtype.OperationType;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;

@@ -1,5 +1,8 @@
 package utils;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.text.NumberFormat;
 import java.text.ParseException;
 import java.time.LocalDate;
@@ -11,6 +14,7 @@ import java.util.logging.Logger;
 
 import static java.util.logging.Logger.GLOBAL_LOGGER_NAME;
 import static java.util.logging.Logger.getLogger;
+import static utils.Constants.*;
 
 
 public class Util
@@ -119,5 +123,17 @@ public class Util
         LOGGER.warning( "Cannot combine nulls" );
         return "";
 
+    }
+
+    public static void writeHtmlReport( String content){
+        try
+        {
+            Files.write( Paths.get(CONFIGURATION_PATH,REPORT+LocalDate.now()+HTML_EXTENSION),
+                content.getBytes());
+        }
+        catch( IOException e )
+        {
+            e.printStackTrace();
+        }
     }
 }

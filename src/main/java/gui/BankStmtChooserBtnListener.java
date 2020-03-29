@@ -54,7 +54,6 @@ public class BankStmtChooserBtnListener
         if( status == JFileChooser.APPROVE_OPTION )
         {
             File[] selectedFiles = bankStatementChooser.getSelectedFiles();
-            //File selectedFile = bankStatementChooser.getSelectedFile();
 
             for( File selectedFile : selectedFiles )
             {
@@ -93,6 +92,7 @@ public class BankStmtChooserBtnListener
                         operationTypeResolver.get(), new OperationCategoryResolverImpl(
                         getCategoriesConfiguration().getCategories() ) );
                     this.operations = transformer.transform( rawOperations );
+                    root.updateSources( selectedFile.getName() );
                 }
             }
         }

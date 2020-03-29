@@ -36,5 +36,9 @@ public class Constants
     public static final String CONFIGURATION_PATH =
         Paths.get( System.getProperty( "user.home" ), BSR ).toString();
 
+    public static final String REPORT = "Report";
+
+    public static final String HTML_EXTENSION = ".html";
+
     public static final String CATEGORIES_CONFIGURATION_FILE_NAME = "categoryConfiguration.json";
 }

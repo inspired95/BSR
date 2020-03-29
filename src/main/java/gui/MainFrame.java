@@ -26,33 +26,24 @@ public class MainFrame
     private JLabel selectBankLbl;
     private JComboBox selectBankComboBox;
     private JTable table;
+    private JTextArea sourcesArea;
 
     private Set<Operation> allOperations;
+    private Set<String> sources;
 
 
     public MainFrame()
     {
         allOperations = new HashSet<>();
+        sources = new HashSet<>();
         setup();
-        drawTable();
+        drawOperationsTable();
         drawBankSelectorComboBox();
         drawBankStmtChooserButton();
+        drawGenerateReportButton();
+        drawSources();
         pack();
         LOGGER.info( "app.Main frame loaded" );
-    }
-
-
-    private void drawTable()
-    {
-        DefaultTableModel model = new DefaultTableModel();
-        model.addColumn( "Type" );
-        model.addColumn( "Category" );
-        model.addColumn( "Amount" );
-        table = new JTable( model );
-
-        table.setBounds( 30, 40, 200, 300 );
-        JScrollPane sp = new JScrollPane( table );
-        add( sp );
     }
 
 
@@ -65,11 +56,35 @@ public class MainFrame
     }
 
 
+    private void drawOperationsTable()
+    {
+        DefaultTableModel model = new DefaultTableModel();
+        model.addColumn( "Date" );
+        model.addColumn( "Type" );
+        model.addColumn( "Category" );
+        model.addColumn( "Amount" );
+        table = new JTable( model );
+        table.setAutoCreateRowSorter( true );
+        table.setBounds( 30, 40, 200, 300 );
+        JScrollPane sp = new JScrollPane( table );
+        add( sp );
+    }
+
+
     private void drawBankStmtChooserButton()
     {
         openBankStmtChooserBtn = new JButton( SELECT_BANK_STATEMENT_TXT );
         openBankStmtChooserBtn.addActionListener(
             new BankStmtChooserBtnListener( (String)selectBankComboBox.getSelectedItem(), this ) );
+        add( openBankStmtChooserBtn );
+    }
+
+
+    private void drawGenerateReportButton()
+    {
+        openBankStmtChooserBtn = new JButton( "Generate report" );
+        openBankStmtChooserBtn
+            .addActionListener( new GenerateReportActionListener( allOperations, sources ) );
         add( openBankStmtChooserBtn );
     }
 
@@ -83,9 +98,12 @@ public class MainFrame
     }
 
 
-    public JTable getTable()
+    public void drawSources()
     {
-        return table;
+        sourcesArea = new JTextArea();
+        sourcesArea.setBounds( 10, 30, 200, 200 );
+        sourcesArea.setToolTipText( "Sources" );
+        add( sourcesArea );
     }
 
 
@@ -96,16 +114,25 @@ public class MainFrame
         for( Operation operation : operations )
         {
             boolean added = allOperations.add( operation );
-            if( added ) toAppendInTable.add( operation );
+            if( added )
+                toAppendInTable.add( operation );
         }
 
         for( Operation operation : toAppendInTable )
         {
-            tableModel.addRow(
-                new Object[] { operation.getType(), operation.getCategory().getCategoryName(),
-                               operation.getAmount() } );
+            tableModel.addRow( new Object[] { operation.getDate(), operation.getType(),
+                                              operation.getCategory().getCategoryName(),
+                                              operation.getAmount() } );
         }
         pack();
+    }
+
+
+    public void updateSources( String selectedFile )
+    {
+        sources.add( selectedFile );
+        if( !sourcesArea.getText().contains( selectedFile ) )
+            sourcesArea.append( selectedFile + "\n" );
     }
 
 }

@@ -71,7 +71,7 @@ public class OperationTransformerTest
 
     private Category createCategoryMock(){
         Category category = mock( Category.class );
-        expect( category.getCategoryName() ).andReturn( "CATEGORY_MOCK" );
+        expect( category.getCategoryName() ).andReturn( "CATEGORY_MOCK" ).anyTimes();
         expect( category.getKeywords() ).andReturn( new String[]{} );
         replay( category );
         return category;

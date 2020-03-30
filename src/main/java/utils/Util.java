@@ -1,7 +1,9 @@
 package utils;
 
+import javax.swing.*;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.NumberFormat;
 import java.text.ParseException;
@@ -125,15 +127,16 @@ public class Util
 
     }
 
-    public static void writeHtmlReport( String content){
-        try
-        {
-            Files.write( Paths.get(CONFIGURATION_PATH,REPORT+LocalDate.now()+HTML_EXTENSION),
-                content.getBytes());
-        }
-        catch( IOException e )
-        {
-            e.printStackTrace();
-        }
+    public static void writeHtmlReport( String content, Path path) throws IOException
+    {
+            Files.write( path, content.getBytes());
+    }
+
+    public static void showError(String msg){
+        JOptionPane.showMessageDialog( null, msg, "Error", JOptionPane.ERROR_MESSAGE );
+    }
+
+    public static void showInformation(String msg){
+        JOptionPane.showMessageDialog( null, msg, "Information", JOptionPane.INFORMATION_MESSAGE );
     }
 }

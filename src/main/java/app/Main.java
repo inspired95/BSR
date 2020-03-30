@@ -10,6 +10,7 @@ import static app.ConfigurationLoader.isConfigurationLoadedSuccessfully;
 import static app.ConfigurationLoader.loadConfiguration;
 import static java.util.logging.Logger.GLOBAL_LOGGER_NAME;
 import static java.util.logging.Logger.getLogger;
+import static utils.Util.showError;
 
 
 public class Main
@@ -49,6 +50,6 @@ public class Main
     private static void reportLoadingConfigErr( String errMsg )
     {
         LOGGER.warning( errMsg );
-        JOptionPane.showMessageDialog( null, errMsg, "Error", JOptionPane.ERROR_MESSAGE );
+        showError(errMsg);
     }
 }

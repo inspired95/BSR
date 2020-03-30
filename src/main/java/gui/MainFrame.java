@@ -1,7 +1,6 @@
 package gui;
 
 import model.Operation;
-import operationtype.OperationType;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -25,8 +24,8 @@ public class MainFrame
     private JButton openBankStmtChooserBtn;
     private JLabel selectBankLbl;
     private JComboBox selectBankComboBox;
-    private JTable table;
-    private JTextArea sourcesArea;
+    private JTable operationsTable;
+    private JTable sourcesTable;
 
     private Set<Operation> allOperations;
     private Set<String> sources;
@@ -63,10 +62,11 @@ public class MainFrame
         model.addColumn( "Type" );
         model.addColumn( "Category" );
         model.addColumn( "Amount" );
-        table = new JTable( model );
-        table.setAutoCreateRowSorter( true );
-        table.setBounds( 30, 40, 200, 300 );
-        JScrollPane sp = new JScrollPane( table );
+        operationsTable = new JTable( model );
+        operationsTable.setAutoCreateRowSorter( true );
+        operationsTable.setBounds( 30, 40, 200, 300 );
+        operationsTable.setToolTipText( "Operations" );
+        JScrollPane sp = new JScrollPane( operationsTable );
         add( sp );
     }
 
@@ -100,16 +100,20 @@ public class MainFrame
 
     public void drawSources()
     {
-        sourcesArea = new JTextArea();
-        sourcesArea.setBounds( 10, 30, 200, 200 );
-        sourcesArea.setToolTipText( "Sources" );
-        add( sourcesArea );
+        DefaultTableModel model = new DefaultTableModel();
+        model.addColumn( "Source" );
+        sourcesTable = new JTable( model );
+        sourcesTable.setAutoCreateRowSorter( true );
+        sourcesTable.setBounds( 30, 40, 200, 100 );
+        sourcesTable.setToolTipText( "Sources" );
+        JScrollPane sp = new JScrollPane( sourcesTable );
+        add( sp );
     }
 
 
     public void updateResults( List<Operation> operations )
     {
-        DefaultTableModel tableModel = (DefaultTableModel)table.getModel();
+        DefaultTableModel tableModel = (DefaultTableModel)operationsTable.getModel();
         List<Operation> toAppendInTable = new ArrayList<>();
         for( Operation operation : operations )
         {
@@ -131,8 +135,13 @@ public class MainFrame
     public void updateSources( String selectedFile )
     {
         sources.add( selectedFile );
-        if( !sourcesArea.getText().contains( selectedFile ) )
-            sourcesArea.append( selectedFile + "\n" );
+
+        DefaultTableModel tableModel = (DefaultTableModel)sourcesTable.getModel();
+        tableModel.setRowCount( 0 );
+        for( String source : sources )
+        {
+            tableModel.addRow( new Object[] { source } );
+        }
     }
 
 }

@@ -21,7 +21,9 @@ public class MainFrame
 
     private JButton openBankStmtChooserBtn;
     private JLabel selectBankLbl;
+    private JLabel selectReportComparatorLbl;
     private JComboBox selectBankComboBox;
+    private JComboBox selectReportComparatorComboBox;
     private JTable operationsTable;
     private JTable sourcesTable;
 
@@ -36,6 +38,7 @@ public class MainFrame
         setup();
         drawOperationsTable();
         drawBankSelectorComboBox();
+        drawReportComparatorComboBox();
         drawBankStmtChooserButton();
         drawGenerateReportButton();
         drawSources();
@@ -93,6 +96,14 @@ public class MainFrame
         add( selectBankLbl );
         selectBankComboBox = new JComboBox( new String[] { PKO } );
         add( selectBankComboBox );
+    }
+
+    private void drawReportComparatorComboBox(){
+        selectReportComparatorLbl = new JLabel( "Report's operations list sorting by:" );
+        add( selectReportComparatorLbl );
+        selectReportComparatorComboBox = new JComboBox( new String[]{"Date", "Amount", "Operation" +
+            " type", "Category"} );
+        add( selectReportComparatorComboBox );
     }
 
 

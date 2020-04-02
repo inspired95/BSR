@@ -2,7 +2,7 @@ package gui;
 
 import model.Operation;
 import utils.Util;
-import webreport.html.OperationTableGenerator;
+import webreport.html.OperationReportGenerator;
 import webreport.html.OperationsStatistics;
 
 import java.awt.event.ActionEvent;
@@ -42,15 +42,22 @@ public class GenerateReportActionListener
     public void actionPerformed( ActionEvent e )
     {
         LOGGER.info( "Report saving started" );
-        if( allOperations.isEmpty() || sources.isEmpty() ){
-            LOGGER.warning( "There is no data to report" );
-            showError( "There is no data to report" );
+        if( allOperations.isEmpty() || sources.isEmpty() )
+        {
+            LOGGER.warning( "There is no data to save" );
+            showError( "There is no data to save" );
             return;
         }
 
-        String report = new OperationTableGenerator( new ArrayList<>( allOperations ),
-            new ArrayList<>( sources ),
-            new OperationsStatistics( new ArrayList<>( allOperations ) ) ).generate();
+        OperationsStatistics operationsStatistics =
+            new OperationsStatistics( new ArrayList<>( allOperations ) );
+
+        OperationReportGenerator reportGenerator =
+            new OperationReportGenerator( new ArrayList<>( allOperations ),
+                new ArrayList<>( sources ), operationsStatistics );
+
+        String report = reportGenerator.generateHtml();
+
         Path path = Paths.get( CONFIGURATION_PATH, REPORT + LocalDate.now() + HTML_EXTENSION );
 
         try

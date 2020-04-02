@@ -4,10 +4,7 @@ import j2html.tags.ContainerTag;
 import model.Operation;
 import operationtype.OperationType;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Predicate;
 
 import static j2html.TagCreator.*;
@@ -31,43 +28,68 @@ public class OperationTableGenerator
     }
 
 
-    public String generate()
+    public ContainerTag generateSourcesTable()
     {
-        StringBuilder page = new StringBuilder();
-        page.append( generateHeader( "Incomes summary" ) );
-        page.append( generateStatisticTable( operationsStatistics.getIncomes() ) );
-        page.append( generateOperationsSum( operationsStatistics.getIncomeSum() ) );
-        page.append( generateHeader( "Expenses summary" ) );
-        page.append( generateStatisticTable( operationsStatistics.getExpenses() ) );
-        page.append( generateOperationsSum( operationsStatistics.getExpensesSum() ) );
-        page.append( generateHeader( "Not resolved operations summary" ) );
-        page.append( generateStatisticTable( operationsStatistics.getNotResolvedOperations() ) );
-        page.append( generateOperationsSum( operationsStatistics.getNotResolvedSum() ) );
-        page.append( generateHeader( "Incomes list" ) );
-        page.append( generateOperations( this::isIncome ) );
-        page.append( generateHeader( "Expenses list" ) );
-        page.append( generateOperations( this::isExpense ) );
-        page.append( generateHeader( "Not resolved operations list" ) );
-        page.append( generateOperations( this::isNotResolved ) );
-        page.append( generateHeader( "Sources: " ) );
-        page.append( generateSources() );
-        return page.toString();
+        return div( generateHeader( "Sources: " ), generateSources() );
     }
 
 
-    private String generateHeader( String text )
+    public ContainerTag generateNotResolvedOperationsTable()
     {
-        return h1( text ).render();
+        return div( generateHeader( "Not resolved operations list" ),
+            generateOperations( this::isNotResolved ) );
     }
 
 
-    private String generateOperationsSum( Double value )
+    public ContainerTag generateExpensesOperationsTable()
     {
-        return h2( "Sum: " + value ).render();
+        return div( generateHeader( "Expenses list" ), generateOperations( this::isExpense ) );
     }
 
 
-    private String generateStatisticTable( Map<String, Double> map )
+    public ContainerTag generateIncomesOperationsTable()
+    {
+        return div( generateHeader( "Incomes list" ), generateOperations( this::isIncome ) );
+    }
+
+
+    public ContainerTag generateNotResolvedStatisticsTable()
+    {
+        return div( generateHeader( "Not resolved operations summary" ),
+            generateStatisticTable( operationsStatistics.getNotResolvedOperations() ),
+            generateOperationsSum( operationsStatistics.getNotResolvedSum() ) );
+    }
+
+
+    public ContainerTag generateExpensesStatisticsTable()
+    {
+        return div( generateHeader( "Expenses summary" ),
+            generateStatisticTable( operationsStatistics.getExpenses() ),
+            generateOperationsSum( operationsStatistics.getExpensesSum() ) );
+    }
+
+
+    public ContainerTag generateIncomesStatisticsTable()
+    {
+        return div( generateHeader( "Incomes summary" ),
+            generateStatisticTable( operationsStatistics.getIncomes() ),
+            generateOperationsSum( operationsStatistics.getIncomeSum() ) );
+    }
+
+
+    private ContainerTag generateHeader( String text )
+    {
+        return h1( text );
+    }
+
+
+    private ContainerTag generateOperationsSum( Double value )
+    {
+        return h2( "Sum: " + String.format( "%.2f", value) );
+    }
+
+
+    private ContainerTag generateStatisticTable( Map<String, Double> map )
     {
         Set<String> categories = map.keySet();
         Collection<Double> categoriesSums = map.values();
@@ -83,30 +105,31 @@ public class OperationTableGenerator
         {
             sums.with( td().with( span( String.format( "%.2f", categorySum ) ) ) );
         }
-        return table().with( header ).with( sums ).render();
+        return table().with( thead( header ) ).with( sums );
     }
 
 
-    private String generateOperations( Predicate<Operation> predicate )
+    private ContainerTag generateOperations( Predicate<Operation> predicate )
     {
         ContainerTag table = table().with( generateOperationsTableHeader() );
+        sortOperationByDate();
         for( Operation operation : operations )
         {
             if( predicate.test( operation ) )
                 table.with( generateContent( operation ) );
         }
-        return table.render();
+        return table;
     }
 
 
-    private String generateSources()
+    private ContainerTag generateSources()
     {
         ContainerTag sourceContainer = ul();
         for( String source : sources )
         {
             sourceContainer.with( li( source ) );
         }
-        return sourceContainer.render();
+        return sourceContainer;
     }
 
 
@@ -146,8 +169,12 @@ public class OperationTableGenerator
 
     private ContainerTag generateOperationsTableHeader()
     {
-        return tr().with( td().with( span( "ID" ) ), td().with( span( "Date" ) ),
+        return thead(tr().with( td().with( span( "ID" ) ), td().with( span( "Date" ) ),
             td().with( span( "Operation Type" ) ), td().with( span( "Category" ) ),
-            td().with( span( "Amount" ) ) );
+            td().with( span( "Amount" ) ) ));
+    }
+
+    private void sortOperationByDate(){
+        Collections.sort( operations, new Operation.OperationDateComparator() );
     }
 }

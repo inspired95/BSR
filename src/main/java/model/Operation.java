@@ -3,10 +3,11 @@ package model;
 import operationtype.OperationType;
 
 import java.time.LocalDate;
+import java.util.Comparator;
 import java.util.Objects;
 
 
-public class Operation
+public class Operation implements Comparable<Operation>
 {
     private String ID;
     private LocalDate date;
@@ -104,5 +105,21 @@ public class Operation
     public int hashCode()
     {
         return Objects.hash( ID, date, type, amount, category );
+    }
+
+    @Override
+    public int compareTo( Operation o )
+    {
+        return this.getAmount().compareTo( o.getAmount() );
+    }
+
+
+    public static class OperationDateComparator implements Comparator<Operation>{
+
+        @Override
+        public int compare( Operation o1, Operation o2 )
+        {
+            return o1.getDate().compareTo( o2.getDate() );
+        }
     }
 }

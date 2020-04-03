@@ -5,8 +5,10 @@ import model.Operation;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.logging.Logger;
 
 import static java.util.logging.Logger.GLOBAL_LOGGER_NAME;
@@ -59,10 +61,10 @@ public class MainFrame
     private void drawOperationsTable()
     {
         DefaultTableModel model = new DefaultTableModel();
-        model.addColumn( "Date" );
-        model.addColumn( "Type" );
-        model.addColumn( "Category" );
-        model.addColumn( "Amount" );
+        model.addColumn( DATE );
+        model.addColumn( TYPE );
+        model.addColumn( CATEGORY );
+        model.addColumn( AMOUNT );
         operationsTable = new JTable( model );
         operationsTable.setAutoCreateRowSorter( true );
         operationsTable.setBounds( 30, 40, 200, 300 );
@@ -85,7 +87,8 @@ public class MainFrame
     {
         openBankStmtChooserBtn = new JButton( "Generate report" );
         openBankStmtChooserBtn
-            .addActionListener( new GenerateReportActionListener( allOperations, sources ) );
+            .addActionListener( new GenerateReportActionListener( allOperations, sources,
+                selectReportComparatorComboBox ) );
         add( openBankStmtChooserBtn );
     }
 
@@ -101,8 +104,7 @@ public class MainFrame
     private void drawReportComparatorComboBox(){
         selectReportComparatorLbl = new JLabel( "Report's operations list sorting by:" );
         add( selectReportComparatorLbl );
-        selectReportComparatorComboBox = new JComboBox( new String[]{"Date", "Amount", "Operation" +
-            " type", "Category"} );
+        selectReportComparatorComboBox = new JComboBox( new String[]{DATE, AMOUNT, TYPE, CATEGORY} );
         add( selectReportComparatorComboBox );
     }
 

@@ -3,6 +3,7 @@ package gui;
 import model.Operation;
 import utils.OperationsTableComparatorFactory;
 import utils.Util;
+import webreport.html.CssStyleCreator;
 import webreport.html.OperationReportGenerator;
 import webreport.html.OperationsStatistics;
 
@@ -69,9 +70,11 @@ public class GenerateReportActionListener
 
         Path path = Paths.get( CONFIGURATION_PATH, REPORT + LocalDate.now() + HTML_EXTENSION );
 
+        CssStyleCreator.createCssStyle();
+
         try
         {
-            Util.writeHtmlReport( report, path );
+            Util.writeToFile( report, path );
             showInformation( "Report has been saved in:\n" + path );
             LOGGER.info( "Report has been saved in:" + path );
         }

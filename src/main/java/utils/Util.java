@@ -127,7 +127,7 @@ public class Util
 
     }
 
-    public static void writeHtmlReport( String content, Path path) throws IOException
+    public static void writeToFile( String content, Path path) throws IOException
     {
             Files.write( path, content.getBytes());
     }

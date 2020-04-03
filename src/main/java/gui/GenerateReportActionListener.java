@@ -1,10 +1,12 @@
 package gui;
 
 import model.Operation;
+import utils.OperationsTableComparatorFactory;
 import utils.Util;
 import webreport.html.OperationReportGenerator;
 import webreport.html.OperationsStatistics;
 
+import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
@@ -12,6 +14,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Set;
 import java.util.logging.Logger;
 
@@ -29,12 +32,15 @@ public class GenerateReportActionListener
 
     private Set<Operation> allOperations;
     private Set<String> sources;
+    private JComboBox operationsTableSortingBy;
 
 
-    public GenerateReportActionListener( Set<Operation> allOperations, Set<String> sources )
+    public GenerateReportActionListener( Set<Operation> allOperations, Set<String> sources,
+                                         JComboBox operationsTableSortingBy )
     {
         this.allOperations = allOperations;
         this.sources = sources;
+        this.operationsTableSortingBy = operationsTableSortingBy;
     }
 
 
@@ -56,7 +62,10 @@ public class GenerateReportActionListener
             new OperationReportGenerator( new ArrayList<>( allOperations ),
                 new ArrayList<>( sources ), operationsStatistics );
 
-        String report = reportGenerator.generateHtml();
+        Comparator<Operation> operationComparator =
+            OperationsTableComparatorFactory.get( (String)operationsTableSortingBy.getSelectedItem() );
+
+        String report = reportGenerator.generateHtml( operationComparator );
 
         Path path = Paths.get( CONFIGURATION_PATH, REPORT + LocalDate.now() + HTML_EXTENSION );
 

@@ -3,6 +3,7 @@ package webreport.html;
 import j2html.tags.ContainerTag;
 import model.Operation;
 
+import java.util.Comparator;
 import java.util.List;
 
 import static j2html.TagCreator.*;
@@ -23,7 +24,7 @@ public class OperationReportGenerator
     }
 
 
-    public String generateHtml()
+    public String generateHtml( Comparator<Operation> operationTableComparator )
     {
         return html(
             generateHead(),
@@ -32,9 +33,9 @@ public class OperationReportGenerator
                     tableGenerator.generateExpensesStatisticsTable(),
                     tableGenerator.generateNotResolvedStatisticsTable(),
 
-                    tableGenerator.generateIncomesOperationsTable(),
-                    tableGenerator.generateExpensesOperationsTable(),
-                    tableGenerator.generateNotResolvedOperationsTable(),
+                    tableGenerator.generateIncomesOperationsTable( operationTableComparator ),
+                    tableGenerator.generateExpensesOperationsTable( operationTableComparator ),
+                    tableGenerator.generateNotResolvedOperationsTable( operationTableComparator ),
 
                     tableGenerator.generateSourcesTable() ) )
             .render();

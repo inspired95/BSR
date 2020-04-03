@@ -22,7 +22,7 @@ public class DefaultConfigurationCreator
     {
         LOGGER.info( "Attempt to create default categories configuration file" );
         try (InputStream defaultConfigurationStream = DefaultConfigurationCreator.class
-            .getResourceAsStream( "/defaultCategoryConfiguration.json" ))
+            .getResourceAsStream( "/" + CATEGORIES_CONFIGURATION_FILE_NAME ))
         {
             createDirectoryIfNeeded();
 

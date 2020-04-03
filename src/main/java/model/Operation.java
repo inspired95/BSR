@@ -7,7 +7,7 @@ import java.util.Comparator;
 import java.util.Objects;
 
 
-public class Operation implements Comparable<Operation>
+public class Operation
 {
     private String ID;
     private LocalDate date;
@@ -107,10 +107,32 @@ public class Operation implements Comparable<Operation>
         return Objects.hash( ID, date, type, amount, category );
     }
 
-    @Override
-    public int compareTo( Operation o )
-    {
-        return this.getAmount().compareTo( o.getAmount() );
+
+    public static class OperationAmountComparator implements Comparator<Operation>{
+
+        @Override
+        public int compare( Operation o1, Operation o2 )
+        {
+            return o1.getAmount().compareTo( o2.getAmount() );
+        }
+    }
+
+    public static class OperationTypeComparator implements Comparator<Operation>{
+
+        @Override
+        public int compare( Operation o1, Operation o2 )
+        {
+            return o1.getType().compareTo( o2.getType() );
+        }
+    }
+
+    public static class OperationCategoryComparator implements Comparator<Operation>{
+
+        @Override
+        public int compare( Operation o1, Operation o2 )
+        {
+            return o1.getCategory().getCategoryName().compareTo( o2.getCategory().getCategoryName() );
+        }
     }
 
 

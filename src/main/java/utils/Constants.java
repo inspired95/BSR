@@ -42,6 +42,8 @@ public class Constants
 
     public static final String CATEGORIES_CONFIGURATION_FILE_NAME = "categoryConfiguration.json";
 
+    public static final String CSS_STYLE_FILE_NAME = "style.css";
+
     public static final String DATE = "Date";
 
     public static final String AMOUNT = "Amount";

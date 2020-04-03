@@ -34,22 +34,22 @@ public class OperationTableGenerator
     }
 
 
-    public ContainerTag generateNotResolvedOperationsTable()
+    public ContainerTag generateNotResolvedOperationsTable( Comparator<Operation> comparator )
     {
         return div( generateHeader( "Not resolved operations list" ),
-            generateOperations( this::isNotResolved ) );
+            generateOperations( this::isNotResolved, comparator ) );
     }
 
 
-    public ContainerTag generateExpensesOperationsTable()
+    public ContainerTag generateExpensesOperationsTable( Comparator<Operation> comparator )
     {
-        return div( generateHeader( "Expenses list" ), generateOperations( this::isExpense ) );
+        return div( generateHeader( "Expenses list" ), generateOperations( this::isExpense, comparator ) );
     }
 
 
-    public ContainerTag generateIncomesOperationsTable()
+    public ContainerTag generateIncomesOperationsTable( Comparator<Operation> comparator )
     {
-        return div( generateHeader( "Incomes list" ), generateOperations( this::isIncome ) );
+        return div( generateHeader( "Incomes list" ), generateOperations( this::isIncome, comparator ) );
     }
 
 
@@ -57,7 +57,7 @@ public class OperationTableGenerator
     {
         return div( generateHeader( "Not resolved operations summary" ),
             generateStatisticTable( operationsStatistics.getNotResolvedOperations() ),
-            generateOperationsSum( operationsStatistics.getNotResolvedSum() ) );
+            generateOperationsSum( operationsStatistics.getNotResolvedSum(), ".notResolvedSum" ) );
     }
 
 
@@ -65,7 +65,7 @@ public class OperationTableGenerator
     {
         return div( generateHeader( "Expenses summary" ),
             generateStatisticTable( operationsStatistics.getExpenses() ),
-            generateOperationsSum( operationsStatistics.getExpensesSum() ) );
+            generateOperationsSum( operationsStatistics.getExpensesSum(), ".expensesSum" ) );
     }
 
 
@@ -73,7 +73,7 @@ public class OperationTableGenerator
     {
         return div( generateHeader( "Incomes summary" ),
             generateStatisticTable( operationsStatistics.getIncomes() ),
-            generateOperationsSum( operationsStatistics.getIncomeSum() ) );
+            generateOperationsSum( operationsStatistics.getIncomeSum(), ".incomesSum" ) );
     }
 
 
@@ -83,9 +83,9 @@ public class OperationTableGenerator
     }
 
 
-    private ContainerTag generateOperationsSum( Double value )
+    private ContainerTag generateOperationsSum( Double value, String cssClass )
     {
-        return h2( "Sum: " + String.format( "%.2f", value) );
+        return h2( attrs( cssClass ), "Sum: " + String.format( "%.2f", value) );
     }
 
 
@@ -109,10 +109,11 @@ public class OperationTableGenerator
     }
 
 
-    private ContainerTag generateOperations( Predicate<Operation> predicate )
+    private ContainerTag generateOperations( Predicate<Operation> predicate,
+                                             Comparator<Operation> comparator )
     {
         ContainerTag table = table().with( generateOperationsTableHeader() );
-        sortOperationByDate();
+        sortOperationByComparator(comparator);
         for( Operation operation : operations )
         {
             if( predicate.test( operation ) )
@@ -125,6 +126,7 @@ public class OperationTableGenerator
     private ContainerTag generateSources()
     {
         ContainerTag sourceContainer = ul();
+        Collections.sort( sources, Comparator.comparing( String::toString ) );
         for( String source : sources )
         {
             sourceContainer.with( li( source ) );
@@ -174,7 +176,7 @@ public class OperationTableGenerator
             td().with( span( "Amount" ) ) ));
     }
 
-    private void sortOperationByDate(){
-        Collections.sort( operations, new Operation.OperationDateComparator() );
+    private void sortOperationByComparator( Comparator<Operation> comparator ){
+        Collections.sort( operations, comparator );
     }
 }

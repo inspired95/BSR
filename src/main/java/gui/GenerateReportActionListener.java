@@ -16,7 +16,8 @@ import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.Set;
+import java.util.List;
+import java.util.Objects;
 import java.util.logging.Logger;
 
 import static java.util.logging.Logger.GLOBAL_LOGGER_NAME;
@@ -31,13 +32,14 @@ public class GenerateReportActionListener
 {
     private final static Logger LOGGER = getLogger( GLOBAL_LOGGER_NAME );
 
-    private Set<Operation> allOperations;
-    private Set<String> sources;
-    private JComboBox operationsTableSortingBy;
+    private List<Operation> allOperations;
+    private List<String> sources;
+    private JComboBox<String> operationsTableSortingBy;
 
 
-    public GenerateReportActionListener( Set<Operation> allOperations, Set<String> sources,
-                                         JComboBox operationsTableSortingBy )
+    public GenerateReportActionListener(
+        List<Operation> allOperations, List<String> sources,
+        JComboBox<String> operationsTableSortingBy )
     {
         this.allOperations = allOperations;
         this.sources = sources;
@@ -63,8 +65,8 @@ public class GenerateReportActionListener
             new OperationReportGenerator( new ArrayList<>( allOperations ),
                 new ArrayList<>( sources ), operationsStatistics );
 
-        Comparator<Operation> operationComparator =
-            OperationsTableComparatorFactory.get( (String)operationsTableSortingBy.getSelectedItem() );
+        Comparator<Operation> operationComparator = OperationsTableComparatorFactory
+            .get( (String)Objects.requireNonNull( operationsTableSortingBy.getSelectedItem() ) );
 
         String report = reportGenerator.generateHtml( operationComparator );
 

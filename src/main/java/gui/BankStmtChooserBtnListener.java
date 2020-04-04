@@ -10,8 +10,6 @@ import pdfconverters.BankStmtConverterFactory;
 import transformators.OperationTransformer;
 
 import javax.swing.*;
-import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -24,6 +22,7 @@ import static app.Configuration.getCategoriesConfiguration;
 import static java.util.logging.Logger.GLOBAL_LOGGER_NAME;
 import static java.util.logging.Logger.getLogger;
 import static reader.PDFReader.read;
+import static utils.Util.showInformation;
 
 
 public class BankStmtChooserBtnListener
@@ -57,10 +56,20 @@ public class BankStmtChooserBtnListener
 
             for( File selectedFile : selectedFiles )
             {
-                handleSelectedBankStmtPdf( selectedFile );
+                if( !root.getSources().contains( selectedFile.getName() ) )
+                {
+                    handleSelectedBankStmtPdf( selectedFile );
+                }
+                else
+                {
+                    LOGGER.info(
+                        "The selected file " + selectedFile.getName() + " already " + "handled" );
+                    showInformation( "The selected file " + selectedFile.getName() + " already handled" );
+                }
+
             }
         }
-        updateGlassPaneVisibility( false );
+        disableGlassPaneVisibility();
     }
 
 
@@ -96,7 +105,7 @@ public class BankStmtChooserBtnListener
                 }
             }
         }
-        root.updateResults( operations );
+        root.updateOperationsList( operations );
     }
 
 
@@ -116,9 +125,10 @@ public class BankStmtChooserBtnListener
     }
 
 
-    private void updateGlassPaneVisibility( boolean glassPaneVisibility )
+    private void disableGlassPaneVisibility()
     {
         new Thread( () -> SwingUtilities
-            .invokeLater( () -> root.getGlassPane().setVisible( glassPaneVisibility ) ) ).start();
+            .invokeLater( () -> root.getGlassPane().setVisible( false ) ) ).start();
     }
+
 }

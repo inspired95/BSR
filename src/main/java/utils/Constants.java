@@ -51,4 +51,14 @@ public class Constants
     public static final String TYPE = "Type";
 
     public static final String CATEGORY = "Category";
+
+    public static final String SOURCE = "Source";
+
+    public static final String SOURCES = "Sources";
+
+    public static final String OPERATIONS_LIST_SORTING_BY = "Operations list sorting by:";
+
+    public static final String GENERATE_REPORT = "Generate report";
+
+    public static final String OPERATIONS = "Operations";
 }

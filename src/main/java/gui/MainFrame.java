@@ -1,14 +1,15 @@
 package gui;
 
 import model.Operation;
+import utils.OperationsTableComparatorFactory;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.Comparator;
 import java.util.List;
-import java.util.Set;
+import java.util.Objects;
 import java.util.logging.Logger;
 
 import static java.util.logging.Logger.GLOBAL_LOGGER_NAME;
@@ -22,21 +23,17 @@ public class MainFrame
     private final static Logger LOGGER = getLogger( GLOBAL_LOGGER_NAME );
 
     private JButton openBankStmtChooserBtn;
-    private JLabel selectBankLbl;
-    private JLabel selectReportComparatorLbl;
-    private JComboBox selectBankComboBox;
-    private JComboBox selectReportComparatorComboBox;
+    private JComboBox<String> selectBankComboBox;
+    private JComboBox<String> selectReportComparatorComboBox;
     private JTable operationsTable;
     private JTable sourcesTable;
 
-    private Set<Operation> allOperations;
-    private Set<String> sources;
+    private List<Operation> allOperations = new ArrayList<>();
+    private List<String> sources = new ArrayList<>();
 
 
     public MainFrame()
     {
-        allOperations = new HashSet<>();
-        sources = new HashSet<>();
         setup();
         drawOperationsTable();
         drawBankSelectorComboBox();
@@ -45,7 +42,7 @@ public class MainFrame
         drawGenerateReportButton();
         drawSources();
         pack();
-        LOGGER.info( "app.Main frame loaded" );
+        LOGGER.info( "The main frame loaded" );
     }
 
 
@@ -68,7 +65,7 @@ public class MainFrame
         operationsTable = new JTable( model );
         operationsTable.setAutoCreateRowSorter( true );
         operationsTable.setBounds( 30, 40, 200, 300 );
-        operationsTable.setToolTipText( "Operations" );
+        operationsTable.setToolTipText( OPERATIONS );
         JScrollPane sp = new JScrollPane( operationsTable );
         add( sp );
     }
@@ -85,9 +82,9 @@ public class MainFrame
 
     private void drawGenerateReportButton()
     {
-        openBankStmtChooserBtn = new JButton( "Generate report" );
-        openBankStmtChooserBtn
-            .addActionListener( new GenerateReportActionListener( allOperations, sources,
+        openBankStmtChooserBtn = new JButton( GENERATE_REPORT );
+        openBankStmtChooserBtn.addActionListener(
+            new GenerateReportActionListener( allOperations, sources,
                 selectReportComparatorComboBox ) );
         add( openBankStmtChooserBtn );
     }
@@ -95,16 +92,23 @@ public class MainFrame
 
     private void drawBankSelectorComboBox()
     {
-        selectBankLbl = new JLabel( SELECT_BANK_TXT );
+        JLabel selectBankLbl = new JLabel( SELECT_BANK_TXT );
         add( selectBankLbl );
-        selectBankComboBox = new JComboBox( new String[] { PKO } );
+        selectBankComboBox = new JComboBox<>( new String[] { PKO } );
         add( selectBankComboBox );
     }
 
-    private void drawReportComparatorComboBox(){
-        selectReportComparatorLbl = new JLabel( "Report's operations list sorting by:" );
+
+    private void drawReportComparatorComboBox()
+    {
+        JLabel selectReportComparatorLbl = new JLabel( OPERATIONS_LIST_SORTING_BY );
         add( selectReportComparatorLbl );
-        selectReportComparatorComboBox = new JComboBox( new String[]{DATE, AMOUNT, TYPE, CATEGORY} );
+        selectReportComparatorComboBox =
+            new JComboBox<>( new String[] { DATE, AMOUNT, TYPE, CATEGORY } );
+        selectReportComparatorComboBox.addActionListener( e -> {
+            sortOperations();
+            updateOperationsTable();
+        } );
         add( selectReportComparatorComboBox );
     }
 
@@ -112,28 +116,39 @@ public class MainFrame
     public void drawSources()
     {
         DefaultTableModel model = new DefaultTableModel();
-        model.addColumn( "Source" );
+        model.addColumn( SOURCE );
         sourcesTable = new JTable( model );
         sourcesTable.setAutoCreateRowSorter( true );
         sourcesTable.setBounds( 30, 40, 200, 100 );
-        sourcesTable.setToolTipText( "Sources" );
+        sourcesTable.setToolTipText( SOURCES );
         JScrollPane sp = new JScrollPane( sourcesTable );
         add( sp );
     }
 
 
-    public void updateResults( List<Operation> operations )
+    public void updateOperationsList( List<Operation> operations )
+    {
+        allOperations.addAll( operations );
+        sortOperations();
+        updateOperationsTable();
+    }
+
+
+    private void sortOperations()
+    {
+        String selectedComparator =
+            Objects.requireNonNull( selectReportComparatorComboBox.getSelectedItem() ).toString();
+        Comparator<Operation> comparator =
+            OperationsTableComparatorFactory.get( selectedComparator );
+        allOperations.sort( comparator );
+    }
+
+
+    public void updateOperationsTable()
     {
         DefaultTableModel tableModel = (DefaultTableModel)operationsTable.getModel();
-        List<Operation> toAppendInTable = new ArrayList<>();
-        for( Operation operation : operations )
-        {
-            boolean added = allOperations.add( operation );
-            if( added )
-                toAppendInTable.add( operation );
-        }
-
-        for( Operation operation : toAppendInTable )
+        tableModel.setRowCount( 0 );
+        for( Operation operation : allOperations )
         {
             tableModel.addRow( new Object[] { operation.getDate(), operation.getType(),
                                               operation.getCategory().getCategoryName(),
@@ -146,13 +161,25 @@ public class MainFrame
     public void updateSources( String selectedFile )
     {
         sources.add( selectedFile );
+        sources.sort( Comparator.comparing( String::toString ) );
+        updateSourcesTable();
+    }
 
+
+    public void updateSourcesTable()
+    {
         DefaultTableModel tableModel = (DefaultTableModel)sourcesTable.getModel();
         tableModel.setRowCount( 0 );
         for( String source : sources )
         {
             tableModel.addRow( new Object[] { source } );
         }
+    }
+
+
+    public List<String> getSources()
+    {
+        return sources;
     }
 
 }

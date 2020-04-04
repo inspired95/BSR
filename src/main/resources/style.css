@@ -2,47 +2,42 @@ body{
     font-family:Georgia, Arial, Helvetica, Sans-serif,serif;
     color:#000;
     background:#fff;
-text-align:center;
+    text-align:center;
 }
-
 div{
-width:80%;
-margin: 50px auto;
-background:#F5F5F5;
-box-shadow: 2px 2px 9px #C0C0C0;
-border-radius: 25px;
-padding-bottom:1%;
+    width:80%;
+    margin: 50px auto;
+    background:#F5F5F5;
+    box-shadow: 2px 2px 9px #C0C0C0;
+    border-radius: 25px;
+    padding-bottom:1%;
 }
- 
 h1 {
     font-size:50px;
 	text-shadow: 5px 5px 5px rgba(0,0,0,0.2);
-
 }
- 
 h2 {
     font-size:22px;
 }
 .incomesSum{
 	text-shadow: 0 0 10px rgba(99,252,17,0.9);
 }
-
 .expensesSum{
 	text-shadow: 0 0 10px rgba(252,17,17,0.9);
 }
-
 table{
 	text-align: center;
-margin: 50px auto;
-  width: 90%;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.2);
-  display: table;
+    margin: 50px auto;
+    width: 90%;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+    display: table;
+    table-layout: fixed;
 }
 td::first-letter{
 	text-transform:uppercase;
 }
 tr:nth-child(even){
-background-color: #F0F0F0;
+    background-color: #F0F0F0;
 }
 thead{
 	font-weight: 700;
@@ -52,3 +47,9 @@ thead{
 
 li{
 	list-style-type: none;
+}
+td{
+    white-space: pre;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}

@@ -4,7 +4,9 @@ import model.Operation;
 import utils.OperationsTableComparatorFactory;
 
 import javax.swing.*;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableColumn;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -35,12 +37,23 @@ public class MainFrame
     public MainFrame()
     {
         setup();
-        drawOperationsTable();
-        drawBankSelectorComboBox();
-        drawReportComparatorComboBox();
-        drawBankStmtChooserButton();
-        drawGenerateReportButton();
-        drawSources();
+
+        JPanel left = new JPanel();
+        left.setLayout( new BoxLayout( left, BoxLayout.Y_AXIS ) );
+
+        JPanel right = new JPanel();
+        right.setLayout( new BoxLayout( right, BoxLayout.Y_AXIS ) );
+
+        drawBankSelectorComboBox( left );
+        drawBankStmtChooserButton( left );
+        drawOperationsTable( left );
+
+        drawReportComparatorComboBox( right );
+        drawSources( right );
+        drawGenerateReportButton( right );
+
+        add( left );
+        add( right );
         pack();
         LOGGER.info( "The main frame loaded" );
     }
@@ -55,7 +68,7 @@ public class MainFrame
     }
 
 
-    private void drawOperationsTable()
+    private void drawOperationsTable( JPanel panel )
     {
         DefaultTableModel model = new DefaultTableModel();
         model.addColumn( DATE );
@@ -64,56 +77,66 @@ public class MainFrame
         model.addColumn( AMOUNT );
         operationsTable = new JTable( model );
         operationsTable.setAutoCreateRowSorter( true );
-        operationsTable.setBounds( 30, 40, 200, 300 );
         operationsTable.setToolTipText( OPERATIONS );
+
+        DefaultTableCellRenderer tableCellRendererCenter = getDefaultTableCellRendererCenter();
+        for( int i = 0; i < operationsTable.getColumnCount(); i++ )
+        {
+            TableColumn columnSource = operationsTable.getColumnModel().getColumn( i );
+            columnSource.setCellRenderer( tableCellRendererCenter );
+        }
+
         JScrollPane sp = new JScrollPane( operationsTable );
-        add( sp );
+        panel.add( sp );
     }
 
 
-    private void drawBankStmtChooserButton()
+    private void drawBankStmtChooserButton( JPanel panel )
     {
         openBankStmtChooserBtn = new JButton( SELECT_BANK_STATEMENT_TXT );
         openBankStmtChooserBtn.addActionListener(
             new BankStmtChooserBtnListener( (String)selectBankComboBox.getSelectedItem(), this ) );
-        add( openBankStmtChooserBtn );
+        openBankStmtChooserBtn.setAlignmentX( Component.CENTER_ALIGNMENT );
+        panel.add( openBankStmtChooserBtn );
     }
 
 
-    private void drawGenerateReportButton()
+    private void drawGenerateReportButton( JPanel panel )
     {
         openBankStmtChooserBtn = new JButton( GENERATE_REPORT );
         openBankStmtChooserBtn.addActionListener(
             new GenerateReportActionListener( allOperations, sources,
                 selectReportComparatorComboBox ) );
-        add( openBankStmtChooserBtn );
+        panel.add( openBankStmtChooserBtn );
     }
 
 
-    private void drawBankSelectorComboBox()
+    private void drawBankSelectorComboBox( JPanel panel )
     {
         JLabel selectBankLbl = new JLabel( SELECT_BANK_TXT );
-        add( selectBankLbl );
+        selectBankLbl.setAlignmentX( Component.CENTER_ALIGNMENT );
+        panel.add( selectBankLbl );
         selectBankComboBox = new JComboBox<>( new String[] { PKO } );
-        add( selectBankComboBox );
+        panel.add( selectBankComboBox );
     }
 
 
-    private void drawReportComparatorComboBox()
+    private void drawReportComparatorComboBox( JPanel panel )
     {
         JLabel selectReportComparatorLbl = new JLabel( OPERATIONS_LIST_SORTING_BY );
-        add( selectReportComparatorLbl );
+        selectReportComparatorLbl.setAlignmentX( Component.CENTER_ALIGNMENT );
+        panel.add( selectReportComparatorLbl );
         selectReportComparatorComboBox =
             new JComboBox<>( new String[] { DATE, AMOUNT, TYPE, CATEGORY } );
         selectReportComparatorComboBox.addActionListener( e -> {
             sortOperations();
             updateOperationsTable();
         } );
-        add( selectReportComparatorComboBox );
+        panel.add( selectReportComparatorComboBox );
     }
 
 
-    public void drawSources()
+    public void drawSources( JPanel panel )
     {
         DefaultTableModel model = new DefaultTableModel();
         model.addColumn( SOURCE );
@@ -121,8 +144,20 @@ public class MainFrame
         sourcesTable.setAutoCreateRowSorter( true );
         sourcesTable.setBounds( 30, 40, 200, 100 );
         sourcesTable.setToolTipText( SOURCES );
+
+        TableColumn columnSource = sourcesTable.getColumnModel().getColumn( 0 );
+        columnSource.setCellRenderer( getDefaultTableCellRendererCenter() );
+
         JScrollPane sp = new JScrollPane( sourcesTable );
-        add( sp );
+        panel.add( sp );
+    }
+
+
+    public DefaultTableCellRenderer getDefaultTableCellRendererCenter()
+    {
+        DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
+        centerRenderer.setHorizontalAlignment( SwingConstants.CENTER );
+        return centerRenderer;
     }
 
 

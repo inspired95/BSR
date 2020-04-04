@@ -185,9 +185,10 @@ public class MainFrame
         tableModel.setRowCount( 0 );
         for( Operation operation : allOperations )
         {
-            tableModel.addRow( new Object[] { operation.getDate(), operation.getType(),
+            tableModel.addRow( new Object[] { operation.getRawOperation().getDate(),
+                                              operation.getType(),
                                               operation.getCategory().getCategoryName(),
-                                              operation.getAmount() } );
+                                              operation.getRawOperation().getAmount() } );
         }
         pack();
     }

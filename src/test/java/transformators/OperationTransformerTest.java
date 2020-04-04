@@ -44,9 +44,9 @@ public class OperationTransformerTest
         //THEN
         assertEquals( 1, operations.size() );
         Operation actualOperation = operations.get( 0 );
-        assertEquals( actualOperation.getID(),"ID_MOCK");
-        assertEquals( actualOperation.getAmount(),Double.NaN);
-        assertEquals( actualOperation.getDate(), LocalDate.MAX );
+        assertEquals( actualOperation.getRawOperation().getID(),"ID_MOCK");
+        assertEquals( actualOperation.getRawOperation().getAmount(),Double.NaN);
+        assertEquals( actualOperation.getRawOperation().getDate(), LocalDate.MAX );
         assertEquals( actualOperation.getType(), OperationType.NOT_RESOLVED );
         assertEquals( actualOperation.getCategory().getCategoryName(), "CATEGORY_MOCK"  );
     }

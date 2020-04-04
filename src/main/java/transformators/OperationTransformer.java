@@ -61,7 +61,6 @@ public class OperationTransformer
             LOGGER.info( "Cannot resolve category of\n" + rawOperation.getDesc() );
         }
 
-        return new Operation( rawOperation.getID(), rawOperation.getDate(), operationType,
-            rawOperation.getAmount(), category );
+        return new Operation( rawOperation, operationType, category );
     }
 }

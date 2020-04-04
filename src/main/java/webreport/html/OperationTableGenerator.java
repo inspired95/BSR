@@ -160,11 +160,11 @@ public class OperationTableGenerator
 
     private ContainerTag generateContent( Operation operation )
     {
-        return tr().with( td().with( span( operation.getID() ) ),
-            td().with( span( operation.getDate().toString() ) ),
+        return tr().with( td().with( span( operation.getRawOperation().getID() ) ),
+            td().with( span( operation.getRawOperation().getDate().toString() ) ),
             td().with( span( operation.getType().name() ) ),
             td().with( span( operation.getCategory().getCategoryName() ) ),
-            td().with( span( operation.getAmount().toString() ) ) );
+            td().with( span( operation.getRawOperation().getAmount().toString() ) ) );
 
     }
 

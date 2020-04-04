@@ -1,6 +1,7 @@
 package model;
 
 import java.time.LocalDate;
+import java.util.Objects;
 
 
 public class RawOperation
@@ -168,5 +169,64 @@ public class RawOperation
     {
         return "BankStmtEntry{" + "\n\tdate=" + date + "\n\tID='" + ID + '\'' + "\n\ttype='" +
             type + '\'' + "\n\tamount=" + amount + "\n\tdesc='" + desc + '\'' + "\n}";
+    }
+
+    @Override
+    public int hashCode()
+    {
+        return Objects.hash( ID, date, desc, type, amount );
+    }
+
+    @Override
+    public boolean equals( Object obj )
+    {
+        if( this == obj )
+            return true;
+        if( obj == null )
+            return false;
+        if( getClass() != obj.getClass() )
+            return false;
+
+        RawOperation other = (RawOperation)obj;
+
+        if( ID == null )
+        {
+            if( other.ID != null )
+                return false;
+        }
+        else if( !ID.equals( other.ID ) )
+            return false;
+
+        if( date == null )
+        {
+            if( other.date != null )
+                return false;
+        }
+        else if( !date.equals( other.date ) )
+            return false;
+
+        if( type == null )
+        {
+            return other.type == null;
+        }
+        else if( !type.equals( other.type ) )
+            return false;
+
+
+        if( amount == null )
+        {
+            return other.amount == null;
+        }
+        else if( !amount.equals( other.amount ) )
+            return false;
+
+        if( desc == null )
+        {
+            return other.desc == null;
+        }
+        else if( !desc.equals( other.desc ) )
+            return false;
+
+        return true;
     }
 }

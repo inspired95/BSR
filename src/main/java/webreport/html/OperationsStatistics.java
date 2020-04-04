@@ -54,13 +54,13 @@ public class OperationsStatistics
         Double currentSum = expenses.get( operation.getCategory().getCategoryName() );
         if( currentSum == null )
         {
-            currentSum = operation.getAmount();
+            currentSum = operation.getRawOperation().getAmount();
         }
         else
         {
-            currentSum += operation.getAmount();
+            currentSum += operation.getRawOperation().getAmount();
         }
-        expensesSum += operation.getAmount();
+        expensesSum += operation.getRawOperation().getAmount();
         expenses.put( operation.getCategory().getCategoryName(), currentSum );
     }
 
@@ -70,14 +70,14 @@ public class OperationsStatistics
         Double currentSum = incomes.get( operation.getCategory().getCategoryName() );
         if( currentSum == null )
         {
-            currentSum = operation.getAmount();
+            currentSum = operation.getRawOperation().getAmount();
 
         }
         else
         {
-            currentSum += operation.getAmount();
+            currentSum += operation.getRawOperation().getAmount();
         }
-        incomeSum += operation.getAmount();
+        incomeSum += operation.getRawOperation().getAmount();
         incomes.put( operation.getCategory().getCategoryName(), currentSum );
     }
 
@@ -88,13 +88,13 @@ public class OperationsStatistics
             notResolvedOperations.get( operation.getCategory().getCategoryName() );
         if( currentSum == null )
         {
-            currentSum = operation.getAmount();
+            currentSum = operation.getRawOperation().getAmount();
         }
         else
         {
-            currentSum += operation.getAmount();
+            currentSum += operation.getRawOperation().getAmount();
         }
-        notResolvedSum += operation.getAmount();
+        notResolvedSum += operation.getRawOperation().getAmount();
         notResolvedOperations.put( operation.getCategory().getCategoryName(), currentSum );
     }
 

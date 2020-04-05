@@ -7,18 +7,14 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
-import java.util.logging.Logger;
 
-import static java.util.logging.Logger.GLOBAL_LOGGER_NAME;
-import static java.util.logging.Logger.getLogger;
+import static app.Log.LOGGER;
 import static utils.Constants.CONFIGURATION_PATH;
 import static utils.Constants.CSS_STYLE_FILE_NAME;
 
 
 public class CssStyleCreator
 {
-    private final static Logger LOGGER = getLogger( GLOBAL_LOGGER_NAME );
-
 
     public static void createCssStyle()
     {

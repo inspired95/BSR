@@ -12,18 +12,14 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
-import java.util.logging.Logger;
 
-import static java.util.logging.Logger.GLOBAL_LOGGER_NAME;
-import static java.util.logging.Logger.getLogger;
+import static app.Log.LOGGER;
 import static utils.Constants.*;
 
 
 public class MainFrame
     extends JFrame
 {
-    private final static Logger LOGGER = getLogger( GLOBAL_LOGGER_NAME );
-
     private JButton openBankStmtChooserBtn;
     private JComboBox<String> selectBankComboBox;
     private JComboBox<String> selectReportComparatorComboBox;
@@ -185,10 +181,10 @@ public class MainFrame
         tableModel.setRowCount( 0 );
         for( Operation operation : allOperations )
         {
-            tableModel.addRow( new Object[] { operation.getRawOperation().getDate(),
-                                              operation.getType(),
-                                              operation.getCategory().getCategoryName(),
-                                              operation.getRawOperation().getAmount() } );
+            tableModel.addRow(
+                new Object[] { operation.getRawOperation().getDate(), operation.getType(),
+                               operation.getCategory().getCategoryName(),
+                               operation.getRawOperation().getAmount() } );
         }
         pack();
     }

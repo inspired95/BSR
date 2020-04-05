@@ -8,11 +8,9 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.Optional;
-import java.util.logging.Logger;
 
 import static app.DefaultConfigurationCreator.createDefaultCategoriesConfiguration;
-import static java.util.logging.Logger.GLOBAL_LOGGER_NAME;
-import static java.util.logging.Logger.getLogger;
+import static app.Log.LOGGER;
 import static reader.FileReader.readCategoriesConfigJson;
 import static utils.Constants.CATEGORIES_CONFIGURATION_FILE_NAME;
 import static utils.Constants.CONFIGURATION_PATH;
@@ -20,8 +18,6 @@ import static utils.Constants.CONFIGURATION_PATH;
 
 public class ConfigurationLoader
 {
-    private final static Logger LOGGER = getLogger( GLOBAL_LOGGER_NAME );
-
     private static boolean categoriesConfigurationLoadedSuccessfully = false;
 
 

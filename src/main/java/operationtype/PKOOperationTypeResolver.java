@@ -1,7 +1,10 @@
 package operationtype;
 
+import app.Log;
+
 import java.util.logging.Logger;
 
+import static app.Log.*;
 import static java.util.logging.Logger.GLOBAL_LOGGER_NAME;
 import static java.util.logging.Logger.getLogger;
 import static utils.Constants.*;
@@ -10,9 +13,6 @@ import static utils.Constants.*;
 public class PKOOperationTypeResolver
     implements OperationTypeResolver
 {
-    private final static Logger LOGGER = getLogger( GLOBAL_LOGGER_NAME );
-
-
     @Override
     public OperationType resolve( String typeOperationDesc )
     {

@@ -1,10 +1,12 @@
 package categories;
 
+import app.Log;
 import model.Category;
 
 import java.util.Arrays;
 import java.util.logging.Logger;
 
+import static app.Log.*;
 import static java.util.logging.Logger.GLOBAL_LOGGER_NAME;
 import static java.util.logging.Logger.getLogger;
 import static model.Category.OTHER_CATEGORY;
@@ -13,8 +15,6 @@ import static model.Category.OTHER_CATEGORY;
 public class OperationCategoryResolverImpl
     implements OperationCategoryResolver
 {
-    private final static Logger LOGGER = getLogger( GLOBAL_LOGGER_NAME );
-
     private Category[] categories;
 
 

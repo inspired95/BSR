@@ -9,19 +9,15 @@ import operationtype.OperationTypeResolver;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Logger;
 
+import static app.Log.LOGGER;
 import static java.util.List.of;
-import static java.util.logging.Logger.GLOBAL_LOGGER_NAME;
-import static java.util.logging.Logger.getLogger;
 import static model.Category.OTHER_CATEGORY;
 import static operationtype.OperationType.INCOME_TRANSFER;
 
 
 public class OperationTransformer
 {
-    private final static Logger LOGGER = getLogger( GLOBAL_LOGGER_NAME );
-
     private OperationTypeResolver operationTypeResolver;
     private OperationCategoryResolver operationCategoryResolver;
 

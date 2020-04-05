@@ -18,10 +18,8 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
-import java.util.logging.Logger;
 
-import static java.util.logging.Logger.GLOBAL_LOGGER_NAME;
-import static java.util.logging.Logger.getLogger;
+import static app.Log.LOGGER;
 import static utils.Constants.*;
 import static utils.Util.showError;
 import static utils.Util.showInformation;
@@ -30,8 +28,6 @@ import static utils.Util.showInformation;
 public class GenerateReportActionListener
     implements ActionListener
 {
-    private final static Logger LOGGER = getLogger( GLOBAL_LOGGER_NAME );
-
     private List<Operation> allOperations;
     private List<String> sources;
     private JComboBox<String> operationsTableSortingBy;

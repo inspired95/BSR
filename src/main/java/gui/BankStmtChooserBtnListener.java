@@ -16,11 +16,9 @@ import java.awt.event.ActionListener;
 import java.io.File;
 import java.util.List;
 import java.util.Optional;
-import java.util.logging.Logger;
 
 import static app.Configuration.getCategoriesConfiguration;
-import static java.util.logging.Logger.GLOBAL_LOGGER_NAME;
-import static java.util.logging.Logger.getLogger;
+import static app.Log.LOGGER;
 import static reader.PDFReader.read;
 import static utils.Util.showInformation;
 
@@ -28,8 +26,6 @@ import static utils.Util.showInformation;
 public class BankStmtChooserBtnListener
     implements ActionListener
 {
-    private final static Logger LOGGER = getLogger( GLOBAL_LOGGER_NAME );
-
     private String chosenBank;
     private MainFrame root;
 
@@ -64,7 +60,8 @@ public class BankStmtChooserBtnListener
                 {
                     LOGGER.info(
                         "The selected file " + selectedFile.getName() + " already " + "handled" );
-                    showInformation( "The selected file " + selectedFile.getName() + " already handled" );
+                    showInformation(
+                        "The selected file " + selectedFile.getName() + " already handled" );
                 }
 
             }
@@ -127,8 +124,9 @@ public class BankStmtChooserBtnListener
 
     private void disableGlassPaneVisibility()
     {
-        new Thread( () -> SwingUtilities
-            .invokeLater( () -> root.getGlassPane().setVisible( false ) ) ).start();
+        new Thread(
+            () -> SwingUtilities.invokeLater( () -> root.getGlassPane().setVisible( false ) ) )
+            .start();
     }
 
 }

@@ -5,18 +5,14 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
-import java.util.logging.Logger;
 
-import static java.util.logging.Logger.GLOBAL_LOGGER_NAME;
-import static java.util.logging.Logger.getLogger;
+import static app.Log.LOGGER;
 import static utils.Constants.CATEGORIES_CONFIGURATION_FILE_NAME;
 import static utils.Constants.CONFIGURATION_PATH;
 
 
 public class DefaultConfigurationCreator
 {
-    private final static Logger LOGGER = getLogger( GLOBAL_LOGGER_NAME );
-
 
     public static void createDefaultCategoriesConfiguration()
     {

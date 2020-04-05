@@ -4,7 +4,6 @@ import javax.swing.*;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.text.NumberFormat;
 import java.text.ParseException;
 import java.time.LocalDate;
@@ -12,18 +11,12 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.Optional;
 import java.util.StringJoiner;
-import java.util.logging.Logger;
 
-import static java.util.logging.Logger.GLOBAL_LOGGER_NAME;
-import static java.util.logging.Logger.getLogger;
-import static utils.Constants.*;
+import static app.Log.LOGGER;
 
 
 public class Util
 {
-    private final static Logger LOGGER = getLogger( GLOBAL_LOGGER_NAME );
-
-
     public static String[] split( Optional<String> string, String regex )
     {
         if( string.isPresent() )
@@ -127,16 +120,21 @@ public class Util
 
     }
 
-    public static void writeToFile( String content, Path path) throws IOException
+
+    public static void writeToFile( String content, Path path ) throws IOException
     {
-            Files.write( path, content.getBytes());
+        Files.write( path, content.getBytes() );
     }
 
-    public static void showError(String msg){
+
+    public static void showError( String msg )
+    {
         JOptionPane.showMessageDialog( null, msg, "Error", JOptionPane.ERROR_MESSAGE );
     }
 
-    public static void showInformation(String msg){
+
+    public static void showInformation( String msg )
+    {
         JOptionPane.showMessageDialog( null, msg, "Information", JOptionPane.INFORMATION_MESSAGE );
     }
 }

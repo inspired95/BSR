@@ -4,20 +4,15 @@ import gui.MainFrame;
 
 import javax.swing.*;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import static app.ConfigurationLoader.isConfigurationLoadedSuccessfully;
 import static app.ConfigurationLoader.loadConfiguration;
-import static java.util.logging.Logger.GLOBAL_LOGGER_NAME;
-import static java.util.logging.Logger.getLogger;
+import static app.Log.LOGGER;
 import static utils.Util.showError;
 
 
 public class Main
 {
-    private final static Logger LOGGER = getLogger( GLOBAL_LOGGER_NAME );
-
-
     public static void main( String[] args )
     {
         startApplication();
@@ -26,7 +21,7 @@ public class Main
 
     private static void startApplication()
     {
-        LOGGER.setLevel( Level.ALL );
+        Log.initLogging();
         LOGGER.info( "BSR staring" );
         loadConfiguration( true );
         if( isConfigurationLoadedSuccessfully() )
@@ -50,6 +45,6 @@ public class Main
     private static void reportLoadingConfigErr( String errMsg )
     {
         LOGGER.warning( errMsg );
-        showError(errMsg);
+        showError( errMsg );
     }
 }

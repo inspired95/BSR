@@ -7,16 +7,12 @@ import org.apache.pdfbox.text.PDFTextStripperByArea;
 import java.io.File;
 import java.io.IOException;
 import java.util.Optional;
-import java.util.logging.Logger;
 
-import static java.util.logging.Logger.GLOBAL_LOGGER_NAME;
-import static java.util.logging.Logger.getLogger;
+import static app.Log.LOGGER;
 
 
 public class PDFReader
 {
-    private final static Logger LOGGER = getLogger( GLOBAL_LOGGER_NAME );
-
 
     public static Optional<String> read( String path )
     {

@@ -5,16 +5,12 @@ import com.google.gson.JsonSyntaxException;
 import model.CategoriesConfiguration;
 
 import java.util.Optional;
-import java.util.logging.Logger;
 
-import static java.util.logging.Logger.GLOBAL_LOGGER_NAME;
-import static java.util.logging.Logger.getLogger;
+import static app.Log.LOGGER;
 
 
 public class JsonParser
 {
-    private final static Logger LOGGER = getLogger( GLOBAL_LOGGER_NAME );
-
     private static Gson gson = new Gson();
 
 

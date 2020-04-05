@@ -8,13 +8,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.StringJoiner;
-import java.util.logging.Logger;
 import java.util.regex.MatchResult;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-import static java.util.logging.Logger.GLOBAL_LOGGER_NAME;
-import static java.util.logging.Logger.getLogger;
+import static app.Log.LOGGER;
 import static utils.Constants.*;
 import static utils.Util.*;
 
@@ -22,8 +20,6 @@ import static utils.Util.*;
 public class PKOBankStmtConverter
     implements BankStmtConverter
 {
-    private final static Logger LOGGER = getLogger( GLOBAL_LOGGER_NAME );
-
 
     public PKOBankStmtConverter()
     {

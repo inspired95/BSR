@@ -3,18 +3,13 @@ package operationtype;
 import javax.swing.*;
 import java.util.Optional;
 import java.util.StringJoiner;
-import java.util.logging.Logger;
 
-import static java.util.logging.Logger.GLOBAL_LOGGER_NAME;
-import static java.util.logging.Logger.getLogger;
+import static app.Log.LOGGER;
 import static utils.Constants.PKO;
 
 
 public class OperationTypeResolverFactory
 {
-    private final static Logger LOGGER = getLogger( GLOBAL_LOGGER_NAME );
-
-
     public Optional<OperationTypeResolver> match( String chosenBank )
     {
         if( PKO.equals( chosenBank ) )

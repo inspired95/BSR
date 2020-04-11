@@ -3,9 +3,8 @@ package com.catchex.report.statictics;
 import com.catchex.models.Operation;
 import com.catchex.models.OperationType;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.time.format.TextStyle;
+import java.util.*;
 
 
 public class OperationsStatistics
@@ -18,6 +17,7 @@ public class OperationsStatistics
     private Double incomeSum = 0.0;
     private Double expensesSum = 0.0;
     private Double notResolvedSum = 0.0;
+    private TreeMap<Integer, Map<String, Double>> expensesCategoriesPerMonth;
 
 
     public OperationsStatistics( List<Operation> operations )
@@ -26,6 +26,7 @@ public class OperationsStatistics
         this.incomes = new HashMap<>();
         this.expenses = new HashMap<>();
         this.notResolvedOperations = new HashMap<>();
+        expensesCategoriesPerMonth = new TreeMap<>();
         calculate();
     }
 
@@ -47,7 +48,10 @@ public class OperationsStatistics
                 calculateExpenses( operation );
             }
         }
+
+        calculateExpensesCategoriesPerMonth();
     }
+
 
     private void calculateExpenses( Operation operation )
     {
@@ -84,8 +88,7 @@ public class OperationsStatistics
 
     private void calculateNotResolvedOperations( Operation operation )
     {
-        Double currentSum =
-            notResolvedOperations.get( operation.getCategory().getCategoryName() );
+        Double currentSum = notResolvedOperations.get( operation.getCategory().getCategoryName() );
         if( currentSum == null )
         {
             currentSum = operation.getRawOperation().getAmount();
@@ -96,6 +99,40 @@ public class OperationsStatistics
         }
         notResolvedSum += operation.getRawOperation().getAmount();
         notResolvedOperations.put( operation.getCategory().getCategoryName(), currentSum );
+    }
+
+
+    private void calculateExpensesCategoriesPerMonth()
+    {
+        for( Operation operation : operations )
+        {
+            if( !isIncome( operation ) && !isNotResolved( operation ) ){
+                Integer month = operation.getRawOperation().getDate().getMonth().getValue();
+                String category = operation.getCategory().getCategoryName();
+                Double amount = operation.getRawOperation().getAmount();
+
+                Map<String, Double> monthCategoriesExpenses = expensesCategoriesPerMonth.get( month );
+                if( monthCategoriesExpenses == null )
+                {
+                    Map<String, Double> categoriesExpenses = new HashMap<>();
+                    categoriesExpenses.put( category, amount );
+                    expensesCategoriesPerMonth.put( month, categoriesExpenses );
+                }
+                else
+                {
+                    Double categoryExpenses = monthCategoriesExpenses.get( category );
+                    if( categoryExpenses == null )
+                    {
+                        monthCategoriesExpenses.put( category, amount );
+                    }
+                    else
+                    {
+                        Double newExpensesValue = categoryExpenses + amount;
+                        monthCategoriesExpenses.replace( category, newExpensesValue );
+                    }
+                }
+            }
+        }
     }
 
 
@@ -145,5 +182,11 @@ public class OperationsStatistics
     public double getNotResolvedSum()
     {
         return notResolvedSum;
+    }
+
+
+    public Map<Integer, Map<String, Double>> getExpensesCategoriesPerMonth()
+    {
+        return expensesCategoriesPerMonth;
     }
 }

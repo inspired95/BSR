@@ -14,6 +14,7 @@ import static com.catchex.util.Constants.*;
 public class OperationReportGenerator
 {
     private OperationTableGenerator tableGenerator;
+    private OperationChartGenerator chartGenerator;
 
 
     public OperationReportGenerator(
@@ -22,6 +23,7 @@ public class OperationReportGenerator
     {
         this.tableGenerator =
             new OperationTableGenerator( operations, sources, operationsStatistics );
+        this.chartGenerator = new OperationChartGenerator( operationsStatistics );
     }
 
 
@@ -33,7 +35,8 @@ public class OperationReportGenerator
                     tableGenerator.generateIncomesStatisticsTable(),
                     tableGenerator.generateExpensesStatisticsTable(),
                     tableGenerator.generateNotResolvedStatisticsTable(),
-
+                    chartGenerator.generateCanvas(),
+                    chartGenerator.generateChartScript(),
                     tableGenerator.generateIncomesOperationsTable( operationTableComparator ),
                     tableGenerator.generateExpensesOperationsTable( operationTableComparator ),
                     tableGenerator.generateNotResolvedOperationsTable( operationTableComparator ),
@@ -46,6 +49,7 @@ public class OperationReportGenerator
     private ContainerTag generateHead()
     {
         return head( title( APP_TITLE ),
+            script().withSrc("https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"),
             link().withRel( "stylesheet" ).withHref( "style.css" ) );
     }
 

@@ -1,9 +1,9 @@
 package com.catchex.report.web;
 
+import com.catchex.report.statictics.OperationsStatistics;
 import j2html.tags.ContainerTag;
 import com.catchex.models.Operation;
 import com.catchex.models.OperationType;
-import com.catchex.report.statictics.OperationsStatistics;
 
 import java.util.*;
 import java.util.function.Predicate;
@@ -127,7 +127,7 @@ public class OperationTableGenerator
     private ContainerTag generateSources()
     {
         ContainerTag sourceContainer = ul();
-        Collections.sort( sources, Comparator.comparing( String::toString ) );
+        sources.sort( Comparator.comparing( String::toString ) );
         for( String source : sources )
         {
             sourceContainer.with( li( source ) );
@@ -165,7 +165,8 @@ public class OperationTableGenerator
             td().with( span( operation.getRawOperation().getDate().toString() ) ),
             td().with( span( operation.getType().name() ) ),
             td().with( span( operation.getCategory().getCategoryName() ) ),
-            td().with( span( operation.getRawOperation().getAmount().toString() ) ) );
+            td().with( span( operation.getRawOperation().getAmount().toString() ) ),
+            td().with( span( operation.getRawOperation().getDesc() ) ));
 
     }
 
@@ -174,10 +175,11 @@ public class OperationTableGenerator
     {
         return thead(tr().with( td().with( span( "ID" ) ), td().with( span( "Date" ) ),
             td().with( span( "Operation Type" ) ), td().with( span( "Category" ) ),
-            td().with( span( "Amount" ) ) ));
+            td().with( span( "Amount" ) ),
+            td().with( span( "Description" ) )));
     }
 
     private void sortOperationByComparator( Comparator<Operation> comparator ){
-        Collections.sort( operations, comparator );
+        operations.sort( comparator );
     }
 }

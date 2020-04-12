@@ -1,5 +1,6 @@
 package com.catchex.report.web;
 
+import com.catchex.configuration.Configuration;
 import com.catchex.models.Category;
 import com.catchex.report.statictics.OperationsStatistics;
 import j2html.tags.ContainerTag;
@@ -16,22 +17,17 @@ public class OperationChartGenerator
 {
     private OperationsStatistics operationsStatistics;
 
-    private static final String CHART_ID = "expenses-chart";
-
-
     public OperationChartGenerator(
         OperationsStatistics operationsStatistics )
     {
         this.operationsStatistics = operationsStatistics;
-        String s = generateLabels();
-        String datasets = generateDatasets();
     }
 
 
-    public ContainerTag generateChartScript()
+    public ContainerTag generateCategoriesExpensesPerMonthChartScript( String chartId )
     {
         StringBuilder chart = new StringBuilder( "new Chart(\n" );
-        chart.append( "document.getElementById(\"" + CHART_ID + "\")," ).append( "{\n" );
+        chart.append( "document.getElementById(\"" + chartId + "\")," ).append( "{\n" );
         chart.append( "type: 'line'" ).append( ",\n" );
         chart.append( "data: {\n" );
         chart.append( generateLabels() ).append( ",\n" );
@@ -46,10 +42,29 @@ public class OperationChartGenerator
         return script( rawHtml( chart.toString()));
     }
 
-
-    public ContainerTag generateCanvas()
+    public ContainerTag generateExpensesSummaryChartScript( String chartId )
     {
-        return div( canvas( attrs( "#" + CHART_ID ) ) );
+        StringBuilder chart = new StringBuilder( "new Chart(\n" );
+        chart.append( "document.getElementById(\"" + chartId + "\")," ).append( "{\n" );
+        chart.append( "type: 'pie'" ).append( ",\n" );
+        chart.append( "data: {\n" );
+        chart.append( "label: \"Expenses\"," );
+        chart.append( generateExpensesSummaryLabels() ).append( ",\n" );
+        chart.append( generateExpensesSummaryDatasets() ).append( "},\n" );
+        chart.append( "options: {\n" );
+        chart.append( "title: {" ).append( "display: true,\n" )
+            .append( "text: 'Expenses summary'\n" ).append( "}\n" );
+        chart.append( "}\n" );
+        chart.append( "}\n" );
+        chart.append( ");" );
+
+        return script( rawHtml( chart.toString()));
+    }
+
+
+    public ContainerTag generateCanvas( String chartId, String cssClass )
+    {
+        return div( attrs( "." + cssClass ), canvas( attrs( "#" + chartId ) ) );
     }
 
 
@@ -60,6 +75,18 @@ public class OperationChartGenerator
         for( Integer monthInt : monthsInts )
         {
             labels.append( "'" + getMonth( monthInt ) + "'," );
+        }
+        labels.deleteCharAt( labels.length() - 1 );
+        labels.append( "]\n" );
+        return labels.toString();
+    }
+
+    private String generateExpensesSummaryLabels()
+    {
+        StringBuilder labels = new StringBuilder( "\"labels\":[\n" );
+        for( Category category : computeCategories() )
+        {
+            labels.append( "'" + category.getCategoryName() + "'," );
         }
         labels.deleteCharAt( labels.length() - 1 );
         labels.append( "]\n" );
@@ -77,7 +104,7 @@ public class OperationChartGenerator
     {
         StringBuilder datasets = new StringBuilder( "datasets: [\n" );
 
-        for( Category category : getCategoriesConfiguration().getCategories() )
+        for( Category category : computeCategories() )
         {
             datasets.append( generateCategoryDataset( category,
                 operationsStatistics.getExpensesCategoriesPerMonth().values() ) );
@@ -86,7 +113,6 @@ public class OperationChartGenerator
         datasets.append( "]\n" );
         return datasets.toString();
     }
-
 
     private String generateCategoryDataset(
         Category category, Collection<Map<String, Double>> monthExpenses )
@@ -107,6 +133,29 @@ public class OperationChartGenerator
         return categoryDataset.toString();
     }
 
+    private String generateExpensesSummaryDatasets()
+    {
+        StringBuilder datasets = new StringBuilder( "datasets: [{\n" );
+        datasets.append( "backgroundColor: [" );
+        for( Category computeCategory : computeCategories() )
+        {
+            datasets.append( "'" + randomColor() ).append( "'," );
+        }
+        datasets.deleteCharAt( datasets.length() - 1 );
+        datasets.append( "]," );
+
+        datasets.append( "data: [" );
+        for( Category category : computeCategories() )
+        {
+            Double amount = operationsStatistics.getExpenses().get( category.getCategoryName() );
+            datasets.append( amount == null ? 0 : Math.abs( amount ) ).append( "," );
+        }
+        datasets.deleteCharAt( datasets.length() - 1 );
+        datasets.append( "]" );
+        datasets.append( "}]\n" );
+        return datasets.toString();
+    }
+
 
     private String randomColor()
     {
@@ -118,5 +167,12 @@ public class OperationChartGenerator
         color.append( 1 );
         color.append( ")" );
         return color.toString();
+    }
+
+    private List<Category> computeCategories(){
+        List<Category> categories =
+            new ArrayList( Arrays.asList( getCategoriesConfiguration().getCategories() ) );
+        categories.add( Category.OTHER_CATEGORY );
+        return categories;
     }
 }

@@ -3,6 +3,8 @@ package com.catchex.report.statictics;
 import com.catchex.models.Operation;
 import com.catchex.models.OperationType;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.time.format.TextStyle;
 import java.util.*;
 
@@ -17,7 +19,7 @@ public class OperationsStatistics
     private Double incomeSum = 0.0;
     private Double expensesSum = 0.0;
     private Double notResolvedSum = 0.0;
-    private TreeMap<Integer, Map<String, Double>> expensesCategoriesPerMonth;
+    private TreeMap<String, Map<String, Double>> expensesCategoriesPerMonth;
 
 
     public OperationsStatistics( List<Operation> operations )
@@ -107,16 +109,17 @@ public class OperationsStatistics
         for( Operation operation : operations )
         {
             if( !isIncome( operation ) && !isNotResolved( operation ) ){
-                Integer month = operation.getRawOperation().getDate().getMonth().getValue();
+                LocalDate month = operation.getRawOperation().getDate();
+                String formattedDate = month.format( DateTimeFormatter.ofPattern("yyyy/MM"));
                 String category = operation.getCategory().getCategoryName();
                 Double amount = operation.getRawOperation().getAmount();
 
-                Map<String, Double> monthCategoriesExpenses = expensesCategoriesPerMonth.get( month );
+                Map<String, Double> monthCategoriesExpenses = expensesCategoriesPerMonth.get( formattedDate );
                 if( monthCategoriesExpenses == null )
                 {
                     Map<String, Double> categoriesExpenses = new HashMap<>();
                     categoriesExpenses.put( category, amount );
-                    expensesCategoriesPerMonth.put( month, categoriesExpenses );
+                    expensesCategoriesPerMonth.put( formattedDate, categoriesExpenses );
                 }
                 else
                 {
@@ -185,7 +188,7 @@ public class OperationsStatistics
     }
 
 
-    public Map<Integer, Map<String, Double>> getExpensesCategoriesPerMonth()
+    public Map<String, Map<String, Double>> getExpensesCategoriesPerMonth()
     {
         return expensesCategoriesPerMonth;
     }

@@ -5,6 +5,7 @@ import com.catchex.models.Category;
 import com.catchex.report.statictics.OperationsStatistics;
 import j2html.tags.ContainerTag;
 
+import java.time.LocalDate;
 import java.time.Month;
 import java.time.format.TextStyle;
 import java.util.*;
@@ -71,10 +72,10 @@ public class OperationChartGenerator
     private String generateLabels()
     {
         StringBuilder labels = new StringBuilder( "\"labels\":[\n" );
-        Set<Integer> monthsInts = operationsStatistics.getExpensesCategoriesPerMonth().keySet();
-        for( Integer monthInt : monthsInts )
+        Set<String> monthsInts = operationsStatistics.getExpensesCategoriesPerMonth().keySet();
+        for( String monthInt : monthsInts )
         {
-            labels.append( "'" + getMonth( monthInt ) + "'," );
+            labels.append( "'" + monthInt + "'," );
         }
         labels.deleteCharAt( labels.length() - 1 );
         labels.append( "]\n" );

@@ -40,7 +40,7 @@ public class Constants
 
     public static final String HTML_EXTENSION = ".html";
 
-    public static final String CATEGORIES_CONFIGURATION_FILE_NAME = "categoryConfiguration.json";
+    public static final String CATEGORIES_CONFIGURATION_FILE_NAME = "defaultCategoryConfiguration.json";
 
     public static final String CSS_STYLE_FILE_NAME = "style.css";
 

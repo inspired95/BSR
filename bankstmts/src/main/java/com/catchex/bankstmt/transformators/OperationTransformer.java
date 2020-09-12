@@ -10,9 +10,9 @@ import com.catchex.bankstmt.operationtype.OperationTypeResolver;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.catchex.models.OperationType.*;
 import static java.util.List.of;
 import static com.catchex.models.Category.OTHER_CATEGORY;
-import static com.catchex.models.OperationType.INCOME_TRANSFER;
 import static com.catchex.util.Log.LOGGER;
 
 
@@ -50,11 +50,16 @@ public class OperationTransformer
     private Operation transform( RawOperation rawOperation )
     {
         OperationType operationType = operationTypeResolver.resolve( rawOperation.getType() );
-        Category category = operationCategoryResolver.resolve( rawOperation.getDesc() );
-        if( category.getCategoryName().equals( OTHER_CATEGORY.getCategoryName() ) &&
-            operationType.equals( INCOME_TRANSFER ) )
+        Category category;
+        if (operationType.equals(CASH_WITHDRAWAL)){
+            category = Category.CASH_WITHDRAWAL;
+        }else{
+            category = operationCategoryResolver.resolve( rawOperation.getDesc() );
+        }
+        if( category.equals( OTHER_CATEGORY ) ||
+            operationType.equals( NOT_RESOLVED ) )
         {
-            LOGGER.info( "Cannot resolve category of\n" + rawOperation.getDesc() );
+            LOGGER.warning( "Cannot resolve category of\n" + rawOperation.getDesc() );
         }
 
         return new Operation( rawOperation, operationType, category );

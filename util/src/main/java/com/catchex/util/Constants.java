@@ -17,7 +17,9 @@ public class Constants
 
     public static final String TRANSFER_PL = "PRZELEW";
     public static final String TRANSFER_TYPE_INCOME_SHORT_PL = "PRZYCH";
+    public static final String TRANSFER_TYPE_INCOME_PL = "WPŁATA";
     public static final String TRANSFER_TYPE_OUTGOING_PL = "WYCHODZĄCY";
+    public static final String STANDING_ORDER = "REALIZACJA ZLECENIA STAŁEGO";
     public static final String DEBIT_CARD_PAYMENT_RESOLVER_TXT_PL = "ZAKUP PRZY UŻYCIU KARTY";
     public static final String MOBILE_CODE_PAYMENT_RESOLVER_TXT_PL = "KOD MOBILNY";
     public static final String CASH_WITHDRAWAL = "WYPŁATA W BANKOMACIE";

@@ -7,6 +7,7 @@ import java.util.Objects;
 public class Category
 {
     public static Category OTHER_CATEGORY = new Category( "Other", new String[] {} );
+    public static Category CASH_WITHDRAWAL = new Category( "Cash withdrawal", new String[] {} );
     private String categoryName;
     private String[] keywords;
 

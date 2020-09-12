@@ -19,6 +19,10 @@ public class PKOOperationTypeResolver
             else if( typeOperationDesc.contains( TRANSFER_TYPE_OUTGOING_PL ) )
                 return OperationType.OUTGOING_TRANSFER;
         }
+        else if (typeOperationDesc.contains(TRANSFER_TYPE_INCOME_PL))
+            return OperationType.INCOME_TRANSFER;
+        else if (typeOperationDesc.contains(STANDING_ORDER))
+            return OperationType.STANDING_ORDER;
         else if( typeOperationDesc.contains( DEBIT_CARD_PAYMENT_RESOLVER_TXT_PL ) )
             return OperationType.DEBIT_CARD_PAYMENT;
         else if( typeOperationDesc.contains( MOBILE_CODE_PAYMENT_RESOLVER_TXT_PL ) )
@@ -31,8 +35,7 @@ public class PKOOperationTypeResolver
         {
             return OperationType.REFUND;
         }
-        System.out.println( typeOperationDesc );
-        LOGGER.warning( "Operation type can not be resolved" );
+        LOGGER.warning( "Operation type can not be resolved: " + typeOperationDesc );
         return OperationType.NOT_RESOLVED;
     }
 }

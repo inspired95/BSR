@@ -174,6 +174,7 @@ public class OperationChartGenerator
         List<Category> categories =
             new ArrayList( Arrays.asList( getCategoriesConfiguration().getCategories() ) );
         categories.add( Category.OTHER_CATEGORY );
+        categories.add(Category.CASH_WITHDRAWAL);
         return categories;
     }
 }

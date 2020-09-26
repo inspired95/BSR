@@ -16,11 +16,16 @@ import java.awt.event.ActionListener;
 import java.io.File;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 import static com.catchex.configuration.Configuration.getCategoriesConfiguration;
 import static com.catchex.io.reader.PDFReader.read;
 import static com.catchex.util.Log.*;
 import static com.catchex.util.Util.showInformation;
+import static java.util.Arrays.asList;
 
 
 public class BankStmtChooserBtnListener
@@ -30,6 +35,7 @@ public class BankStmtChooserBtnListener
     private MainFrame root;
 
     private List<Operation> operations;
+    private File selectedFile;
 
 
     public BankStmtChooserBtnListener( String chosenBank, JFrame root )
@@ -72,37 +78,27 @@ public class BankStmtChooserBtnListener
 
     private void handleSelectedBankStmtPdf( File selectedFile )
     {
+
         LOGGER.info( "Bank of which statement to be converted: " + chosenBank );
         LOGGER.info( "File to be convert: " + selectedFile );
         LOGGER.info( "Bank statement reading started" );
 
         Optional<String> bankStmtPdf = read( selectedFile.getAbsolutePath() );
-
+        this.selectedFile = selectedFile;
         LOGGER.info( "Bank statement reading finished" );
 
-        if( bankStmtPdf.isPresent() )
-        {
-            Optional<BankStmtConverter> bankStmtConverter =
-                new BankStmtConverterFactory().match( chosenBank );
-            if( bankStmtConverter.isPresent() )
-            {
-                List<RawOperation> rawOperations =
-                    bankStmtConverter.get().convert( bankStmtPdf.get() );
+        ExecutorService service = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
 
-                Optional<OperationTypeResolver> operationTypeResolver =
-                    new OperationTypeResolverFactory().match( chosenBank );
-
-                if( !rawOperations.isEmpty() && operationTypeResolver.isPresent() )
-                {
-                    OperationTransformer transformer = new OperationTransformer(
-                        operationTypeResolver.get(), new OperationCategoryResolverImpl(
-                        getCategoriesConfiguration().getCategories() ) );
-                    this.operations = transformer.transform( rawOperations );
-                    root.updateSources( selectedFile.getName() );
-                }
+        if (bankStmtPdf.isPresent()){
+            MyCallable myCallable = new MyCallable(bankStmtPdf.get());
+            try{
+                service.invokeAll(asList(myCallable));
+            }catch(Exception err){
+                err.printStackTrace();
             }
+            service.shutdown();
         }
-        root.updateOperationsList( operations );
+
     }
 
 
@@ -128,5 +124,34 @@ public class BankStmtChooserBtnListener
             () -> SwingUtilities.invokeLater( () -> root.getGlassPane().setVisible( false ) ) )
             .start();
     }
+    class MyCallable implements Callable<String> {
+        String bankStmtPdf;
+        public MyCallable(String bankStmtPdf){
+            this.bankStmtPdf = bankStmtPdf;
+        }
+        public String call(){
+            Optional<BankStmtConverter> bankStmtConverter =
+                    new BankStmtConverterFactory().match( chosenBank );
+            if( bankStmtConverter.isPresent() )
+            {
+                List<RawOperation> rawOperations =
+                        bankStmtConverter.get().convert( bankStmtPdf );
 
+                Optional<OperationTypeResolver> operationTypeResolver =
+                        new OperationTypeResolverFactory().match( chosenBank );
+
+                if( !rawOperations.isEmpty() && operationTypeResolver.isPresent() )
+                {
+                    OperationTransformer transformer = new OperationTransformer(
+                            operationTypeResolver.get(), new OperationCategoryResolverImpl(
+                            getCategoriesConfiguration().getCategories() ) );
+                    operations = transformer.transform( rawOperations );
+                    root.updateSources( selectedFile.getName() );
+                }
+            }
+
+            root.updateOperationsList( operations );
+            return "";
+        }
+    }
 }

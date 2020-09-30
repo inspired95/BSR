@@ -23,6 +23,7 @@ import static com.catchex.util.Util.*;
 public class PKOBankStmtConverterTest
 {
     static BankStmtConverter bankStmtConverter;
+    private static String dummyBankStatementFileName = "bankStatement.pdf";
     private static String bankName = "PKO";
 
     //Correct PKO Bank Statement data
@@ -51,7 +52,7 @@ public class PKOBankStmtConverterTest
             new PKOBankStmtPdfMock().addEntry( stmtEntryPdfMock ).summarize();
 
         //WHEN
-        List<RawOperation> converted = bankStmtConverter.convert( bankStmtPdfMock.getContent() );
+        List<RawOperation> converted = bankStmtConverter.convert(dummyBankStatementFileName, bankStmtPdfMock.getContent() );
 
         //THEN
         assertEquals( 1, converted.size() );
@@ -84,7 +85,7 @@ public class PKOBankStmtConverterTest
             new PKOBankStmtPdfMock().addEntry( stmtEntryPdfMock ).summarize();
 
         //WHEN
-        List<RawOperation> converted = bankStmtConverter.convert( bankStmtPdfMock.getContent() );
+        List<RawOperation> converted = bankStmtConverter.convert( dummyBankStatementFileName, bankStmtPdfMock.getContent() );
 
         //THEN
         assertTrue( converted.isEmpty() );

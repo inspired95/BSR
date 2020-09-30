@@ -27,9 +27,9 @@ public class PKOBankStmtConverter
 
 
     @Override
-    public List<RawOperation> convert( String bankStatementPdf )
+    public List<RawOperation> convert(String name, String bankStatementPdf )
     {
-        LOGGER.info( "Converting started" );
+        //LOGGER.info( "Converting started" );
         String[] bankStmtLines = split( Optional.ofNullable( bankStatementPdf ), "\\r?\\n" );
         List<RawOperation> bankStmtEntries = new ArrayList<>();
 
@@ -44,6 +44,7 @@ public class PKOBankStmtConverter
 
                 RawOperation.Builder operationBuilder =
                     new RawOperation.Builder( splittedFirstLineIntoWords[1] );
+                operationBuilder.setFileName(name);
                 operationBuilder.setDate( getDate( splittedFirstLineIntoWords[0] ) );
                 operationBuilder.setType(
                     getOperationTypeDesc( Optional.ofNullable( splittedFirstLineIntoWords ) ) );
@@ -59,11 +60,11 @@ public class PKOBankStmtConverter
 
                 if( operationBuilder.isValid() )
                     bankStmtEntries.add( operationBuilder.build() );
-                else
-                    LOGGER.warning( "Cannot convert entry: \n" + currentLine );
+                //else
+                    //LOGGER.warning( "Cannot convert entry: \n" + currentLine );
             }
         }
-        LOGGER.info( "Converting finished" );
+        //LOGGER.info( "Converting finished" );
         return bankStmtEntries;
     }
 

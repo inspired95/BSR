@@ -90,7 +90,7 @@ public class Operation
         @Override
         public int compare( Operation o1, Operation o2 )
         {
-            return o1.getRawOperation().getAmount().compareTo( o2.getRawOperation().getAmount() );
+            return o1.getRawOperation().getAmount().getValue().compareTo( o2.getRawOperation().getAmount().getValue() );
         }
     }
 

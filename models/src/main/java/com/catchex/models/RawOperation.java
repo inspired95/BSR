@@ -6,18 +6,20 @@ import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.Objects;
 
 
-public class RawOperation
+
+public class RawOperation implements Serializable
 {
     private LocalDate date;
-    private StringProperty ID;
-    private StringProperty type;
-    private DoubleProperty amount;
-    private StringProperty desc;
-    private StringProperty fileName;
+    private String ID;
+    private String type;
+    private Double amount;
+    private String desc;
+    private String fileName;
 
 
     public LocalDate getDate()
@@ -26,46 +28,57 @@ public class RawOperation
     }
 
 
-    public String getID()
+    public StringProperty getID()
     {
-        return ID.getValue();
+        return new SimpleStringProperty(ID);
     }
 
 
-    public String getType()
+    public StringProperty getType()
     {
-        return type.getValue();
+        return new SimpleStringProperty(type);
     }
 
 
-    public Double getAmount()
+    public DoubleProperty getAmount()
     {
-        return amount.getValue();
+        return new SimpleDoubleProperty(amount);
     }
 
-    public String getFileName() {
-        return fileName.getValue();
+    public StringProperty getFileName() {
+        return new SimpleStringProperty(fileName);
     }
 
     public StringProperty fileNameProperty() {
-        return fileName;
+        return new SimpleStringProperty(fileName);
     }
 
-    public String getDesc()
+    public StringProperty getDesc()
     {
-        return desc.getValue();
+        return new SimpleStringProperty(desc);
     }
 
+    public void setDesc( String desc ) {
+        this.desc = desc;
+    }
 
     protected RawOperation(
         LocalDate date, StringProperty ID, StringProperty type, DoubleProperty amount, StringProperty desc, StringProperty fileName )
     {
         this.date = date;
-        this.ID = ID;
-        this.type = type;
-        this.amount = amount;
-        this.desc = desc;
-        this.fileName = fileName;
+        this.ID = ID.getValue();
+        this.type = type.getValue();
+        this.amount = amount.getValue();
+        this.desc = desc.getValue();
+        this.fileName = fileName.getValue();
+    }
+
+    public static RawOperation createRoot( String rootName ){
+        return new RawOperation(LocalDate.MIN, new SimpleStringProperty(rootName), new SimpleStringProperty(""), new SimpleDoubleProperty(Double.NaN), new SimpleStringProperty(""),new SimpleStringProperty("") );
+    }
+
+    public static RawOperation createIntervalCategory( LocalDate date ){
+        return new RawOperation(date, new SimpleStringProperty(""), new SimpleStringProperty(""), new SimpleDoubleProperty(Double.NaN), new SimpleStringProperty(""),new SimpleStringProperty("") );
     }
 
 

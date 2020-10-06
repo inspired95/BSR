@@ -6,6 +6,8 @@ import com.catchex.models.Operation;
 import com.catchex.models.OperationType;
 import com.catchex.models.RawOperation;
 import com.catchex.bankstmt.operationtype.OperationTypeResolver;
+import javafx.beans.property.SimpleDoubleProperty;
+import javafx.beans.property.SimpleStringProperty;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
@@ -79,11 +81,11 @@ public class OperationTransformerTest
     private RawOperation createRawOperationMock( String ID )
     {
         RawOperation rawOperation = mock( RawOperation.class );
-        expect( rawOperation.getID() ).andReturn( ID );
-        expect( rawOperation.getDesc() ).andReturn( "DESC_MOCK" );
-        expect( rawOperation.getType() ).andReturn( "TYPE_MOCK" );
+        expect( rawOperation.getID() ).andReturn( new SimpleStringProperty(ID ));
+        expect( rawOperation.getDesc() ).andReturn( new SimpleStringProperty("DESC_MOCK") );
+        expect( rawOperation.getType() ).andReturn( new SimpleStringProperty("TYPE_MOCK") );
         expect( rawOperation.getDate() ).andReturn( LocalDate.MAX );
-        expect( rawOperation.getAmount() ).andReturn( Double.NaN );
+        expect( rawOperation.getAmount() ).andReturn( new SimpleDoubleProperty(Double.NaN ));
         replay( rawOperation );
         return rawOperation;
     }

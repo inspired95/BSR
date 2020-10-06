@@ -49,12 +49,12 @@ public class OperationTransformer
 
     private Operation transform( RawOperation rawOperation )
     {
-        OperationType operationType = operationTypeResolver.resolve( rawOperation.getType() );
+        OperationType operationType = operationTypeResolver.resolve( rawOperation.getType().getValue() );
         Category category;
         if (operationType.equals(CASH_WITHDRAWAL)){
             category = Category.CASH_WITHDRAWAL;
         }else{
-            category = operationCategoryResolver.resolve( rawOperation.getDesc() );
+            category = operationCategoryResolver.resolve( rawOperation.getDesc().getValue() );
         }
         if( category.equals( OTHER_CATEGORY ) ||
             operationType.equals( NOT_RESOLVED ) )

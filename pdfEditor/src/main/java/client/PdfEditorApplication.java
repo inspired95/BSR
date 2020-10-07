@@ -1,11 +1,14 @@
 package client;
 
 
+import com.catchex.bankstmt.pdfconverters.BankStmtConverter;
+import com.catchex.bankstmt.pdfconverters.BankStmtConverterFactory;
 import com.catchex.bankstmt.pdfconverters.PKOBankStmtConverter;
 import com.catchex.io.reader.PDFReader;
 import com.catchex.models.RawOperation;
 import com.catchex.models.RawOperationRepository;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
@@ -19,6 +22,8 @@ import java.io.*;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
+
+import static com.catchex.util.Constants.PKO;
 
 public class PdfEditorApplication extends Application {
 
@@ -92,6 +97,14 @@ public class PdfEditorApplication extends Application {
 
     private void loadBankStatementsMenuItemActionEventHandling(){
         loadBankStatementsMenuItem.setOnAction(actionEvent -> {
+
+            String supportedBanks[] = { PKO };
+
+            // create a choice dialog
+            ChoiceDialog d = new ChoiceDialog(supportedBanks[0], supportedBanks);
+            d.showAndWait();
+            System.out.println(d.getSelectedItem());
+
             Stage window = (Stage) stage.getScene().getWindow();
             FileChooser fileChooser = new FileChooser();
             fileChooser.setTitle("Open Resource File");
@@ -103,7 +116,11 @@ public class PdfEditorApplication extends Application {
                     Optional<String> read = PDFReader.read(bankStatement.getAbsolutePath());
                     List<RawOperation> convert = Collections.emptyList();
                     if (read.isPresent()){
-                        convert = new PKOBankStmtConverter().convert(bankStatement.getName(), read.get());
+                        Optional<BankStmtConverter> bankStmtConverter = BankStmtConverterFactory.match(d.getSelectedItem().toString());
+
+                        if (bankStmtConverter.isPresent()){
+                            convert = bankStmtConverter.get().convert(bankStatement.getName(), read.get());
+                        }
                     }
 
                     updateRepository(convert);
@@ -111,6 +128,11 @@ public class PdfEditorApplication extends Application {
 
                 redrawTreeViewTable();
             }
+
+            /*Platform.runLater(() -> {
+                new PdfEditorApplication().start(new Stage());
+            });
+            stage.close();*/
         });
     }
 
@@ -118,13 +140,13 @@ public class PdfEditorApplication extends Application {
         loadRepositoryMenuItem.setOnAction(actionEvent -> {
             Stage window = (Stage) stage.getScene().getWindow();
             FileChooser fileChooser = new FileChooser();
-            fileChooser.setTitle("Open Resource File");
+            fileChooser.setTitle("Load Resource File");
 
             File selectedRepository = fileChooser.showOpenDialog(window);
 
             if (selectedRepository != null){
                 RawOperationRepository pr1 = null;
-                try(ObjectInputStream oi = new ObjectInputStream(new FileInputStream(new File("myObjects.data")))){
+                try(ObjectInputStream oi = new ObjectInputStream(new FileInputStream(selectedRepository))){
 
                     pr1 = (RawOperationRepository) oi.readObject();
                 }catch (IOException | ClassNotFoundException exp ){
@@ -138,8 +160,14 @@ public class PdfEditorApplication extends Application {
 
     private void saveRepositoryMenuItemActionEventHandling(){
         saveRepositoryMenuItem.setOnAction(actionEvent -> {
+            Stage window = (Stage) stage.getScene().getWindow();
+            FileChooser fileChooser = new FileChooser();
+            fileChooser.setTitle("Save Resource File");
+            fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("BSR repository file", "*.bsrrepository"));
+
+            File file = fileChooser.showSaveDialog(window);
             try{
-                FileOutputStream f = new FileOutputStream(new File("myObjects.data"));
+                FileOutputStream f = new FileOutputStream(file+".bsrrepository");
                 ObjectOutputStream o = new ObjectOutputStream(f);
                 o.writeObject(repository);
             } catch (FileNotFoundException e) {
@@ -225,7 +253,7 @@ public class PdfEditorApplication extends Application {
         amountColumn.setCellValueFactory(
                 p -> {
                     Double amount = p.getValue().getValue().getAmount().getValue();
-                    if (amount.equals(Double.NaN)) return new ReadOnlyObjectWrapper<>("");
+                    if (amount.equals(Double.NaN))  return new ReadOnlyObjectWrapper<>("");
                     return new ReadOnlyObjectWrapper<>(amount.toString());
                 });
         return amountColumn;

@@ -9,7 +9,7 @@ import static com.catchex.util.Log.LOGGER;
 
 public class BankStmtConverterFactory
 {
-    public Optional<BankStmtConverter> match( String chosenBank )
+    public static Optional<BankStmtConverter> match( String chosenBank )
     {
         if( PKO.equals( chosenBank ) )
         {
@@ -20,7 +20,7 @@ public class BankStmtConverterFactory
     }
 
 
-    private String getErrorMessage( String chosenBank )
+    private static String getErrorMessage( String chosenBank )
     {
         return new StringJoiner( " " ).add( "Cannot match bank statement converter for" )
             .add( chosenBank ).toString();

@@ -77,7 +77,7 @@ public class RawOperation implements Serializable
         return new RawOperation(LocalDate.MIN, new SimpleStringProperty(rootName), new SimpleStringProperty(""), new SimpleDoubleProperty(Double.NaN), new SimpleStringProperty(""),new SimpleStringProperty("") );
     }
 
-    public static RawOperation createIntervalCategory( LocalDate date ){
+    public static RawOperation createIntervalTreeItem( LocalDate date ){
         return new RawOperation(date, new SimpleStringProperty(""), new SimpleStringProperty(""), new SimpleDoubleProperty(Double.NaN), new SimpleStringProperty(""),new SimpleStringProperty("") );
     }
 

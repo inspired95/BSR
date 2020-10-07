@@ -62,6 +62,10 @@ public class RawOperation implements Serializable
         this.desc = desc;
     }
 
+    public void setAmount( Double amount ) {
+        this.amount = amount;
+    }
+
     protected RawOperation(
         LocalDate date, StringProperty ID, StringProperty type, DoubleProperty amount, StringProperty desc, StringProperty fileName )
     {
@@ -172,6 +176,38 @@ public class RawOperation implements Serializable
         }
     }
 
+    public boolean isValid()
+    {
+        return validID() && validOperationType() && validAmount() && validDescription() && validFileName();
+    }
+
+
+    private boolean validDescription()
+    {
+        return !desc.isEmpty();
+    }
+
+
+    private boolean validAmount()
+    {
+        return !amount.equals( Double.NaN );
+    }
+
+
+    private boolean validOperationType()
+    {
+        return !type.isEmpty();
+    }
+
+
+    private boolean validID()
+    {
+        return ID.length() == 17;
+    }
+
+    private boolean validFileName(){
+        return !fileName.isEmpty();
+    }
 
     @Override
     public String toString()

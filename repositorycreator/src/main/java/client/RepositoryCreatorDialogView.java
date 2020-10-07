@@ -61,6 +61,9 @@ public class RepositoryCreatorDialogView {
     }
 
     private void buildTreeTableViewColumns() {
+        // --- interval column
+        TreeTableColumn<RawOperation, String> intervalColumn = buildIntervalColumn();
+
         // --- date column
         TreeTableColumn<RawOperation, String> dateColumn = buildDateColumn();
 
@@ -77,7 +80,7 @@ public class RepositoryCreatorDialogView {
         TreeTableColumn<RawOperation, String> descriptionColumn = buildDescriptionColumn();
 
         treeTableView.setEditable(true);
-        treeTableView.getColumns().setAll(dateColumn, nameColumn, typeColumn, amountColumn, descriptionColumn);
+        treeTableView.getColumns().setAll(intervalColumn, dateColumn, nameColumn, typeColumn, amountColumn, descriptionColumn);
     }
 
     private TreeTableColumn<RawOperation, String> buildDescriptionColumn() {
@@ -108,8 +111,16 @@ public class RepositoryCreatorDialogView {
                 p -> {
                     Double amount = p.getValue().getValue().getAmount().getValue();
                     if (amount.equals(Double.NaN))  return new ReadOnlyObjectWrapper<>("");
-                    return new ReadOnlyObjectWrapper<>(amount.toString());
+                    return new ReadOnlyObjectWrapper<>(String. format("%.2f", amount));
                 });
+        amountColumn.setComparator(( s, t1 ) -> {
+            if (s.isEmpty() || t1.isEmpty()) {
+                return 0;
+            }
+            Double val1 = Double.parseDouble(s);
+            Double val2 = Double.parseDouble(t1);
+            return val1.compareTo(val2);
+        });
         return amountColumn;
     }
 
@@ -129,6 +140,31 @@ public class RepositoryCreatorDialogView {
         return nameColumn;
     }
 
+    private TreeTableColumn<RawOperation, String> buildIntervalColumn() {
+        TreeTableColumn<RawOperation, String> intervalColumn = new TreeTableColumn<>("Interval");
+        intervalColumn.setPrefWidth(150);
+        intervalColumn.setCellValueFactory(
+                p -> {
+                    LocalDate date = p.getValue().getValue().getDate();
+                    if (date.equals(LocalDate.MIN)){
+                        return new ReadOnlyObjectWrapper<>("");
+                    }
+                    if (p.getValue().getValue().getID().getValue().isEmpty()){
+                        return new ReadOnlyObjectWrapper<>(date.format(bankStatementsCategoriesFormatter));
+                    }
+                    return new ReadOnlyObjectWrapper<>("");
+                });
+        intervalColumn.setComparator(( s, t1 ) -> {
+            if (s.isEmpty() || t1.isEmpty()) {
+                return 0;
+            }
+            LocalDate localDate1 = LocalDate.parse("01 " + s, DateTimeFormatter.ofPattern("dd MMMM yyyy", Locale.US));
+            LocalDate localDate2 = LocalDate.parse("01 " + t1, DateTimeFormatter.ofPattern("dd MMMM yyyy", Locale.US));
+            return localDate1.compareTo(localDate2);
+        });
+        return intervalColumn;
+    }
+
     private TreeTableColumn<RawOperation, String> buildDateColumn() {
         TreeTableColumn<RawOperation, String> dateColumn = new TreeTableColumn<>("Date");
         dateColumn.setPrefWidth(150);
@@ -138,8 +174,8 @@ public class RepositoryCreatorDialogView {
                     if (date.equals(LocalDate.MIN)){
                         return new ReadOnlyObjectWrapper<>("");
                     }
-                    if (p.getValue().getValue().getID().getValue().isEmpty()){
-                        return new ReadOnlyObjectWrapper<>(date.format(bankStatementsCategoriesFormatter));
+                    if (!p.getValue().getValue().isValid()){
+                        return new ReadOnlyObjectWrapper<>("");
                     }
                     return new ReadOnlyObjectWrapper<>(date.toString());
                 });
@@ -152,7 +188,12 @@ public class RepositoryCreatorDialogView {
         keySet.stream().map(interval -> controller.getRepository().getRawOperations().get(interval)).filter(rawOps -> rawOps.iterator().hasNext()).forEach(rawOps -> {
             TreeItem<RawOperation> interval = new TreeItem<>(
                     RawOperation.createIntervalTreeItem(rawOps.iterator().next().getDate()));
-            rawOps.stream().map(TreeItem::new).forEach(rawOperationTreeItem -> interval.getChildren().add(rawOperationTreeItem));
+            double intervalSum = 0.0;
+            for (RawOperation rawOp : rawOps) {
+                interval.getChildren().add(new TreeItem<>(rawOp));
+                intervalSum += rawOp.getAmount().getValue();
+            }
+            interval.getValue().setAmount(intervalSum);
             newRootTreeItem.getChildren().add(interval);
         });
         newRootTreeItem.setExpanded(true);

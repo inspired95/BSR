@@ -1,16 +1,21 @@
 package com.catchex.models;
 
+import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Objects;
 
 
-public class Category
+public class Category implements Serializable
 {
     public static Category OTHER_CATEGORY = new Category( "Other", new String[] {} );
     public static Category CASH_WITHDRAWAL = new Category( "Cash withdrawal", new String[] {} );
     private String categoryName;
     private String[] keywords;
 
+    public Category()
+    {
+
+    }
 
     public Category( String categoryName, String[] keywords )
     {

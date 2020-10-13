@@ -1,23 +1,40 @@
 package client;
 
+import client.view.RepositoryCreatorDialogView;
+import client.view.RepositoryCreatorOperationTreeItem;
+import client.view.event.CellEditEventHandler;
+import client.view.event.RepositoryCreatorDescriptionEditCellEventHandler;
+import com.catchex.bankstmt.categories.OperationCategoryResolverImpl;
+import com.catchex.bankstmt.operationtype.OperationTypeResolver;
+import com.catchex.bankstmt.operationtype.OperationTypeResolverFactory;
 import com.catchex.bankstmt.pdfconverters.BankStmtConverter;
 import com.catchex.bankstmt.pdfconverters.BankStmtConverterFactory;
+import com.catchex.bankstmt.transformators.OperationTransformer;
+import com.catchex.configuration.Configuration;
 import com.catchex.io.reader.PDFReader;
+import com.catchex.models.Category;
+import com.catchex.models.Operation;
 import com.catchex.models.RawOperation;
-import com.catchex.models.RawOperationRepository;
 import javafx.scene.control.ChoiceDialog;
+import javafx.scene.control.TreeItem;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
 import java.io.*;
-import java.util.*;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 
 import static com.catchex.util.Constants.PKO;
+import static javafx.scene.control.TreeTableColumn.CellEditEvent;
 
 public class RepositoryCreatorDialogController {
 
-    private RawOperationRepository repository;
+    private Repository repository;
     private RepositoryCreatorDialogView view;
+    private OperationCategoryResolverImpl categoryResolver;
+    private CellEditEventHandler descriptionEditCellEventHandler;
 
     private Stage stage;
 
@@ -25,9 +42,10 @@ public class RepositoryCreatorDialogController {
 
 
     public RepositoryCreatorDialogController() {
-        this.repository = new RawOperationRepository();
+        this.repository = new Repository();
         this.view = new RepositoryCreatorDialogView(this);
-
+        this.categoryResolver = new OperationCategoryResolverImpl(Configuration.getCategoriesConfiguration().getCategories());
+        this.descriptionEditCellEventHandler = new RepositoryCreatorDescriptionEditCellEventHandler(this);
     }
 
     public void init(Stage stage){
@@ -57,15 +75,23 @@ public class RepositoryCreatorDialogController {
                 for (File bankStatement : selectedBankStatements) {
                     Optional<String> read = PDFReader.read(bankStatement.getAbsolutePath());
                     List<RawOperation> convert = Collections.emptyList();
+                    List<RepositoryCreatorOperationTreeItem> viewModels = Collections.emptyList();
                     if (read.isPresent()){
                         Optional<BankStmtConverter> bankStmtConverter = BankStmtConverterFactory.match(bankChoiceDialog.getSelectedItem());
                         if (bankStmtConverter.isPresent()){
                             convert = bankStmtConverter.get().convert(bankStatement.getName(), read.get());
                         }
+                        Optional<OperationTypeResolver> operationTypeResolver =
+                                new OperationTypeResolverFactory().match( bankChoiceDialog.getSelectedItem() );
+                        if (operationTypeResolver.isPresent() && !convert.isEmpty()){
+                            OperationTransformer transformer = new OperationTransformer(
+                                    operationTypeResolver.get(), new OperationCategoryResolverImpl(
+                                    Configuration.getCategoriesConfiguration().getCategories() ) );
+                            Set<Operation> operations = transformer.transform( convert );
+                            addOperations(operations);
+                        }
                     }
-                    updateRepository(convert);
                 }
-                view.redrawTreeViewTable();
             }
 
             /*Platform.runLater(() -> {
@@ -73,6 +99,16 @@ public class RepositoryCreatorDialogController {
             });
             stage.close();*/
         });
+    }
+
+    private void addOperations( Set<Operation> operations ) {
+        repository.addOperations(operations);
+        view.updateView(operations );
+    }
+
+    public void addOperation( Operation operation, int index ) {
+        repository.addOperation(operation);
+        view.updateView(operation, index);
     }
 
     private void loadRepositoryMenuItemActionEventHandling(){
@@ -85,16 +121,16 @@ public class RepositoryCreatorDialogController {
             File selectedRepository = repositoryToLoadFileChooser.showOpenDialog(window);
 
             if (selectedRepository != null){
-                RawOperationRepository loadedRepository = null;
+                Repository loadedRepository = null;
                 try(ObjectInputStream oi = new ObjectInputStream(new FileInputStream(selectedRepository))){
-                    loadedRepository = (RawOperationRepository) oi.readObject();
+                    loadedRepository = (Repository) oi.readObject();
                 }catch (IOException | ClassNotFoundException exp ){
                     exp.printStackTrace();
                 }
-                if (loadedRepository != null)
-                repository = loadedRepository;
+                if (loadedRepository != null) {
+                    view.updateView(loadedRepository);
+                }
             }
-            view.redrawTreeViewTable();
         });
     }
 
@@ -106,6 +142,7 @@ public class RepositoryCreatorDialogController {
             repositorySaveFileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("BSR repository selectedFile", "*.bsrrepository"));
             File selectedFile = repositorySaveFileChooser.showSaveDialog(window);
             try{
+                System.out.println(repository.getOperations().size());
                 FileOutputStream f = new FileOutputStream(selectedFile);
                 ObjectOutputStream o = new ObjectOutputStream(f);
                 o.writeObject(repository);
@@ -116,23 +153,40 @@ public class RepositoryCreatorDialogController {
     }
 
 
+    public void handleDescriptionEditEvent( CellEditEvent event ){
+        System.out.println("event");
+        descriptionEditCellEventHandler.handle(event);
+        /*Object treeItemToEdit = event.getRowValue().getValue();
+        if (treeItemToEdit instanceof RepositoryCreatorOperationTreeItem){
+            RepositoryCreatorOperationTreeItem operationTreeItemToEdit = (RepositoryCreatorOperationTreeItem) treeItemToEdit;
+            Operation operationToUpdate = operationTreeItemToEdit.getOperation();
 
-    private void updateRepository( List<RawOperation> convert ) {
-        convert.forEach(rawOperationToAdd -> {
-            String formatedData = rawOperationToAdd.getDate().format(view.getBankStatementsCategoriesFormatter());
-            Set<RawOperation> existsRawOperationsForInterval = repository.getRawOperations().get(formatedData);
-            if (existsRawOperationsForInterval == null) {
-                Set<RawOperation> newSet = new HashSet<>();
-                newSet.add(rawOperationToAdd);
-                repository.getRawOperations().put(formatedData, newSet);
-            } else {
-                existsRawOperationsForInterval.add(rawOperationToAdd);
-                repository.getRawOperations().put(formatedData, existsRawOperationsForInterval);
-            }
-        });
+            TreeItem intervalTreeItem = event.getRowValue().getParent();
+
+            int currentIndex = intervalTreeItem.getChildren().indexOf(event.getRowValue());
+
+            getRepository().getOperations().remove(operationToUpdate);
+            intervalTreeItem.getChildren().remove(event.getRowValue());
+
+            String newOperationDescription = (String)event.getNewValue();
+            operationToUpdate.getRawOperation().setDesc(newOperationDescription);
+
+            Category newOperationCategory = categoryResolver.resolve(newOperationDescription);
+            operationToUpdate.setCategory(newOperationCategory);
+
+            addOperation(operationToUpdate, currentIndex);
+        }*/
     }
 
-    public RawOperationRepository getRepository() {
+    public Repository getRepository() {
         return repository;
+    }
+
+    public OperationCategoryResolverImpl getCategoryResolver() {
+        return categoryResolver;
+    }
+
+    public RepositoryCreatorDialogView getView() {
+        return view;
     }
 }

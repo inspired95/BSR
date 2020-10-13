@@ -1,11 +1,6 @@
 package com.catchex.models;
 
 
-import javafx.beans.property.DoubleProperty;
-import javafx.beans.property.SimpleDoubleProperty;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
-
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.Objects;
@@ -14,13 +9,20 @@ import java.util.Objects;
 
 public class RawOperation implements Serializable
 {
+    public static final RawOperation DUMMY_RAW_OPERATION =
+            new RawOperation(LocalDate.MIN, "", "", Double.NaN, "", "", "");
+
     private LocalDate date;
     private String ID;
     private String type;
     private Double amount;
     private String desc;
     private String fileName;
+    private String bank;
 
+    public RawOperation(){
+
+    }
 
     public LocalDate getDate()
     {
@@ -28,34 +30,34 @@ public class RawOperation implements Serializable
     }
 
 
-    public StringProperty getID()
+    public String getID()
     {
-        return new SimpleStringProperty(ID);
-    }
+        return ID;
+    }//new SimpleStringProperty(ID)
 
 
-    public StringProperty getType()
+    public String getType()
     {
-        return new SimpleStringProperty(type);
+        return type;
     }
 
 
-    public DoubleProperty getAmount()
+    public Double getAmount()
     {
-        return new SimpleDoubleProperty(amount);
+        return amount;
     }
 
-    public StringProperty getFileName() {
-        return new SimpleStringProperty(fileName);
+    public String getFileName() {
+        return fileName;
     }
 
-    public StringProperty fileNameProperty() {
-        return new SimpleStringProperty(fileName);
+    public String getBank() {
+        return bank;
     }
 
-    public StringProperty getDesc()
+    public String getDesc()
     {
-        return new SimpleStringProperty(desc);
+        return desc;
     }
 
     public void setDesc( String desc ) {
@@ -67,38 +69,31 @@ public class RawOperation implements Serializable
     }
 
     protected RawOperation(
-        LocalDate date, StringProperty ID, StringProperty type, DoubleProperty amount, StringProperty desc, StringProperty fileName )
+        LocalDate date, String ID, String type, Double amount, String desc, String fileName, String bank )
     {
         this.date = date;
-        this.ID = ID.getValue();
-        this.type = type.getValue();
-        this.amount = amount.getValue();
-        this.desc = desc.getValue();
-        this.fileName = fileName.getValue();
+        this.ID = ID;
+        this.type = type;
+        this.amount = amount;
+        this.desc = desc;
+        this.fileName = fileName;
+        this.bank = bank;
     }
-
-    public static RawOperation createRoot( String rootName ){
-        return new RawOperation(LocalDate.MIN, new SimpleStringProperty(rootName), new SimpleStringProperty(""), new SimpleDoubleProperty(Double.NaN), new SimpleStringProperty(""),new SimpleStringProperty("") );
-    }
-
-    public static RawOperation createIntervalTreeItem( LocalDate date ){
-        return new RawOperation(date, new SimpleStringProperty(""), new SimpleStringProperty(""), new SimpleDoubleProperty(Double.NaN), new SimpleStringProperty(""),new SimpleStringProperty("") );
-    }
-
 
     public static final class Builder
     {
         private LocalDate date;
-        private StringProperty ID;
-        private StringProperty type;
-        private DoubleProperty amount;
-        private StringProperty desc;
-        private StringProperty fileName;
+        private String ID;
+        private String type;
+        private Double amount;
+        private String desc;
+        private String fileName;
+        private String bank;
 
 
         public Builder( String ID )
         {
-            this.ID = new SimpleStringProperty(ID);
+            this.ID = ID;
         }
 
 
@@ -110,28 +105,33 @@ public class RawOperation implements Serializable
 
         public Builder setFileName( String fileName )
         {
-            this.fileName = new SimpleStringProperty(fileName);
+            this.fileName = fileName;
             return this;
         }
 
 
         public Builder setType( String type )
         {
-            this.type = new SimpleStringProperty(type);
+            this.type = type;
             return this;
         }
 
 
         public Builder setAmount( Double amount )
         {
-            this.amount = new SimpleDoubleProperty(amount);
+            this.amount = amount;
             return this;
         }
 
 
         public Builder setDesc( String desc )
         {
-            this.desc = new SimpleStringProperty(desc);
+            this.desc = desc;
+            return this;
+        }
+
+        public Builder setBank( String bank ){
+            this.bank = bank;
             return this;
         }
 
@@ -144,7 +144,7 @@ public class RawOperation implements Serializable
 
         private boolean validDescription()
         {
-            return !desc.get().isEmpty();
+            return !desc.isEmpty();
         }
 
 
@@ -156,23 +156,23 @@ public class RawOperation implements Serializable
 
         private boolean validOperationType()
         {
-            return !type.get().isEmpty();
+            return !type.isEmpty();
         }
 
 
         private boolean validID()
         {
-            return ID.get().length() == 17;
+            return ID.length() == 17;
         }
 
         private boolean validFileName(){
-            return !fileName.get().isEmpty();
+            return !fileName.isEmpty();
         }
 
 
         public RawOperation build()
         {
-            return new RawOperation( date, ID, type, amount, desc, fileName );
+            return new RawOperation( date, ID, type, amount, desc, fileName, bank );
         }
     }
 

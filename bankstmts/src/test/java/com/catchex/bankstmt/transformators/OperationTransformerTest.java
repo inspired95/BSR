@@ -11,11 +11,14 @@ import javafx.beans.property.SimpleStringProperty;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import static java.util.List.of;
 import static org.easymock.EasyMock.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 
 public class OperationTransformerTest
@@ -26,7 +29,7 @@ public class OperationTransformerTest
     @Test
     public void should_Return_Empty_List_When_Null_As_List_Given(){
         //WHEN
-        List<Operation> operations =
+        Set<Operation> operations =
             operationTransformer.transform( null );
 
         //THEN
@@ -39,12 +42,14 @@ public class OperationTransformerTest
         List<RawOperation> rawOperations = of( createRawOperationMock( "ID_MOCK" ) );
 
         //WHEN
-        List<Operation> operations =
+        Set<Operation> operations =
             operationTransformer.transform( rawOperations );
 
         //THEN
         assertEquals( 1, operations.size() );
-        Operation actualOperation = operations.get( 0 );
+        Iterator<Operation> iterator = operations.iterator();
+        assertTrue(iterator.hasNext());
+        Operation actualOperation = iterator.next();
         assertEquals( actualOperation.getRawOperation().getID(),"ID_MOCK");
         assertEquals( actualOperation.getRawOperation().getAmount(),Double.NaN);
         assertEquals( actualOperation.getRawOperation().getDate(), LocalDate.MAX );
@@ -81,11 +86,11 @@ public class OperationTransformerTest
     private RawOperation createRawOperationMock( String ID )
     {
         RawOperation rawOperation = mock( RawOperation.class );
-        expect( rawOperation.getID() ).andReturn( new SimpleStringProperty(ID ));
-        expect( rawOperation.getDesc() ).andReturn( new SimpleStringProperty("DESC_MOCK") );
-        expect( rawOperation.getType() ).andReturn( new SimpleStringProperty("TYPE_MOCK") );
+        expect( rawOperation.getID() ).andReturn( ID );
+        expect( rawOperation.getDesc() ).andReturn( "DESC_MOCK" );
+        expect( rawOperation.getType() ).andReturn( "TYPE_MOCK" );
         expect( rawOperation.getDate() ).andReturn( LocalDate.MAX );
-        expect( rawOperation.getAmount() ).andReturn( new SimpleDoubleProperty(Double.NaN ));
+        expect( rawOperation.getAmount() ).andReturn( Double.NaN );
         replay( rawOperation );
         return rawOperation;
     }

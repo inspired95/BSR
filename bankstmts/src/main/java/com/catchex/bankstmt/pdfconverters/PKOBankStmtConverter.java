@@ -20,6 +20,7 @@ import static com.catchex.util.Util.*;
 public class PKOBankStmtConverter
     implements BankStmtConverter
 {
+    public static final String BANK_NAME = PKO;
 
     public PKOBankStmtConverter()
     {
@@ -57,6 +58,7 @@ public class PKOBankStmtConverter
                 operationBuilder.setDesc(
                     getDescription( currentLineNumber, splittedSecondLineIntoWords,
                         bankStmtLines ) );
+                operationBuilder.setBank(BANK_NAME);
 
                 if( operationBuilder.isValid() )
                     bankStmtEntries.add( operationBuilder.build() );

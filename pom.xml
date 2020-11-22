@@ -22,7 +22,9 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>com.catchex.client.app.Main</mainClass>
+                            <mainClass>
+                                com.catchex.repositorycreator.client.RepositoryCreatorApplication
+                            </mainClass>
                         </manifest>
                     </archive>
                 </configuration>

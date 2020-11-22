@@ -9,13 +9,13 @@ import javafx.scene.control.TreeTableColumn;
 
 public class CategoryColumn extends RepositoryColumn<String> {
 
-    public CategoryColumn( ) {
-        super("Category");
+    public CategoryColumn( RepositoryCreatorDialogController controller ) {
+        super("Category", controller);
     }
 
     @Override
     void init() {
-        super.init();
+        setCellValueFactory();
         setCellFactory();
         setPrefWidth(75);
     }

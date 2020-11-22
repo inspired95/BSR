@@ -4,13 +4,13 @@ import client.control.RepositoryCreatorDialogController;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 
 public class FileNameColumn extends RepositoryColumn<String> {
-    public FileNameColumn( ) {
-        super( "File name");
+    public FileNameColumn( RepositoryCreatorDialogController controller ) {
+        super( "File name", controller);
     }
 
     @Override
     void init() {
-        super.init();
+        setCellValueFactory();
         setPrefWidth(100);
         setVisible(false);
     }

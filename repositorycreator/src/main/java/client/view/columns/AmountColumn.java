@@ -4,13 +4,13 @@ import client.control.RepositoryCreatorDialogController;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 
 public class AmountColumn extends RepositoryColumn<String> {
-    public AmountColumn()  {
-        super("Amount");
+    public AmountColumn( RepositoryCreatorDialogController controller )  {
+        super("Amount", controller );
     }
 
     @Override
     void init() {
-        super.init();
+        setCellValueFactory();
         setDefaultWidth();
         setComparator();
     }

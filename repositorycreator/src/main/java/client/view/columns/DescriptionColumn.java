@@ -7,15 +7,13 @@ import javafx.scene.control.cell.TextFieldTreeTableCell;
 
 public class DescriptionColumn extends RepositoryColumn<String>  {
 
-    private RepositoryCreatorDialogController controller;
-
     public DescriptionColumn( RepositoryCreatorDialogController controller ) {
-        super("Description");
+        super("Description", controller);
         this.controller = controller;
     }
 
     void init() {
-        super.init();
+        setCellValueFactory();
         setCellFactory();
         setPrefWidth(810);
         initEventHandler();
@@ -31,7 +29,8 @@ public class DescriptionColumn extends RepositoryColumn<String>  {
     }
 
     private void initEventHandler() {
-        new DescriptionCellEditEventHandler(controller);
+        setOnEditCommit(new DescriptionCellEditEventHandler(controller));
+        //new DescriptionCellEditEventHandler(controller);
     }
 
 

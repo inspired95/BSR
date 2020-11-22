@@ -5,13 +5,13 @@ import client.view.model.OperationTreeItem;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 
 public class TypeColumn extends RepositoryColumn<String> {
-    public TypeColumn() {
-        super("Type");
+    public TypeColumn( RepositoryCreatorDialogController controller ) {
+        super("Type", controller);
     }
 
     @Override
     void init() {
-        super.init();
+        setCellValueFactory();
         setPrefWidth(100);
     }
 

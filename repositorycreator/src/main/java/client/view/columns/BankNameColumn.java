@@ -4,13 +4,13 @@ import client.control.RepositoryCreatorDialogController;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 
 public class BankNameColumn extends RepositoryColumn<String> {
-    public BankNameColumn( ) {
-        super("Bank");
+    public BankNameColumn( RepositoryCreatorDialogController controller ) {
+        super("Bank", controller);
     }
 
     @Override
     void init() {
-        super.init();
+        setCellValueFactory();
         setPrefWidth(100);
         setVisible(false);
     }

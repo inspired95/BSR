@@ -7,13 +7,13 @@ import javafx.beans.property.ReadOnlyObjectWrapper;
 import java.time.LocalDate;
 
 public class DateColumn extends RepositoryColumn<String>{
-    public DateColumn() {
-        super( "Date");
+    public DateColumn( RepositoryCreatorDialogController controller ) {
+        super( "Date", controller);
     }
 
     @Override
     void init() {
-        super.init();
+        setCellValueFactory();
         setPrefWidth(80);
     }
 

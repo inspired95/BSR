@@ -1,6 +1,7 @@
 package client.control.event;
 
 import client.control.RepositoryCreatorDialogController;
+import client.view.model.AbstractTreeItem;
 import client.view.model.OperationTreeItem;
 import com.catchex.models.Category;
 import com.catchex.models.Operation;
@@ -8,7 +9,7 @@ import javafx.scene.control.TreeItem;
 
 import static javafx.scene.control.TreeTableColumn.CellEditEvent;
 
-public class DescriptionCellEditEventHandler implements EventHandler<CellEditEvent> {
+public class DescriptionCellEditEventHandler implements javafx.event.EventHandler<CellEditEvent<AbstractTreeItem, String>> {
 
     private RepositoryCreatorDialogController controller;
 

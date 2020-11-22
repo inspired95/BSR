@@ -13,14 +13,14 @@ public class IntervalColumn extends RepositoryColumn<String>{
 
     private DateTimeFormatter intervalTreeItemFormatter;
 
-    public IntervalColumn( DateTimeFormatter intervalTreeItemFormatter ) {
-        super("Interval");
+    public IntervalColumn( DateTimeFormatter intervalTreeItemFormatter, RepositoryCreatorDialogController controller ) {
+        super("Interval", controller );
         this.intervalTreeItemFormatter = intervalTreeItemFormatter;
     }
 
     @Override
     void init() {
-        super.init();
+        setCellValueFactory();
         setPrefWidth(150);
         setComparator();
         setSortType(TreeTableColumn.SortType.ASCENDING);

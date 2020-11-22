@@ -7,5 +7,5 @@ import java.util.List;
 
 public interface BankStmtConverter
 {
-    List<RawOperation> convert( String statement );
+    List<RawOperation> convert( String name, String statement );
 }

@@ -5,8 +5,10 @@ import com.catchex.models.OperationType;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.time.format.TextStyle;
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 
 public class OperationsStatistics
@@ -108,13 +110,15 @@ public class OperationsStatistics
     {
         for( Operation operation : operations )
         {
-            if( !isIncome( operation ) && !isNotResolved( operation ) ){
+            if( !isIncome( operation ) && !isNotResolved( operation ) )
+            {
                 LocalDate month = operation.getRawOperation().getDate();
-                String formattedDate = month.format( DateTimeFormatter.ofPattern("yyyy/MM"));
+                String formattedDate = month.format( DateTimeFormatter.ofPattern( "yyyy/MM" ) );
                 String category = operation.getCategory().getCategoryName();
                 Double amount = operation.getRawOperation().getAmount();
 
-                Map<String, Double> monthCategoriesExpenses = expensesCategoriesPerMonth.get( formattedDate );
+                Map<String, Double> monthCategoriesExpenses =
+                    expensesCategoriesPerMonth.get( formattedDate );
                 if( monthCategoriesExpenses == null )
                 {
                     Map<String, Double> categoriesExpenses = new HashMap<>();

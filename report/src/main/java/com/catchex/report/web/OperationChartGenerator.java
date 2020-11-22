@@ -1,11 +1,9 @@
 package com.catchex.report.web;
 
-import com.catchex.configuration.Configuration;
 import com.catchex.models.Category;
 import com.catchex.report.statictics.OperationsStatistics;
 import j2html.tags.ContainerTag;
 
-import java.time.LocalDate;
 import java.time.Month;
 import java.time.format.TextStyle;
 import java.util.*;
@@ -17,6 +15,7 @@ import static j2html.TagCreator.*;
 public class OperationChartGenerator
 {
     private OperationsStatistics operationsStatistics;
+
 
     public OperationChartGenerator(
         OperationsStatistics operationsStatistics )
@@ -40,8 +39,9 @@ public class OperationChartGenerator
         chart.append( "}\n" );
         chart.append( ");" );
 
-        return script( rawHtml( chart.toString()));
+        return script( rawHtml( chart.toString() ) );
     }
+
 
     public ContainerTag generateExpensesSummaryChartScript( String chartId )
     {
@@ -59,7 +59,7 @@ public class OperationChartGenerator
         chart.append( "}\n" );
         chart.append( ");" );
 
-        return script( rawHtml( chart.toString()));
+        return script( rawHtml( chart.toString() ) );
     }
 
 
@@ -81,6 +81,7 @@ public class OperationChartGenerator
         labels.append( "]\n" );
         return labels.toString();
     }
+
 
     private String generateExpensesSummaryLabels()
     {
@@ -115,6 +116,7 @@ public class OperationChartGenerator
         return datasets.toString();
     }
 
+
     private String generateCategoryDataset(
         Category category, Collection<Map<String, Double>> monthExpenses )
     {
@@ -133,6 +135,7 @@ public class OperationChartGenerator
         categoryDataset.append( "]},\n" );
         return categoryDataset.toString();
     }
+
 
     private String generateExpensesSummaryDatasets()
     {
@@ -170,11 +173,13 @@ public class OperationChartGenerator
         return color.toString();
     }
 
-    private List<Category> computeCategories(){
+
+    private List<Category> computeCategories()
+    {
         List<Category> categories =
             new ArrayList( Arrays.asList( getCategoriesConfiguration().getCategories() ) );
         categories.add( Category.OTHER_CATEGORY );
-        categories.add(Category.CASH_WITHDRAWAL);
+        categories.add( Category.CASH_WITHDRAWAL );
         return categories;
     }
 }

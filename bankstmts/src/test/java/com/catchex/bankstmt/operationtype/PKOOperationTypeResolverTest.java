@@ -31,7 +31,8 @@ public class PKOOperationTypeResolverTest
 
     private static Stream<Arguments> correctOperationIncomeTransferDescriptions()
     {
-        return Stream.of( Arguments.of( "PRZELEW PRZYCH. SYSTEMAT. WPŁYW" ),
+        return Stream.of(
+            Arguments.of( "PRZELEW PRZYCH. SYSTEMAT. WPŁYW" ),
             Arguments.of( "PRZELEW PRZYCHODZĄCY" ) );
     }
 

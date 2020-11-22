@@ -8,7 +8,7 @@ import java.nio.file.StandardCopyOption;
 
 import static com.catchex.util.Constants.CATEGORIES_CONFIGURATION_FILE_NAME;
 import static com.catchex.util.Constants.CONFIGURATION_PATH;
-import static com.catchex.util.Log.*;
+import static com.catchex.util.Log.LOGGER;
 
 
 public class DefaultConfigurationCreator
@@ -16,7 +16,8 @@ public class DefaultConfigurationCreator
 
     public static void createDefaultCategoriesConfiguration()
     {
-        LOGGER.info( "Attempt to create default com.catchex.bankstmt.categories configuration file" );
+        LOGGER
+            .info( "Attempt to create default com.catchex.bankstmt.categories configuration file" );
         try (InputStream defaultConfigurationStream = DefaultConfigurationCreator.class
             .getResourceAsStream( "/" + CATEGORIES_CONFIGURATION_FILE_NAME ))
         {
@@ -31,7 +32,8 @@ public class DefaultConfigurationCreator
         catch( IOException e )
         {
             LOGGER.warning(
-                "Error during an attempt to create default com.catchex.bankstmt.categories configuration " + "file" );
+                "Error during an attempt to create default com.catchex.bankstmt.categories configuration " +
+                    "file" );
         }
     }
 

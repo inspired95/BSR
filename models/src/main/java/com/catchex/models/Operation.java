@@ -1,14 +1,26 @@
 package com.catchex.models;
 
+import java.io.Serializable;
 import java.util.Comparator;
 import java.util.Objects;
 
 
 public class Operation
+    implements Serializable
 {
     private RawOperation rawOperation;
     private OperationType type;
     private Category category;
+
+    public static final Operation DUMMY_OPERATION =
+        new Operation( RawOperation.DUMMY_RAW_OPERATION, OperationType.NOT_RESOLVED,
+            Category.OTHER_CATEGORY );
+
+
+    public Operation()
+    {
+
+    }
 
 
     public Operation(
@@ -35,6 +47,12 @@ public class Operation
     public Category getCategory()
     {
         return category;
+    }
+
+
+    public void setCategory( Category category )
+    {
+        this.category = category;
     }
 
 

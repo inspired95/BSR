@@ -1,15 +1,23 @@
 package com.catchex.models;
 
+import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Objects;
 
 
 public class Category
+    implements Serializable
 {
     public static Category OTHER_CATEGORY = new Category( "Other", new String[] {} );
     public static Category CASH_WITHDRAWAL = new Category( "Cash withdrawal", new String[] {} );
     private String categoryName;
     private String[] keywords;
+
+
+    public Category()
+    {
+
+    }
 
 
     public Category( String categoryName, String[] keywords )
@@ -30,29 +38,34 @@ public class Category
         return keywords;
     }
 
+
     @Override
-    public boolean equals(Object obj) {
-        if (this == obj)
+    public boolean equals( Object obj )
+    {
+        if( this == obj )
             return true;
-        if (obj == null)
+        if( obj == null )
             return false;
-        if (getClass() != obj.getClass())
+        if( getClass() != obj.getClass() )
             return false;
 
-        Category other = (Category) obj;
+        Category other = (Category)obj;
 
-        if (categoryName == null) {
-            if (other.categoryName != null)
+        if( categoryName == null )
+        {
+            if( other.categoryName != null )
                 return false;
-        } else if (!categoryName.equals(other.categoryName))
+        }
+        else if( !categoryName.equals( other.categoryName ) )
             return false;
 
-        if (keywords == null) {
-            if (other.keywords != null)
+        if( keywords == null )
+        {
+            if( other.keywords != null )
                 return false;
-        } else if (!keywords.equals(other.keywords))
+        }
+        else if( !keywords.equals( other.keywords ) )
             return false;
-
 
         return true;
     }

@@ -1,16 +1,29 @@
 package com.catchex.models;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.Objects;
 
 
 public class RawOperation
+    implements Serializable
 {
+    public static final RawOperation DUMMY_RAW_OPERATION =
+        new RawOperation( LocalDate.MIN, "", "", Double.NaN, "", "", "" );
+
     private LocalDate date;
     private String ID;
     private String type;
     private Double amount;
     private String desc;
+    private String fileName;
+    private String bank;
+
+
+    public RawOperation()
+    {
+
+    }
 
 
     public LocalDate getDate()
@@ -22,7 +35,7 @@ public class RawOperation
     public String getID()
     {
         return ID;
-    }
+    }//new SimpleStringProperty(ID)
 
 
     public String getType()
@@ -37,20 +50,47 @@ public class RawOperation
     }
 
 
+    public String getFileName()
+    {
+        return fileName;
+    }
+
+
+    public String getBank()
+    {
+        return bank;
+    }
+
+
     public String getDesc()
     {
         return desc;
     }
 
 
+    public void setDesc( String desc )
+    {
+        this.desc = desc;
+    }
+
+
+    public void setAmount( Double amount )
+    {
+        this.amount = amount;
+    }
+
+
     protected RawOperation(
-        LocalDate date, String ID, String type, Double amount, String desc )
+        LocalDate date, String ID, String type, Double amount, String desc, String fileName,
+        String bank )
     {
         this.date = date;
         this.ID = ID;
         this.type = type;
         this.amount = amount;
         this.desc = desc;
+        this.fileName = fileName;
+        this.bank = bank;
     }
 
 
@@ -61,6 +101,8 @@ public class RawOperation
         private String type;
         private Double amount;
         private String desc;
+        private String fileName;
+        private String bank;
 
 
         public Builder( String ID )
@@ -72,6 +114,13 @@ public class RawOperation
         public Builder setDate( LocalDate date )
         {
             this.date = date;
+            return this;
+        }
+
+
+        public Builder setFileName( String fileName )
+        {
+            this.fileName = fileName;
             return this;
         }
 
@@ -97,9 +146,17 @@ public class RawOperation
         }
 
 
+        public Builder setBank( String bank )
+        {
+            this.bank = bank;
+            return this;
+        }
+
+
         public boolean isValid()
         {
-            return validID() && validOperationType() && validAmount() && validDescription();
+            return validID() && validOperationType() && validAmount() && validDescription() &&
+                validFileName();
         }
 
 
@@ -127,10 +184,53 @@ public class RawOperation
         }
 
 
+        private boolean validFileName()
+        {
+            return !fileName.isEmpty();
+        }
+
+
         public RawOperation build()
         {
-            return new RawOperation( date, ID, type, amount, desc );
+            return new RawOperation( date, ID, type, amount, desc, fileName, bank );
         }
+    }
+
+
+    public boolean isValid()
+    {
+        return validID() && validOperationType() && validAmount() && validDescription() &&
+            validFileName();
+    }
+
+
+    private boolean validDescription()
+    {
+        return !desc.isEmpty();
+    }
+
+
+    private boolean validAmount()
+    {
+        return !amount.equals( Double.NaN );
+    }
+
+
+    private boolean validOperationType()
+    {
+        return !type.isEmpty();
+    }
+
+
+    private boolean validID()
+    {
+        return ID.length() == 17;
+    }
+
+
+    private boolean validFileName()
+    {
+        return !fileName.isEmpty();
     }
 
 
@@ -141,11 +241,13 @@ public class RawOperation
             type + '\'' + "\n\tamount=" + amount + "\n\tdesc='" + desc + '\'' + "\n}";
     }
 
+
     @Override
     public int hashCode()
     {
         return Objects.hash( ID, date, desc, type, amount );
     }
+
 
     @Override
     public boolean equals( Object obj )
@@ -182,7 +284,6 @@ public class RawOperation
         else if( !type.equals( other.type ) )
             return false;
 
-
         if( amount == null )
         {
             return other.amount == null;
@@ -194,8 +295,15 @@ public class RawOperation
         {
             return other.desc == null;
         }
+        else if( !desc.equals( other.desc ) )
+            return false;
+
+        if( fileName == null )
+        {
+            return other.fileName == null;
+        }
         else
-            return desc.equals( other.desc );
+            return fileName.equals( other.fileName );
 
     }
 }

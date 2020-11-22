@@ -1,80 +1,94 @@
 package com.catchex.bankstmt.transformators;
 
 import com.catchex.bankstmt.categories.OperationCategoryResolver;
+import com.catchex.bankstmt.operationtype.OperationTypeResolver;
 import com.catchex.models.Category;
 import com.catchex.models.Operation;
 import com.catchex.models.OperationType;
 import com.catchex.models.RawOperation;
-import com.catchex.bankstmt.operationtype.OperationTypeResolver;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import static java.util.List.of;
 import static org.easymock.EasyMock.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 
-public class OperationTransformerTest
+public class RawOperationExtenderTest
 {
-    private OperationTransformer operationTransformer = new OperationTransformer( createOperationTypeResolverMock(),
-        createOperationCategoryResolverMock() );
+    private RawOperationExtender rawOperationExtender =
+        new RawOperationExtender( createOperationTypeResolverMock(),
+            createOperationCategoryResolverMock() );
+
 
     @Test
-    public void should_Return_Empty_List_When_Null_As_List_Given(){
+    public void should_Return_Empty_List_When_Null_As_List_Given()
+    {
         //WHEN
-        List<Operation> operations =
-            operationTransformer.transform( null );
+        Set<Operation> operations = rawOperationExtender.extend( null );
 
         //THEN
         assertEquals( operations, of() );
     }
 
+
     @Test
-    public void should_Return_List_Contains_Transformed_Raw_Operation_Into_Operation(){
+    public void should_Return_List_Contains_Transformed_Raw_Operation_Into_Operation()
+    {
         //GIVEN
         List<RawOperation> rawOperations = of( createRawOperationMock( "ID_MOCK" ) );
 
         //WHEN
-        List<Operation> operations =
-            operationTransformer.transform( rawOperations );
+        Set<Operation> operations = rawOperationExtender.extend( rawOperations );
 
         //THEN
         assertEquals( 1, operations.size() );
-        Operation actualOperation = operations.get( 0 );
-        assertEquals( actualOperation.getRawOperation().getID(),"ID_MOCK");
-        assertEquals( actualOperation.getRawOperation().getAmount(),Double.NaN);
+        Iterator<Operation> iterator = operations.iterator();
+        assertTrue( iterator.hasNext() );
+        Operation actualOperation = iterator.next();
+        assertEquals( actualOperation.getRawOperation().getID(), "ID_MOCK" );
+        assertEquals( actualOperation.getRawOperation().getAmount(), Double.NaN );
         assertEquals( actualOperation.getRawOperation().getDate(), LocalDate.MAX );
         assertEquals( actualOperation.getType(), OperationType.NOT_RESOLVED );
-        assertEquals( actualOperation.getCategory().getCategoryName(), "CATEGORY_MOCK"  );
+        assertEquals( actualOperation.getCategory().getCategoryName(), "CATEGORY_MOCK" );
     }
 
 
-
-
-    private OperationCategoryResolver createOperationCategoryResolverMock(){
+    private OperationCategoryResolver createOperationCategoryResolverMock()
+    {
         OperationCategoryResolver operationCategoryResolverMock =
             mock( OperationCategoryResolver.class );
-        expect( operationCategoryResolverMock.resolve( anyString() ) ).andReturn( createCategoryMock() );
+        expect( operationCategoryResolverMock.resolve( anyString() ) )
+            .andReturn( createCategoryMock() );
         replay( operationCategoryResolverMock );
         return operationCategoryResolverMock;
     }
 
-    private OperationTypeResolver createOperationTypeResolverMock(){
+
+    private OperationTypeResolver createOperationTypeResolverMock()
+    {
         OperationTypeResolver operationTypeResolverMock = mock( OperationTypeResolver.class );
-        expect( operationTypeResolverMock.resolve( anyString() ) ).andReturn( OperationType.NOT_RESOLVED );
+        expect( operationTypeResolverMock.resolve( anyString() ) )
+            .andReturn( OperationType.NOT_RESOLVED );
         replay( operationTypeResolverMock );
         return operationTypeResolverMock;
     }
 
-    private Category createCategoryMock(){
+
+    private Category createCategoryMock()
+    {
         Category category = mock( Category.class );
         expect( category.getCategoryName() ).andReturn( "CATEGORY_MOCK" ).anyTimes();
-        expect( category.getKeywords() ).andReturn( new String[]{} );
+        expect( category.getKeywords() ).andReturn( new String[] {} );
         replay( category );
         return category;
     }
+
 
     private RawOperation createRawOperationMock( String ID )
     {

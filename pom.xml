@@ -22,7 +22,9 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>com.catchex.client.app.Main</mainClass>
+                            <mainClass>
+                                com.catchex.repositorycreator.client.RepositoryCreatorApplication
+                            </mainClass>
                         </manifest>
                     </archive>
                 </configuration>
@@ -65,6 +67,7 @@
         <module>client</module>
         <module>util</module>
         <module>configuration</module>
+        <module>repositorycreator</module>
     </modules>
     <dependencies>
         <!-- https://mvnrepository.com/artifact/org.apache.pdfbox/pdfbox -->

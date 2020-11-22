@@ -1,28 +1,30 @@
 package com.catchex.bankstmt.transformators;
 
 import com.catchex.bankstmt.categories.OperationCategoryResolver;
+import com.catchex.bankstmt.operationtype.OperationTypeResolver;
 import com.catchex.models.Category;
 import com.catchex.models.Operation;
 import com.catchex.models.OperationType;
 import com.catchex.models.RawOperation;
-import com.catchex.bankstmt.operationtype.OperationTypeResolver;
 
-import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
-import static com.catchex.models.OperationType.*;
-import static java.util.List.of;
 import static com.catchex.models.Category.OTHER_CATEGORY;
+import static com.catchex.models.OperationType.CASH_WITHDRAWAL;
+import static com.catchex.models.OperationType.NOT_RESOLVED;
 import static com.catchex.util.Log.LOGGER;
+import static java.util.Set.of;
 
 
-public class OperationTransformer
+public class RawOperationExtender
 {
     private OperationTypeResolver operationTypeResolver;
     private OperationCategoryResolver operationCategoryResolver;
 
 
-    public OperationTransformer(
+    public RawOperationExtender(
         OperationTypeResolver operationTypeResolver,
         OperationCategoryResolver operationCategoryResolver )
     {
@@ -31,14 +33,14 @@ public class OperationTransformer
     }
 
 
-    public List<Operation> transform( List<RawOperation> rawOperations )
+    public Set<Operation> extend( List<RawOperation> rawOperations )
     {
         if( rawOperations != null )
         {
-            List<Operation> operations = new ArrayList<>();
+            Set<Operation> operations = new HashSet<>();
             for( RawOperation rawOperation : rawOperations )
             {
-                operations.add( transform( rawOperation ) );
+                operations.add( extend( rawOperation ) );
             }
             return operations;
         }
@@ -47,17 +49,19 @@ public class OperationTransformer
     }
 
 
-    private Operation transform( RawOperation rawOperation )
+    private Operation extend( RawOperation rawOperation )
     {
         OperationType operationType = operationTypeResolver.resolve( rawOperation.getType() );
         Category category;
-        if (operationType.equals(CASH_WITHDRAWAL)){
+        if( operationType.equals( CASH_WITHDRAWAL ) )
+        {
             category = Category.CASH_WITHDRAWAL;
-        }else{
+        }
+        else
+        {
             category = operationCategoryResolver.resolve( rawOperation.getDesc() );
         }
-        if( category.equals( OTHER_CATEGORY ) ||
-            operationType.equals( NOT_RESOLVED ) )
+        if( category.equals( OTHER_CATEGORY ) || operationType.equals( NOT_RESOLVED ) )
         {
             LOGGER.warning( "Cannot resolve category of\n" + rawOperation.getDesc() );
         }

@@ -8,7 +8,7 @@ import java.nio.file.StandardCopyOption;
 
 import static com.catchex.util.Constants.CONFIGURATION_PATH;
 import static com.catchex.util.Constants.CSS_STYLE_FILE_NAME;
-import static com.catchex.util.Log.*;
+import static com.catchex.util.Log.LOGGER;
 
 
 public class CssStyleCreator

@@ -12,7 +12,7 @@ import java.time.format.DateTimeParseException;
 import java.util.Optional;
 import java.util.StringJoiner;
 
-import static com.catchex.util.Log.*;
+import static com.catchex.util.Log.LOGGER;
 
 
 public class Util
@@ -21,7 +21,7 @@ public class Util
     {
         if( string.isPresent() )
             return string.get().split( regex );
-       LOGGER.warning( "Can not split null" );
+        LOGGER.warning( "Can not split null" );
         return new String[0];
     }
 

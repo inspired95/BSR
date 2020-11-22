@@ -18,13 +18,13 @@ import static com.catchex.util.Log.LOGGER;
 import static java.util.Set.of;
 
 
-public class OperationTransformer
+public class RawOperationExtender
 {
     private OperationTypeResolver operationTypeResolver;
     private OperationCategoryResolver operationCategoryResolver;
 
 
-    public OperationTransformer(
+    public RawOperationExtender(
         OperationTypeResolver operationTypeResolver,
         OperationCategoryResolver operationCategoryResolver )
     {
@@ -33,14 +33,14 @@ public class OperationTransformer
     }
 
 
-    public Set<Operation> transform( List<RawOperation> rawOperations )
+    public Set<Operation> extend( List<RawOperation> rawOperations )
     {
         if( rawOperations != null )
         {
             Set<Operation> operations = new HashSet<>();
             for( RawOperation rawOperation : rawOperations )
             {
-                operations.add( transform( rawOperation ) );
+                operations.add( extend( rawOperation ) );
             }
             return operations;
         }
@@ -49,7 +49,7 @@ public class OperationTransformer
     }
 
 
-    private Operation transform( RawOperation rawOperation )
+    private Operation extend( RawOperation rawOperation )
     {
         OperationType operationType = operationTypeResolver.resolve( rawOperation.getType() );
         Category category;

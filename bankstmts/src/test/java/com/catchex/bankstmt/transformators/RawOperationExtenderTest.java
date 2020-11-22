@@ -19,10 +19,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 
-public class OperationTransformerTest
+public class RawOperationExtenderTest
 {
-    private OperationTransformer operationTransformer =
-        new OperationTransformer( createOperationTypeResolverMock(),
+    private RawOperationExtender rawOperationExtender =
+        new RawOperationExtender( createOperationTypeResolverMock(),
             createOperationCategoryResolverMock() );
 
 
@@ -30,7 +30,7 @@ public class OperationTransformerTest
     public void should_Return_Empty_List_When_Null_As_List_Given()
     {
         //WHEN
-        Set<Operation> operations = operationTransformer.transform( null );
+        Set<Operation> operations = rawOperationExtender.extend( null );
 
         //THEN
         assertEquals( operations, of() );
@@ -44,7 +44,7 @@ public class OperationTransformerTest
         List<RawOperation> rawOperations = of( createRawOperationMock( "ID_MOCK" ) );
 
         //WHEN
-        Set<Operation> operations = operationTransformer.transform( rawOperations );
+        Set<Operation> operations = rawOperationExtender.extend( rawOperations );
 
         //THEN
         assertEquals( 1, operations.size() );

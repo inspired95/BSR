@@ -47,41 +47,38 @@ public class LoadBankStatementsBtnEventHandler
         {
             for( File bankStatement : selectedBankStatements )
             {
-                Optional<String> readBankStatementFile =
+                Optional<String> readBankStatementFileContent =
                     PDFReader.read( bankStatement.getAbsolutePath() );
-                manageReadBankStatementFile(
-                    selectedBankName, bankStatement.getName(), readBankStatementFile );
+                readBankStatementFileContent.ifPresent(
+                    fileContent -> manageReadBankStatementFile( selectedBankName,
+                        bankStatement.getName(), fileContent ) );
             }
         }
     }
 
 
     private void manageReadBankStatementFile(
-        String bankChoiceDialog, String bankStatementFileName,
-        Optional<String> readBankStatementFile )
+        String bankChoiceDialog, String bankStatementFileName, String readBankStatementFile )
     {
-        if( readBankStatementFile.isPresent() )
+        List<RawOperation> rawOperations =
+            convertRawReadBankStatementFileToRawBankOperations( bankChoiceDialog,
+                bankStatementFileName, readBankStatementFile );
+        if( !rawOperations.isEmpty() )
         {
-            List<RawOperation> rawOperations =
-                convertRawReadBankStatementFileToRawBankOperations( bankChoiceDialog,
-                    bankStatementFileName, readBankStatementFile.get() );
-            if( !rawOperations.isEmpty() )
-            {
-                decorate( bankChoiceDialog, rawOperations );
-            }
+            decorate( bankChoiceDialog, rawOperations );
         }
     }
 
 
     private void decorate(
-        String bankChoiceDialog, List<RawOperation> convert )
+        String bankChoiceDialog, List<RawOperation> rawOperations )
     {
         Optional<OperationTypeResolver> operationTypeResolver =
             new OperationTypeResolverFactory().match( bankChoiceDialog );
         if( operationTypeResolver.isPresent() )
         {
             RawOperationExtender extender = getRawOperationExtender( operationTypeResolver.get() );
-            Set<Operation> operations = extender.extend( convert );
+            Set<Operation> operations = extender.extend( rawOperations );
             controller.addOperations( operations );
         }
     }
@@ -90,7 +87,8 @@ public class LoadBankStatementsBtnEventHandler
     private RawOperationExtender getRawOperationExtender(
         OperationTypeResolver operationTypeResolver )
     {
-        return new RawOperationExtender( operationTypeResolver, new OperationCategoryResolverImpl(
+        return new RawOperationExtender(
+            operationTypeResolver, new OperationCategoryResolverImpl(
             Configuration.getCategoriesConfiguration().getCategories() ) );
     }
 

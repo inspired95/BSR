@@ -1,12 +1,12 @@
-package client.view;
+package client.view.model;
 
 import com.catchex.models.Operation;
 import javafx.beans.property.SimpleDoubleProperty;
 
 import java.time.LocalDate;
 
-public class RepositoryCreatorIntervalTreeItem extends RepositoryCreatorTreeItem {
-    public RepositoryCreatorIntervalTreeItem( LocalDate date ) {
+public class IntervalTreeItem extends AbstractTreeItem {
+    public IntervalTreeItem( LocalDate date ) {
         super(Operation.DUMMY_OPERATION);
         this.date = date;
         overrideDefaultNanValue();

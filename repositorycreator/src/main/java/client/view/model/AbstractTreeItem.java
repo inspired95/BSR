@@ -1,4 +1,4 @@
-package client.view;
+package client.view.model;
 
 import com.catchex.models.Operation;
 import javafx.beans.property.SimpleDoubleProperty;
@@ -8,7 +8,7 @@ import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.Objects;
 
-public class RepositoryCreatorTreeItem implements Serializable {
+public abstract class AbstractTreeItem implements Serializable {
 
     protected Operation operation;
     protected LocalDate date;
@@ -20,11 +20,11 @@ public class RepositoryCreatorTreeItem implements Serializable {
     protected SimpleStringProperty fileName;
     protected SimpleStringProperty bankName;
 
-    public RepositoryCreatorTreeItem(){
+    public AbstractTreeItem(){
 
     }
 
-    public RepositoryCreatorTreeItem( Operation operation )
+    public AbstractTreeItem( Operation operation )
     {
         this.operation = operation;
         this.date = operation.getRawOperation().getDate();
@@ -86,8 +86,8 @@ public class RepositoryCreatorTreeItem implements Serializable {
     @Override
     public boolean equals( Object o ) {
         if (this == o) return true;
-        if (!(o instanceof RepositoryCreatorTreeItem)) return false;
-        RepositoryCreatorTreeItem that = (RepositoryCreatorTreeItem) o;
+        if (!(o instanceof AbstractTreeItem)) return false;
+        AbstractTreeItem that = (AbstractTreeItem) o;
         return Objects.equals(date, that.date) &&
                 Objects.equals(ID, that.ID) &&
                 Objects.equals(type, that.type) &&

@@ -1,6 +1,7 @@
 package client;
 
 
+import client.control.RepositoryCreatorDialogController;
 import javafx.application.Application;
 import javafx.stage.Stage;
 

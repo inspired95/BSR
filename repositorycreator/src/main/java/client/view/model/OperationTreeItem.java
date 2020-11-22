@@ -1,15 +1,15 @@
-package client.view;
+package client.view.model;
 
 import com.catchex.models.Operation;
 
 import java.io.Serializable;
 
-public class RepositoryCreatorOperationTreeItem extends RepositoryCreatorTreeItem implements Serializable {
-    public RepositoryCreatorOperationTreeItem(){
+public class OperationTreeItem extends AbstractTreeItem implements Serializable {
+    public OperationTreeItem(){
         super();
     }
 
-    public RepositoryCreatorOperationTreeItem( Operation operation ) {
+    public OperationTreeItem( Operation operation ) {
         super(operation);
     }
 

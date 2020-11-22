@@ -31,9 +31,8 @@ public class OperationReportGenerator
     {
         return html( generateHead(), body( tableGenerator.generateIncomesStatisticsTable(),
             tableGenerator.generateExpensesStatisticsTable()
-                .with( chartGenerator.generateCanvas( "expensesSummary", "smallChart" ) )
-                .with( chartGenerator.generateCanvas( "CategoriesExpensesPerMonthChart",
-                    "chart" ) ),
+                .with( chartGenerator.generateCanvas( "expensesSummary", "smallChart" ) ).with(
+                chartGenerator.generateCanvas( "CategoriesExpensesPerMonthChart", "chart" ) ),
             tableGenerator.generateNotResolvedStatisticsTable(),
             chartGenerator.generateExpensesSummaryChartScript( "expensesSummary" ), chartGenerator
                 .generateCategoriesExpensesPerMonthChartScript( "CategoriesExpensesPerMonthChart" ),

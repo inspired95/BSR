@@ -35,7 +35,8 @@ public class OperationCategoryResolverImpl
                 .anyMatch( keyword -> descriptionCaseLowered.contains( keyword.toLowerCase() ) ) )
                 return category;
         }
-        LOGGER.warning( "Operation category of based on description cannot be resolved : " + operationDescription);
+        LOGGER.warning( "Operation category of based on description cannot be resolved : " +
+            operationDescription );
         return OTHER_CATEGORY;
     }
 }

@@ -1,23 +1,23 @@
 package pdfcoverters;
 
+import com.catchex.bankstmt.pdfconverters.BankStmtConverter;
+import com.catchex.bankstmt.pdfconverters.BankStmtConverterFactory;
 import com.catchex.models.RawOperation;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
-import com.catchex.bankstmt.pdfconverters.BankStmtConverter;
-import com.catchex.bankstmt.pdfconverters.BankStmtConverterFactory;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static com.catchex.util.Constants.DEBIT_CARD_PAYMENT_RESOLVER_TXT_PL;
 import static com.catchex.util.Constants.PKO_DATE_FORMAT;
 import static com.catchex.util.Util.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 
 public class PKOBankStmtConverterTest
@@ -52,7 +52,8 @@ public class PKOBankStmtConverterTest
             new PKOBankStmtPdfMock().addEntry( stmtEntryPdfMock ).summarize();
 
         //WHEN
-        List<RawOperation> converted = bankStmtConverter.convert(dummyBankStatementFileName, bankStmtPdfMock.getContent() );
+        List<RawOperation> converted =
+            bankStmtConverter.convert( dummyBankStatementFileName, bankStmtPdfMock.getContent() );
 
         //THEN
         assertEquals( 1, converted.size() );
@@ -85,7 +86,8 @@ public class PKOBankStmtConverterTest
             new PKOBankStmtPdfMock().addEntry( stmtEntryPdfMock ).summarize();
 
         //WHEN
-        List<RawOperation> converted = bankStmtConverter.convert( dummyBankStatementFileName, bankStmtPdfMock.getContent() );
+        List<RawOperation> converted =
+            bankStmtConverter.convert( dummyBankStatementFileName, bankStmtPdfMock.getContent() );
 
         //THEN
         assertTrue( converted.isEmpty() );

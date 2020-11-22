@@ -1,5 +1,6 @@
 package com.catchex.models;
 
-public class RawOperationsGroup {
+public class RawOperationsGroup
+{
 
 }

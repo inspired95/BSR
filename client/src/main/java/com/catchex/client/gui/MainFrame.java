@@ -64,8 +64,8 @@ public class MainFrame
 
     private void drawOperationsTable( JPanel panel )
     {
-        operationsScrollTable = new ScrollTable( OPERATIONS,800, 300, DATE, TYPE, CATEGORY,
-            AMOUNT );
+        operationsScrollTable =
+            new ScrollTable( OPERATIONS, 800, 300, DATE, TYPE, CATEGORY, AMOUNT );
         panel.add( operationsScrollTable );
     }
 
@@ -117,7 +117,7 @@ public class MainFrame
 
     public void drawSources( JPanel panel )
     {
-        sourcesScrollTable = new ScrollTable(SOURCES, 100, 100, SOURCE );
+        sourcesScrollTable = new ScrollTable( SOURCES, 100, 100, SOURCE );
         panel.add( sourcesScrollTable );
     }
 

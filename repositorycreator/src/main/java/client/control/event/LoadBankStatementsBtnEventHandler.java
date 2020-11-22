@@ -22,43 +22,58 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
-public class LoadBankStatementsBtnEventHandler implements EventHandler<ActionEvent> {
+
+public class LoadBankStatementsBtnEventHandler
+    implements EventHandler<ActionEvent>
+{
 
     private RepositoryCreatorDialogController controller;
 
-    public LoadBankStatementsBtnEventHandler( RepositoryCreatorDialogController controller ) {
+
+    public LoadBankStatementsBtnEventHandler( RepositoryCreatorDialogController controller )
+    {
         this.controller = controller;
     }
 
 
     @Override
-    public void handle( ActionEvent event ) {
-        ChoiceDialog<String> bankChoiceDialog = new ChoiceDialog<>(controller.getSupportedBanks()[0], controller.getSupportedBanks());
+    public void handle( ActionEvent event )
+    {
+        ChoiceDialog<String> bankChoiceDialog =
+            new ChoiceDialog<>( controller.getSupportedBanks()[0], controller.getSupportedBanks() );
         bankChoiceDialog.showAndWait();
 
-        Stage window = (Stage) controller.getView().getScene().getWindow();
+        Stage window = (Stage)controller.getView().getScene().getWindow();
         FileChooser fileChooser = new FileChooser();
-        fileChooser.setTitle("Select bank statements");
+        fileChooser.setTitle( "Select bank statements" );
 
-        List<File> selectedBankStatements = fileChooser.showOpenMultipleDialog(window);
+        List<File> selectedBankStatements = fileChooser.showOpenMultipleDialog( window );
 
-        if (selectedBankStatements != null){
-            for (File bankStatement : selectedBankStatements) {
-                Optional<String> read = PDFReader.read(bankStatement.getAbsolutePath());
+        if( selectedBankStatements != null )
+        {
+            for( File bankStatement : selectedBankStatements )
+            {
+                Optional<String> read = PDFReader.read( bankStatement.getAbsolutePath() );
                 List<RawOperation> convert = Collections.emptyList();
-                if (read.isPresent()){
-                    Optional<BankStmtConverter> bankStmtConverter = BankStmtConverterFactory.match(bankChoiceDialog.getSelectedItem());
-                    if (bankStmtConverter.isPresent()){
-                        convert = bankStmtConverter.get().convert(bankStatement.getName(), read.get());
+                if( read.isPresent() )
+                {
+                    Optional<BankStmtConverter> bankStmtConverter =
+                        BankStmtConverterFactory.match( bankChoiceDialog.getSelectedItem() );
+                    if( bankStmtConverter.isPresent() )
+                    {
+                        convert =
+                            bankStmtConverter.get().convert( bankStatement.getName(), read.get() );
                     }
                     Optional<OperationTypeResolver> operationTypeResolver =
-                            new OperationTypeResolverFactory().match( bankChoiceDialog.getSelectedItem() );
-                    if (operationTypeResolver.isPresent() && !convert.isEmpty()){
+                        new OperationTypeResolverFactory()
+                            .match( bankChoiceDialog.getSelectedItem() );
+                    if( operationTypeResolver.isPresent() && !convert.isEmpty() )
+                    {
                         OperationTransformer transformer = new OperationTransformer(
-                                operationTypeResolver.get(), new OperationCategoryResolverImpl(
-                                Configuration.getCategoriesConfiguration().getCategories() ) );
+                            operationTypeResolver.get(), new OperationCategoryResolverImpl(
+                            Configuration.getCategoriesConfiguration().getCategories() ) );
                         Set<Operation> operations = transformer.transform( convert );
-                        controller.addOperations(operations);
+                        controller.addOperations( operations );
                     }
                 }
             }

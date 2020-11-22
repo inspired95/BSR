@@ -1,16 +1,15 @@
 package com.catchex.models;
 
-
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.Objects;
 
 
-
-public class RawOperation implements Serializable
+public class RawOperation
+    implements Serializable
 {
     public static final RawOperation DUMMY_RAW_OPERATION =
-            new RawOperation(LocalDate.MIN, "", "", Double.NaN, "", "", "");
+        new RawOperation( LocalDate.MIN, "", "", Double.NaN, "", "", "" );
 
     private LocalDate date;
     private String ID;
@@ -20,9 +19,12 @@ public class RawOperation implements Serializable
     private String fileName;
     private String bank;
 
-    public RawOperation(){
+
+    public RawOperation()
+    {
 
     }
+
 
     public LocalDate getDate()
     {
@@ -47,29 +49,40 @@ public class RawOperation implements Serializable
         return amount;
     }
 
-    public String getFileName() {
+
+    public String getFileName()
+    {
         return fileName;
     }
 
-    public String getBank() {
+
+    public String getBank()
+    {
         return bank;
     }
+
 
     public String getDesc()
     {
         return desc;
     }
 
-    public void setDesc( String desc ) {
+
+    public void setDesc( String desc )
+    {
         this.desc = desc;
     }
 
-    public void setAmount( Double amount ) {
+
+    public void setAmount( Double amount )
+    {
         this.amount = amount;
     }
 
+
     protected RawOperation(
-        LocalDate date, String ID, String type, Double amount, String desc, String fileName, String bank )
+        LocalDate date, String ID, String type, Double amount, String desc, String fileName,
+        String bank )
     {
         this.date = date;
         this.ID = ID;
@@ -79,6 +92,7 @@ public class RawOperation implements Serializable
         this.fileName = fileName;
         this.bank = bank;
     }
+
 
     public static final class Builder
     {
@@ -102,6 +116,7 @@ public class RawOperation implements Serializable
             this.date = date;
             return this;
         }
+
 
         public Builder setFileName( String fileName )
         {
@@ -130,7 +145,9 @@ public class RawOperation implements Serializable
             return this;
         }
 
-        public Builder setBank( String bank ){
+
+        public Builder setBank( String bank )
+        {
             this.bank = bank;
             return this;
         }
@@ -138,7 +155,8 @@ public class RawOperation implements Serializable
 
         public boolean isValid()
         {
-            return validID() && validOperationType() && validAmount() && validDescription() && validFileName();
+            return validID() && validOperationType() && validAmount() && validDescription() &&
+                validFileName();
         }
 
 
@@ -165,7 +183,9 @@ public class RawOperation implements Serializable
             return ID.length() == 17;
         }
 
-        private boolean validFileName(){
+
+        private boolean validFileName()
+        {
             return !fileName.isEmpty();
         }
 
@@ -176,9 +196,11 @@ public class RawOperation implements Serializable
         }
     }
 
+
     public boolean isValid()
     {
-        return validID() && validOperationType() && validAmount() && validDescription() && validFileName();
+        return validID() && validOperationType() && validAmount() && validDescription() &&
+            validFileName();
     }
 
 
@@ -205,9 +227,12 @@ public class RawOperation implements Serializable
         return ID.length() == 17;
     }
 
-    private boolean validFileName(){
+
+    private boolean validFileName()
+    {
         return !fileName.isEmpty();
     }
+
 
     @Override
     public String toString()
@@ -216,11 +241,13 @@ public class RawOperation implements Serializable
             type + '\'' + "\n\tamount=" + amount + "\n\tdesc='" + desc + '\'' + "\n}";
     }
 
+
     @Override
     public int hashCode()
     {
         return Objects.hash( ID, date, desc, type, amount );
     }
+
 
     @Override
     public boolean equals( Object obj )
@@ -257,7 +284,6 @@ public class RawOperation implements Serializable
         else if( !type.equals( other.type ) )
             return false;
 
-
         if( amount == null )
         {
             return other.amount == null;
@@ -272,11 +298,12 @@ public class RawOperation implements Serializable
         else if( !desc.equals( other.desc ) )
             return false;
 
-        if (fileName == null )
+        if( fileName == null )
         {
             return other.fileName == null;
         }
-        else return fileName.equals(other.fileName);
+        else
+            return fileName.equals( other.fileName );
 
     }
 }

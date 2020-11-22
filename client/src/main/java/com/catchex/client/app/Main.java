@@ -6,7 +6,8 @@ import javax.swing.*;
 
 import static com.catchex.configuration.ConfigurationLoader.isConfigurationLoadedSuccessfully;
 import static com.catchex.configuration.ConfigurationLoader.loadConfiguration;
-import static com.catchex.util.Log.*;
+import static com.catchex.util.Log.LOGGER;
+import static com.catchex.util.Log.initLogging;
 import static com.catchex.util.Util.showError;
 
 

@@ -1,13 +1,13 @@
 package com.catchex.client.gui;
 
 import com.catchex.bankstmt.categories.OperationCategoryResolverImpl;
-import com.catchex.models.Operation;
-import com.catchex.models.RawOperation;
 import com.catchex.bankstmt.operationtype.OperationTypeResolver;
 import com.catchex.bankstmt.operationtype.OperationTypeResolverFactory;
 import com.catchex.bankstmt.pdfconverters.BankStmtConverter;
 import com.catchex.bankstmt.pdfconverters.BankStmtConverterFactory;
 import com.catchex.bankstmt.transformators.OperationTransformer;
+import com.catchex.models.Operation;
+import com.catchex.models.RawOperation;
 
 import javax.swing.*;
 import java.awt.*;
@@ -19,11 +19,10 @@ import java.util.Optional;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
 
 import static com.catchex.configuration.Configuration.getCategoriesConfiguration;
 import static com.catchex.io.reader.PDFReader.read;
-import static com.catchex.util.Log.*;
+import static com.catchex.util.Log.LOGGER;
 import static com.catchex.util.Util.showInformation;
 import static java.util.Arrays.asList;
 
@@ -87,13 +86,18 @@ public class BankStmtChooserBtnListener
         this.selectedFile = selectedFile;
         LOGGER.info( "Bank statement reading finished" );
 
-        ExecutorService service = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
+        ExecutorService service =
+            Executors.newFixedThreadPool( Runtime.getRuntime().availableProcessors() );
 
-        if (bankStmtPdf.isPresent()){
-            MyCallable myCallable = new MyCallable(bankStmtPdf.get());
-            try{
-                service.invokeAll(asList(myCallable));
-            }catch(Exception err){
+        if( bankStmtPdf.isPresent() )
+        {
+            MyCallable myCallable = new MyCallable( bankStmtPdf.get() );
+            try
+            {
+                service.invokeAll( asList( myCallable ) );
+            }
+            catch( Exception err )
+            {
                 err.printStackTrace();
             }
             service.shutdown();
@@ -124,27 +128,36 @@ public class BankStmtChooserBtnListener
             () -> SwingUtilities.invokeLater( () -> root.getGlassPane().setVisible( false ) ) )
             .start();
     }
-    class MyCallable implements Callable<String> {
+
+
+    class MyCallable
+        implements Callable<String>
+    {
         String bankStmtPdf;
-        public MyCallable(String bankStmtPdf){
+
+
+        public MyCallable( String bankStmtPdf )
+        {
             this.bankStmtPdf = bankStmtPdf;
         }
-        public String call(){
+
+
+        public String call()
+        {
             Optional<BankStmtConverter> bankStmtConverter =
-                    new BankStmtConverterFactory().match( chosenBank );
+                new BankStmtConverterFactory().match( chosenBank );
             if( bankStmtConverter.isPresent() )
             {
-                List<RawOperation> rawOperations =
-                        bankStmtConverter.get().convert( bankStmtPdf );
+                List<RawOperation> rawOperations = bankStmtConverter.get().convert( bankStmtPdf );
 
                 Optional<OperationTypeResolver> operationTypeResolver =
-                        new OperationTypeResolverFactory().match( chosenBank );
+                    new OperationTypeResolverFactory().match( chosenBank );
 
                 if( !rawOperations.isEmpty() && operationTypeResolver.isPresent() )
                 {
                     OperationTransformer transformer = new OperationTransformer(
-                            operationTypeResolver.get(), new OperationCategoryResolverImpl(
-                            getCategoriesConfiguration().getCategories() ) );
+                        operationTypeResolver.get(), new OperationCategoryResolverImpl(
+                        getCategoriesConfiguration().getCategories() ) );
                     operations = transformer.transform( rawOperations );
                     root.updateSources( selectedFile.getName() );
                 }

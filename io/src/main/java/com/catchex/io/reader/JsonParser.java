@@ -1,12 +1,12 @@
 package com.catchex.io.reader;
 
+import com.catchex.models.CategoriesConfiguration;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
-import com.catchex.models.CategoriesConfiguration;
 
 import java.util.Optional;
 
-import static com.catchex.util.Log.*;
+import static com.catchex.util.Log.LOGGER;
 
 
 public class JsonParser
@@ -24,7 +24,8 @@ public class JsonParser
         }
         catch( JsonSyntaxException | NullPointerException e )
         {
-            LOGGER.warning( "Error while parsing JSON com.catchex.bankstmt.categories configuration" );
+            LOGGER.warning(
+                "Error while parsing JSON com.catchex.bankstmt.categories configuration" );
         }
         return Optional.empty();
     }

@@ -9,35 +9,44 @@ import javafx.scene.control.TreeItem;
 
 import static javafx.scene.control.TreeTableColumn.CellEditEvent;
 
-public class DescriptionCellEditEventHandler implements javafx.event.EventHandler<CellEditEvent<AbstractTreeItem, String>> {
+
+public class DescriptionCellEditEventHandler
+    implements javafx.event.EventHandler<CellEditEvent<AbstractTreeItem, String>>
+{
 
     private RepositoryCreatorDialogController controller;
 
-    public DescriptionCellEditEventHandler( RepositoryCreatorDialogController controller ) {
+
+    public DescriptionCellEditEventHandler( RepositoryCreatorDialogController controller )
+    {
         this.controller = controller;
     }
 
+
     @Override
-    public void handle( CellEditEvent event ) {
+    public void handle( CellEditEvent event )
+    {
         Object treeItemToEdit = event.getRowValue().getValue();
-        if (treeItemToEdit instanceof OperationTreeItem){
-            OperationTreeItem operationTreeItemToEdit = (OperationTreeItem) treeItemToEdit;
+        if( treeItemToEdit instanceof OperationTreeItem )
+        {
+            OperationTreeItem operationTreeItemToEdit = (OperationTreeItem)treeItemToEdit;
             Operation operationToUpdate = operationTreeItemToEdit.getOperation();
 
             TreeItem intervalTreeItem = event.getRowValue().getParent();
 
-            int currentIndex = intervalTreeItem.getChildren().indexOf(event.getRowValue());
+            int currentIndex = intervalTreeItem.getChildren().indexOf( event.getRowValue() );
 
-            controller.getRepository().getOperations().remove(operationToUpdate);
-            intervalTreeItem.getChildren().remove(event.getRowValue());
+            controller.getRepository().getOperations().remove( operationToUpdate );
+            intervalTreeItem.getChildren().remove( event.getRowValue() );
 
             String newOperationDescription = (String)event.getNewValue();
-            operationToUpdate.getRawOperation().setDesc(newOperationDescription);
+            operationToUpdate.getRawOperation().setDesc( newOperationDescription );
 
-            Category newOperationCategory = controller.getCategoryResolver().resolve(newOperationDescription);
-            operationToUpdate.setCategory(newOperationCategory);
+            Category newOperationCategory =
+                controller.getCategoryResolver().resolve( newOperationDescription );
+            operationToUpdate.setCategory( newOperationCategory );
 
-            controller.addOperation(operationToUpdate, currentIndex);
+            controller.addOperation( operationToUpdate, currentIndex );
         }
     }
 }

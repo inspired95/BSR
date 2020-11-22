@@ -1,15 +1,15 @@
 package com.catchex.report.web;
 
-import com.catchex.report.statictics.OperationsStatistics;
-import j2html.tags.ContainerTag;
 import com.catchex.models.Operation;
 import com.catchex.models.OperationType;
+import com.catchex.report.statictics.OperationsStatistics;
+import j2html.tags.ContainerTag;
 
 import java.util.*;
 import java.util.function.Predicate;
 
-import static j2html.TagCreator.*;
 import static com.catchex.models.OperationType.*;
+import static j2html.TagCreator.*;
 
 
 public class OperationTableGenerator
@@ -44,13 +44,15 @@ public class OperationTableGenerator
 
     public ContainerTag generateExpensesOperationsTable( Comparator<Operation> comparator )
     {
-        return div( generateHeader( "Expenses list" ), generateOperations( this::isExpense, comparator ) );
+        return div(
+            generateHeader( "Expenses list" ), generateOperations( this::isExpense, comparator ) );
     }
 
 
     public ContainerTag generateIncomesOperationsTable( Comparator<Operation> comparator )
     {
-        return div( generateHeader( "Incomes list" ), generateOperations( this::isIncome, comparator ) );
+        return div(
+            generateHeader( "Incomes list" ), generateOperations( this::isIncome, comparator ) );
     }
 
 
@@ -86,7 +88,7 @@ public class OperationTableGenerator
 
     private ContainerTag generateOperationsSum( Double value, String cssClass )
     {
-        return h2( attrs( cssClass ), "Sum: " + String.format( "%.2f", value) );
+        return h2( attrs( cssClass ), "Sum: " + String.format( "%.2f", value ) );
     }
 
 
@@ -110,11 +112,11 @@ public class OperationTableGenerator
     }
 
 
-    private ContainerTag generateOperations( Predicate<Operation> predicate,
-                                             Comparator<Operation> comparator )
+    private ContainerTag generateOperations(
+        Predicate<Operation> predicate, Comparator<Operation> comparator )
     {
         ContainerTag table = table().with( generateOperationsTableHeader() );
-        sortOperationByComparator(comparator);
+        sortOperationByComparator( comparator );
         for( Operation operation : operations )
         {
             if( predicate.test( operation ) )
@@ -166,20 +168,21 @@ public class OperationTableGenerator
             td().with( span( operation.getType().name() ) ),
             td().with( span( operation.getCategory().getCategoryName() ) ),
             td().with( span( operation.getRawOperation().getAmount().toString() ) ),
-            td().with( span( operation.getRawOperation().getDesc() ) ));
+            td().with( span( operation.getRawOperation().getDesc() ) ) );
 
     }
 
 
     private ContainerTag generateOperationsTableHeader()
     {
-        return thead(tr().with( td().with( span( "ID" ) ), td().with( span( "Date" ) ),
+        return thead( tr().with( td().with( span( "ID" ) ), td().with( span( "Date" ) ),
             td().with( span( "Operation Type" ) ), td().with( span( "Category" ) ),
-            td().with( span( "Amount" ) ),
-            td().with( span( "Description" ) )));
+            td().with( span( "Amount" ) ), td().with( span( "Description" ) ) ) );
     }
 
-    private void sortOperationByComparator( Comparator<Operation> comparator ){
+
+    private void sortOperationByComparator( Comparator<Operation> comparator )
+    {
         operations.sort( comparator );
     }
 }

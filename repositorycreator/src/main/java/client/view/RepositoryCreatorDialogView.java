@@ -83,12 +83,12 @@ public class RepositoryCreatorDialogView
         treeTableView.setEditable( true );
         treeTableView.setTableMenuButtonVisible( true );
 
-        treeTableView.getColumns()
-            .setAll( new IntervalColumn( intervalTreeItemFormatter, controller ),
-                new DateColumn( controller ), new IdColumn( controller ),
-                new TypeColumn( controller ), new CategoryColumn( controller ),
-                new AmountColumn( controller ), new DescriptionColumn( controller ),
-                new BankNameColumn( controller ), new FileNameColumn( controller ) );
+        treeTableView.getColumns().setAll(
+            new IntervalColumn( intervalTreeItemFormatter, controller ),
+            new DateColumn( controller ), new IdColumn( controller ), new TypeColumn( controller ),
+            new CategoryColumn( controller ), new AmountColumn( controller ),
+            new DescriptionColumn( controller ), new BankNameColumn( controller ),
+            new FileNameColumn( controller ) );
 
     }
 

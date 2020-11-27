@@ -1,12 +1,20 @@
 package client.view.columns;
 
 import client.control.RepositoryCreatorDialogController;
+import com.catchex.util.Log;
 import javafx.beans.property.ReadOnlyObjectWrapper;
+
+import java.text.NumberFormat;
+import java.text.ParseException;
+import java.util.Locale;
 
 
 public class AmountColumn
     extends RepositoryColumn<String>
 {
+    private NumberFormat numberFormatter = NumberFormat.getInstance( Locale.getDefault() );
+
+
     public AmountColumn( RepositoryCreatorDialogController controller )
     {
         super( "Amount", controller );
@@ -47,9 +55,24 @@ public class AmountColumn
             {
                 return 0;
             }
-            Double val1 = Double.parseDouble( s );
-            Double val2 = Double.parseDouble( t1 );
+
+            Double val1 = getDoubleFromString( s );
+            Double val2 = getDoubleFromString( t1 );
             return val1.compareTo( val2 );
         } );
+    }
+
+
+    private Double getDoubleFromString( String s )
+    {
+        try
+        {
+            return numberFormatter.parse( s ).doubleValue();
+        }
+        catch( ParseException e )
+        {
+            Log.LOGGER.warning( "Cannot amount to double value:" + s );
+        }
+        return Double.NaN;
     }
 }

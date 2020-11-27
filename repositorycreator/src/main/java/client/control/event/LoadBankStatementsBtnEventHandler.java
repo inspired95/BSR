@@ -22,6 +22,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
+import static client.Constants.supportedBanks;
+
 
 public class LoadBankStatementsBtnEventHandler
     implements EventHandler<ActionEvent>
@@ -67,13 +69,13 @@ public class LoadBankStatementsBtnEventHandler
                     bankStatementFileName, readBankStatementFile.get() );
             if( !rawOperations.isEmpty() )
             {
-                decorate( bankChoiceDialog, rawOperations );
+                controller.addOperations( decorate( bankChoiceDialog, rawOperations ) );
             }
         }
     }
 
 
-    private void decorate(
+    private Set<Operation> decorate(
         String bankChoiceDialog, List<RawOperation> convert )
     {
         Optional<OperationTypeResolver> operationTypeResolver =
@@ -81,9 +83,9 @@ public class LoadBankStatementsBtnEventHandler
         if( operationTypeResolver.isPresent() )
         {
             RawOperationExtender extender = getRawOperationExtender( operationTypeResolver.get() );
-            Set<Operation> operations = extender.extend( convert );
-            controller.addOperations( operations );
+            return extender.extend( convert );
         }
+        return Collections.emptySet();
     }
 
 
@@ -119,7 +121,7 @@ public class LoadBankStatementsBtnEventHandler
     private String getSelectedBank()
     {
         ChoiceDialog<String> bankChoiceDialog =
-            new ChoiceDialog<>( controller.getSupportedBanks()[0], controller.getSupportedBanks() );
+            new ChoiceDialog<>( supportedBanks[0], supportedBanks );
         bankChoiceDialog.showAndWait();
         return bankChoiceDialog.getSelectedItem();
     }

@@ -5,14 +5,14 @@ import client.control.event.LoadBankStatementsBtnEventHandler;
 import client.control.event.LoadRepositoryBtnEventHandler;
 import client.control.event.SaveRepositoryBtnEventHandler;
 import client.view.RepositoryCreatorDialogView;
+import client.view.model.OperationTreeItem;
 import com.catchex.bankstmt.categories.OperationCategoryResolverImpl;
 import com.catchex.configuration.Configuration;
+import com.catchex.models.Category;
 import com.catchex.models.Operation;
 import javafx.stage.Stage;
 
 import java.util.Set;
-
-import static com.catchex.util.Constants.PKO;
 
 
 public class RepositoryCreatorDialogController
@@ -21,11 +21,6 @@ public class RepositoryCreatorDialogController
     private Repository repository;
     private RepositoryCreatorDialogView view;
     private OperationCategoryResolverImpl categoryResolver;
-
-    private Stage stage;
-
-    private String[] supportedBanks = { PKO };
-
 
     public RepositoryCreatorDialogController()
     {
@@ -38,12 +33,40 @@ public class RepositoryCreatorDialogController
 
     public void init( Stage stage )
     {
-        this.stage = stage;
-        view.initView();
+        view.initView( stage );
         initMenuBtnsEventHandler();
 
-        stage.setScene( view.getScene() );
         stage.show();
+    }
+
+
+    public void addOperations( Set<Operation> operations )
+    {
+        repository.addOperations( operations );
+        view.updateView( operations );
+    }
+
+
+    public void handleDescriptionChange(
+        OperationTreeItem operationTreeItem, String newDescription )
+    {
+        Category newCategory = resolveCategoryForDescription( newDescription );
+
+        updateModel( operationTreeItem.getOperation(), newDescription, newCategory );
+
+        updateView( operationTreeItem, newDescription, newCategory );
+    }
+
+
+    public Repository getRepository()
+    {
+        return repository;
+    }
+
+
+    public RepositoryCreatorDialogView getView()
+    {
+        return view;
     }
 
 
@@ -80,40 +103,25 @@ public class RepositoryCreatorDialogController
     }
 
 
-    public void addOperations( Set<Operation> operations )
+    private void updateView(
+        OperationTreeItem operationTreeItem, String newDescription, Category newCategory )
     {
-        repository.addOperations( operations );
-        view.updateView( operations );
+        operationTreeItem.setDesc( newDescription );
+        operationTreeItem.setCategory( newCategory );
+        view.refresh();
     }
 
 
-    public void addOperation( Operation operation, int index )
+    private void updateModel(
+        Operation operation, String newDescription, Category newCategory )
     {
-        repository.addOperation( operation );
-        view.updateView( operation, index );
+        operation.getRawOperation().setDesc( newDescription );
+        operation.setCategory( newCategory );
     }
 
 
-    public Repository getRepository()
+    private Category resolveCategoryForDescription( String newOperationDescription )
     {
-        return repository;
-    }
-
-
-    public OperationCategoryResolverImpl getCategoryResolver()
-    {
-        return categoryResolver;
-    }
-
-
-    public RepositoryCreatorDialogView getView()
-    {
-        return view;
-    }
-
-
-    public String[] getSupportedBanks()
-    {
-        return supportedBanks;
+        return categoryResolver.resolve( newOperationDescription );
     }
 }

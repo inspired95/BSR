@@ -11,6 +11,7 @@ import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
 
 import java.time.LocalDate;
 import java.util.Optional;
@@ -33,7 +34,7 @@ public class RepositoryCreatorDialogView
     }
 
 
-    public void initView()
+    public void initView( Stage stage )
     {
         //Menu
         loadRepositoryMenuItem = new MenuItem( "Load repository" );
@@ -59,6 +60,7 @@ public class RepositoryCreatorDialogView
         container.setPadding( new Insets( 10 ) );
 
         scene = new Scene( container, 1280, 800 );
+        stage.setScene( scene );
     }
 
 
@@ -70,11 +72,11 @@ public class RepositoryCreatorDialogView
 
     public void updateView( Set<Operation> operations )
     {
-        operations.forEach( operation -> updateView( operation, -1 ) );
+        operations.forEach( this::updateView );
     }
 
 
-    public void updateView( Operation operation, int index )
+    public void updateView( Operation operation )
     {
         Optional<TreeItem<AbstractTreeItem>> intervalTreeItemToPutOperation =
             findIntervalTreeItemOfOperation( operation.getRawOperation().getDate() );
@@ -84,7 +86,7 @@ public class RepositoryCreatorDialogView
 
         if( intervalTreeItemToPutOperation.isPresent() ) //interval for particular operation exists
         {
-            putOperationTreeItem( intervalTreeItemToPutOperation.get(), treeItemToPut, index );
+            putOperationTreeItem( intervalTreeItemToPutOperation.get(), treeItemToPut );
             increaseIntervalAmount(
                 intervalTreeItemToPutOperation.get(), treeItemToPut.getValue().getAmount() );
         }
@@ -94,9 +96,15 @@ public class RepositoryCreatorDialogView
                 generateNewInterval( treeItemToPut.getValue().getDate(),
                     treeItemToPut.getValue().getAmount() );
 
-            putOperationTreeItem( newIntervalTreeItem, treeItemToPut, -1 );
+            putOperationTreeItem( newIntervalTreeItem, treeItemToPut );
 
         }
+    }
+
+
+    public void refresh()
+    {
+        treeTableView.refresh();
     }
 
 
@@ -137,21 +145,10 @@ public class RepositoryCreatorDialogView
 
     private void putOperationTreeItem(
         TreeItem<AbstractTreeItem> intervalTreeItemToPutOperation,
-        TreeItem<AbstractTreeItem> treeItemToPut, int index )
+        TreeItem<AbstractTreeItem> treeItemToPut )
     {
-        //Position to put tree item has been specified
-        //Scenario: Putting new tree item after operation's description update
-        if( index != -1 )
-        {
-            intervalTreeItemToPutOperation.getChildren().add( index, treeItemToPut );
-            treeTableView.getSelectionModel().select( treeItemToPut );
-        }
-        else //Position to put tree item hasn't been specified
-        // Scenario: Putting new tree items after load bank statement or repository
-        {
-            putTreeItem( intervalTreeItemToPutOperation, treeItemToPut );
-            treeTableView.getSelectionModel().select( treeTableView.getRoot() );
-        }
+        putTreeItem( intervalTreeItemToPutOperation, treeItemToPut );
+        treeTableView.getSelectionModel().select( treeTableView.getRoot() );
     }
 
 

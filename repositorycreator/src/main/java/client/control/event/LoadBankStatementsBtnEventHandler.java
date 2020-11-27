@@ -11,6 +11,7 @@ import com.catchex.configuration.Configuration;
 import com.catchex.io.reader.PDFReader;
 import com.catchex.models.Operation;
 import com.catchex.models.RawOperation;
+import com.catchex.util.Log;
 import javafx.event.ActionEvent;
 import javafx.scene.control.ChoiceDialog;
 import javafx.stage.FileChooser;
@@ -43,34 +44,32 @@ public class LoadBankStatementsBtnEventHandler
     {
         String selectedBankName = getSelectedBank();
 
-        List<File> selectedBankStatements = getBankStatementsFileToLoad();
+        List<File> selectedBankStatementsFiles = getBankStatementsFileToLoad();
 
-        if( selectedBankStatements != null )
+        if( selectedBankStatementsFiles != null )
         {
-            for( File bankStatement : selectedBankStatements )
+            for( File bankStatementFile : selectedBankStatementsFiles )
             {
-                Optional<String> readBankStatementFile =
-                    PDFReader.read( bankStatement.getAbsolutePath() );
-                manageReadBankStatementFile(
-                    selectedBankName, bankStatement.getName(), readBankStatementFile );
+                Optional<String> readBankStatementContent =
+                    PDFReader.read( bankStatementFile.getAbsolutePath() );
+                readBankStatementContent.ifPresentOrElse(
+                    s -> manageReadBankStatementFile( selectedBankName, bankStatementFile.getName(),
+                        s ), () -> Log.LOGGER.warning(
+                        "Cannot read bank statement file: " + bankStatementFile.getName() ) );
             }
         }
     }
 
 
     private void manageReadBankStatementFile(
-        String bankChoiceDialog, String bankStatementFileName,
-        Optional<String> readBankStatementFile )
+        String bankChoiceDialog, String bankStatementFileName, String readBankStatementFile )
     {
-        if( readBankStatementFile.isPresent() )
+        List<RawOperation> rawOperations =
+            convertRawReadBankStatementFileToRawBankOperations( bankChoiceDialog,
+                bankStatementFileName, readBankStatementFile );
+        if( !rawOperations.isEmpty() )
         {
-            List<RawOperation> rawOperations =
-                convertRawReadBankStatementFileToRawBankOperations( bankChoiceDialog,
-                    bankStatementFileName, readBankStatementFile.get() );
-            if( !rawOperations.isEmpty() )
-            {
-                controller.addOperations( decorate( bankChoiceDialog, rawOperations ) );
-            }
+            controller.addOperations( decorate( bankChoiceDialog, rawOperations ) );
         }
     }
 
@@ -92,7 +91,8 @@ public class LoadBankStatementsBtnEventHandler
     private RawOperationExtender getRawOperationExtender(
         OperationTypeResolver operationTypeResolver )
     {
-        return new RawOperationExtender( operationTypeResolver, new OperationCategoryResolverImpl(
+        return new RawOperationExtender(
+            operationTypeResolver, new OperationCategoryResolverImpl(
             Configuration.getCategoriesConfiguration().getCategories() ) );
     }
 

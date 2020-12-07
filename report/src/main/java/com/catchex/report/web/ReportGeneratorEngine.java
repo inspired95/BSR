@@ -5,24 +5,20 @@ import com.catchex.report.statictics.OperationsStatistics;
 import j2html.tags.ContainerTag;
 
 import java.util.Comparator;
-import java.util.List;
 
 import static com.catchex.util.Constants.APP_TITLE;
 import static j2html.TagCreator.*;
 
 
-public class OperationReportGenerator
+public class ReportGeneratorEngine
 {
     private OperationTableGenerator tableGenerator;
     private OperationChartGenerator chartGenerator;
 
 
-    public OperationReportGenerator(
-        List<Operation> operations, List<String> sources,
-        OperationsStatistics operationsStatistics )
+    public ReportGeneratorEngine( OperationsStatistics operationsStatistics )
     {
-        this.tableGenerator =
-            new OperationTableGenerator( operations, sources, operationsStatistics );
+        this.tableGenerator = new OperationTableGenerator( operationsStatistics );
         this.chartGenerator = new OperationChartGenerator( operationsStatistics );
     }
 

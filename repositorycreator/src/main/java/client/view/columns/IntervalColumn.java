@@ -2,6 +2,7 @@ package client.view.columns;
 
 import client.control.RepositoryCreatorDialogController;
 import client.view.model.IntervalTreeItem;
+import com.catchex.util.Constants;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.scene.control.TreeTableColumn;
 
@@ -20,7 +21,7 @@ public class IntervalColumn
     public IntervalColumn(
         DateTimeFormatter intervalTreeItemFormatter, RepositoryCreatorDialogController controller )
     {
-        super( "Interval", controller );
+        super( Constants.INTERVAL, controller );
         this.intervalTreeItemFormatter = intervalTreeItemFormatter;
     }
 

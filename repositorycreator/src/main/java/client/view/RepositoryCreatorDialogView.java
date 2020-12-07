@@ -2,20 +2,18 @@ package client.view;
 
 import client.Repository;
 import client.control.RepositoryCreatorDialogController;
-import client.view.columns.*;
 import client.view.model.AbstractTreeItem;
 import client.view.model.IntervalTreeItem;
 import client.view.model.OperationTreeItem;
-import client.view.model.RootTreeItem;
 import com.catchex.models.Operation;
-import javafx.collections.ObservableList;
+import com.catchex.util.Constants;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
 
-import java.time.format.DateTimeFormatter;
-import java.util.Locale;
+import java.time.LocalDate;
 import java.util.Optional;
 import java.util.Set;
 
@@ -23,18 +21,12 @@ import java.util.Set;
 public class RepositoryCreatorDialogView
 {
     RepositoryCreatorDialogController controller;
-
     private Scene scene;
-
-    private VBox container;
     private MenuItem loadBankStatementsMenuItem;
     private MenuItem loadRepositoryMenuItem;
     private MenuItem saveRepositoryMenuItem;
-
+    private MenuItem generateReportMenuItem;
     private TreeTableView<AbstractTreeItem> treeTableView;
-
-    public static final DateTimeFormatter intervalTreeItemFormatter =
-        DateTimeFormatter.ofPattern( "MMMM yyyy", Locale.US );
 
 
     public RepositoryCreatorDialogView( RepositoryCreatorDialogController controller )
@@ -43,7 +35,7 @@ public class RepositoryCreatorDialogView
     }
 
 
-    public void initView()
+    public void initView( Stage stage )
     {
         //Menu
         loadRepositoryMenuItem = new MenuItem( "Load repository" );
@@ -53,43 +45,25 @@ public class RepositoryCreatorDialogView
         repositoryMenu.getItems().add( saveRepositoryMenuItem );
 
         loadBankStatementsMenuItem = new MenuItem( "Append bank statements" );
+        generateReportMenuItem = new MenuItem( "Generate report" );
         Menu bankStatementsMenu = new Menu( "Actions" );
         bankStatementsMenu.getItems().add( loadBankStatementsMenuItem );
+        bankStatementsMenu.getItems().add( generateReportMenuItem );
 
         MenuBar menuBar = new MenuBar();
         menuBar.getMenus().add( repositoryMenu );
         menuBar.getMenus().add( bankStatementsMenu );
 
         //TreeTableView
-        TreeItem<AbstractTreeItem> treeRootItem = new TreeItem<>( new RootTreeItem() );
-        treeRootItem.setExpanded( true );
-        treeTableView = new TreeTableView<>();
-        treeTableView.setRoot( treeRootItem );
-        buildTreeTableViewColumns();
-        treeTableView.setPrefHeight( 600 );
+        treeTableView = new TreeTableViewBuilder( controller ).build();
 
         //VBox
-        container = new VBox( menuBar );
+        VBox container = new VBox( menuBar );
         container.getChildren().add( treeTableView );
         container.setPadding( new Insets( 10 ) );
 
         scene = new Scene( container, 1280, 800 );
-    }
-
-
-    private void buildTreeTableViewColumns()
-    {
-        treeTableView.setRowFactory( ttv -> new OperationRowFactory() );
-        treeTableView.setEditable( true );
-        treeTableView.setTableMenuButtonVisible( true );
-
-        treeTableView.getColumns().setAll(
-            new IntervalColumn( intervalTreeItemFormatter, controller ),
-            new DateColumn( controller ), new IdColumn( controller ), new TypeColumn( controller ),
-            new CategoryColumn( controller ), new AmountColumn( controller ),
-            new DescriptionColumn( controller ), new BankNameColumn( controller ),
-            new FileNameColumn( controller ) );
-
+        stage.setScene( scene );
     }
 
 
@@ -101,53 +75,39 @@ public class RepositoryCreatorDialogView
 
     public void updateView( Set<Operation> operations )
     {
-        operations.forEach( operation -> updateView( operation, -1 ) );
+        operations.forEach( this::updateView );
     }
 
 
-    public void updateView( Operation operation, int index )
+    public void updateView( Operation operation )
     {
-        String currentInterval =
-            operation.getRawOperation().getDate().format( intervalTreeItemFormatter );
-        TreeItem<AbstractTreeItem> currentRootTreeItem = treeTableView.getRoot();
-        ObservableList<TreeItem<AbstractTreeItem>> intervals = currentRootTreeItem.getChildren();
-        Optional<TreeItem<AbstractTreeItem>> intervalTreeItemToAddOperation =
-            findIntervalTreeItemOfOperation( currentInterval, intervals );
-        TreeItem<AbstractTreeItem> newOperationTreeItem =
+        Optional<TreeItem<AbstractTreeItem>> intervalTreeItemToPutOperation =
+            findIntervalTreeItemOfOperation( operation.getRawOperation().getDate() );
+
+        TreeItem<AbstractTreeItem> treeItemToPut =
             new TreeItem<>( new OperationTreeItem( operation ) );
-        if( intervalTreeItemToAddOperation.isPresent() )
+
+        if( intervalTreeItemToPutOperation.isPresent() ) //interval for particular operation exists
         {
-            if( index != -1 )
-            {
-                intervalTreeItemToAddOperation.get().getChildren()
-                    .add( index, newOperationTreeItem );
-                treeTableView.getSelectionModel().select( currentRootTreeItem );
-            }
-            else
-            {
-                intervalTreeItemToAddOperation.get().getChildren().add( newOperationTreeItem );
-            }
-            intervalTreeItemToAddOperation.get().getValue()
-                .increaseAmount( newOperationTreeItem.getValue().getAmount() );
+            putOperationTreeItem( intervalTreeItemToPutOperation.get(), treeItemToPut );
+            increaseIntervalAmount(
+                intervalTreeItemToPutOperation.get(), treeItemToPut.getValue().getAmount() );
         }
-        else
+        else //there is no interval for particular operation yet
         {
             TreeItem<AbstractTreeItem> newIntervalTreeItem =
-                new TreeItem<>( new IntervalTreeItem( operation.getRawOperation().getDate() ) );
-            newIntervalTreeItem.getValue()
-                .increaseAmount( operation.getRawOperation().getAmount() );
-            currentRootTreeItem.getChildren().add( newIntervalTreeItem );
-            newIntervalTreeItem.getChildren().add( newOperationTreeItem );
+                generateNewInterval( treeItemToPut.getValue().getDate(),
+                    treeItemToPut.getValue().getAmount() );
+
+            putOperationTreeItem( newIntervalTreeItem, treeItemToPut );
+
         }
     }
 
 
-    private Optional<TreeItem<AbstractTreeItem>> findIntervalTreeItemOfOperation(
-        String currentInterval, ObservableList<TreeItem<AbstractTreeItem>> intervals )
+    public void refresh()
     {
-        return intervals.stream().filter(
-            interval -> interval.getValue().getDate().format( intervalTreeItemFormatter )
-                .equals( currentInterval ) ).findFirst();
+        treeTableView.refresh();
     }
 
 
@@ -163,6 +123,12 @@ public class RepositoryCreatorDialogView
     }
 
 
+    public MenuItem getGenerateReportMenuItem()
+    {
+        return generateReportMenuItem;
+    }
+
+
     public MenuItem getLoadRepositoryMenuItem()
     {
         return loadRepositoryMenuItem;
@@ -172,5 +138,72 @@ public class RepositoryCreatorDialogView
     public MenuItem getSaveRepositoryMenuItem()
     {
         return saveRepositoryMenuItem;
+    }
+
+
+    public TreeTableView<AbstractTreeItem> getTreeTableView()
+    {
+        return treeTableView;
+    }
+
+
+    private Optional<TreeItem<AbstractTreeItem>> findIntervalTreeItemOfOperation(
+        LocalDate date )
+    {
+        String intervalToFind = getIntervalName( date );
+
+        return treeTableView.getRoot().getChildren().stream().filter(
+            interval -> getIntervalName( interval.getValue().getDate() ).equals( intervalToFind ) )
+            .findFirst();
+    }
+
+
+    private void putOperationTreeItem(
+        TreeItem<AbstractTreeItem> intervalTreeItemToPutOperation,
+        TreeItem<AbstractTreeItem> treeItemToPut )
+    {
+        putTreeItem( intervalTreeItemToPutOperation, treeItemToPut );
+        treeTableView.getSelectionModel().select( treeTableView.getRoot() );
+    }
+
+
+    private void increaseIntervalAmount(
+        TreeItem<AbstractTreeItem> intervalTreeItem, double value )
+    {
+        intervalTreeItem.getValue().increaseAmount( value );
+    }
+
+
+    private TreeItem<AbstractTreeItem> generateNewInterval(
+        LocalDate date, double initialAmount )
+    {
+        TreeItem<AbstractTreeItem> newIntervalTreeItem =
+            prepareNewIntervalTreeItem( date, initialAmount );
+        putTreeItem( treeTableView.getRoot(), newIntervalTreeItem );
+        return newIntervalTreeItem;
+    }
+
+
+    private void putTreeItem(
+        TreeItem<AbstractTreeItem> parent, TreeItem<AbstractTreeItem> child )
+    {
+        parent.getChildren().add( child );
+    }
+
+
+    private TreeItem<AbstractTreeItem> prepareNewIntervalTreeItem(
+        LocalDate date, double initialAmount )
+    {
+        TreeItem<AbstractTreeItem> newIntervalTreeItem =
+            new TreeItem<>( new IntervalTreeItem( date ) );
+        increaseIntervalAmount( newIntervalTreeItem, initialAmount );
+
+        return newIntervalTreeItem;
+    }
+
+
+    private String getIntervalName( LocalDate date )
+    {
+        return date.format( Constants.intervalTreeItemFormatter );
     }
 }

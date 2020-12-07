@@ -11,6 +11,7 @@ import com.catchex.configuration.Configuration;
 import com.catchex.io.reader.PDFReader;
 import com.catchex.models.Operation;
 import com.catchex.models.RawOperation;
+import com.catchex.util.Log;
 import javafx.event.ActionEvent;
 import javafx.scene.control.ChoiceDialog;
 import javafx.stage.FileChooser;
@@ -21,6 +22,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+
+import static com.catchex.util.Constants.supportedBanks;
 
 
 public class LoadBankStatementsBtnEventHandler
@@ -41,11 +44,11 @@ public class LoadBankStatementsBtnEventHandler
     {
         String selectedBankName = getSelectedBank();
 
-        List<File> selectedBankStatements = getBankStatementsFileToLoad();
+        List<File> selectedBankStatementsFiles = getBankStatementsFileToLoad();
 
-        if( selectedBankStatements != null )
+        if( selectedBankStatementsFiles != null )
         {
-            for( File bankStatement : selectedBankStatements )
+            for( File bankStatementFile : selectedBankStatementsFiles )
             {
                 Optional<String> readBankStatementFileContent =
                     PDFReader.read( bankStatement.getAbsolutePath() );
@@ -81,6 +84,7 @@ public class LoadBankStatementsBtnEventHandler
             Set<Operation> operations = extender.extend( rawOperations );
             controller.addOperations( operations );
         }
+        return Collections.emptySet();
     }
 
 
@@ -117,7 +121,7 @@ public class LoadBankStatementsBtnEventHandler
     private String getSelectedBank()
     {
         ChoiceDialog<String> bankChoiceDialog =
-            new ChoiceDialog<>( controller.getSupportedBanks()[0], controller.getSupportedBanks() );
+            new ChoiceDialog<>( supportedBanks[0], supportedBanks );
         bankChoiceDialog.showAndWait();
         return bankChoiceDialog.getSelectedItem();
     }

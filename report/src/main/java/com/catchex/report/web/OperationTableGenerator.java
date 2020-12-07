@@ -14,17 +14,11 @@ import static j2html.TagCreator.*;
 
 public class OperationTableGenerator
 {
-    private List<Operation> operations;
-    private List<String> sources;
     private OperationsStatistics operationsStatistics;
 
 
-    public OperationTableGenerator(
-        List<Operation> operations, List<String> sources,
-        OperationsStatistics operationsStatistics )
+    public OperationTableGenerator( OperationsStatistics operationsStatistics )
     {
-        this.operations = operations;
-        this.sources = sources;
         this.operationsStatistics = operationsStatistics;
     }
 
@@ -117,7 +111,7 @@ public class OperationTableGenerator
     {
         ContainerTag table = table().with( generateOperationsTableHeader() );
         sortOperationByComparator( comparator );
-        for( Operation operation : operations )
+        for( Operation operation : operationsStatistics.getOperations() )
         {
             if( predicate.test( operation ) )
                 table.with( generateContent( operation ) );
@@ -128,6 +122,7 @@ public class OperationTableGenerator
 
     private ContainerTag generateSources()
     {
+        List<String> sources = new ArrayList<>( getSources() );
         ContainerTag sourceContainer = ul();
         sources.sort( Comparator.comparing( String::toString ) );
         for( String source : sources )
@@ -183,6 +178,17 @@ public class OperationTableGenerator
 
     private void sortOperationByComparator( Comparator<Operation> comparator )
     {
-        operations.sort( comparator );
+        operationsStatistics.getOperations().sort( comparator );
+    }
+
+
+    private Set<String> getSources()
+    {
+        Set<String> sources = new HashSet<>();
+        for( Operation operation : operationsStatistics.getOperations() )
+        {
+            sources.add( operation.getRawOperation().getFileName() );
+        }
+        return sources;
     }
 }

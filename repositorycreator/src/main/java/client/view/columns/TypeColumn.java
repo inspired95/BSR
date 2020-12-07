@@ -2,6 +2,7 @@ package client.view.columns;
 
 import client.control.RepositoryCreatorDialogController;
 import client.view.model.OperationTreeItem;
+import com.catchex.util.Constants;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 
 
@@ -10,7 +11,7 @@ public class TypeColumn
 {
     public TypeColumn( RepositoryCreatorDialogController controller )
     {
-        super( "Type", controller );
+        super( Constants.TYPE, controller );
     }
 
 

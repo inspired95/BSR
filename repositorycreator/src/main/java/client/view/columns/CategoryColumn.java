@@ -4,6 +4,7 @@ import client.control.RepositoryCreatorDialogController;
 import client.view.CategoryColumnCellFactory;
 import client.view.model.AbstractTreeItem;
 import client.view.model.OperationTreeItem;
+import com.catchex.util.Constants;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.scene.control.TreeTableColumn;
 
@@ -14,7 +15,7 @@ public class CategoryColumn
 
     public CategoryColumn( RepositoryCreatorDialogController controller )
     {
-        super( "Category", controller );
+        super( Constants.CATEGORY, controller );
     }
 
 

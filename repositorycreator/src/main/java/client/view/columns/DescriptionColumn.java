@@ -2,6 +2,7 @@ package client.view.columns;
 
 import client.control.RepositoryCreatorDialogController;
 import client.control.event.DescriptionCellEditEventHandler;
+import com.catchex.util.Constants;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.scene.control.cell.TextFieldTreeTableCell;
 
@@ -12,7 +13,7 @@ public class DescriptionColumn
 
     public DescriptionColumn( RepositoryCreatorDialogController controller )
     {
-        super( "Description", controller );
+        super( Constants.DESCRIPTION, controller );
         this.controller = controller;
     }
 

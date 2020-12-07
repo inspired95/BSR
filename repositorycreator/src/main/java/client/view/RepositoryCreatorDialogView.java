@@ -1,12 +1,12 @@
 package client.view;
 
-import client.Constants;
 import client.Repository;
 import client.control.RepositoryCreatorDialogController;
 import client.view.model.AbstractTreeItem;
 import client.view.model.IntervalTreeItem;
 import client.view.model.OperationTreeItem;
 import com.catchex.models.Operation;
+import com.catchex.util.Constants;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -25,6 +25,7 @@ public class RepositoryCreatorDialogView
     private MenuItem loadBankStatementsMenuItem;
     private MenuItem loadRepositoryMenuItem;
     private MenuItem saveRepositoryMenuItem;
+    private MenuItem generateReportMenuItem;
     private TreeTableView<AbstractTreeItem> treeTableView;
 
 
@@ -44,8 +45,10 @@ public class RepositoryCreatorDialogView
         repositoryMenu.getItems().add( saveRepositoryMenuItem );
 
         loadBankStatementsMenuItem = new MenuItem( "Append bank statements" );
+        generateReportMenuItem = new MenuItem( "Generate report" );
         Menu bankStatementsMenu = new Menu( "Actions" );
         bankStatementsMenu.getItems().add( loadBankStatementsMenuItem );
+        bankStatementsMenu.getItems().add( generateReportMenuItem );
 
         MenuBar menuBar = new MenuBar();
         menuBar.getMenus().add( repositoryMenu );
@@ -120,6 +123,12 @@ public class RepositoryCreatorDialogView
     }
 
 
+    public MenuItem getGenerateReportMenuItem()
+    {
+        return generateReportMenuItem;
+    }
+
+
     public MenuItem getLoadRepositoryMenuItem()
     {
         return loadRepositoryMenuItem;
@@ -129,6 +138,12 @@ public class RepositoryCreatorDialogView
     public MenuItem getSaveRepositoryMenuItem()
     {
         return saveRepositoryMenuItem;
+    }
+
+
+    public TreeTableView<AbstractTreeItem> getTreeTableView()
+    {
+        return treeTableView;
     }
 
 

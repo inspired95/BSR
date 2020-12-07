@@ -1,10 +1,10 @@
 package client.view;
 
-import client.Constants;
 import client.control.RepositoryCreatorDialogController;
 import client.view.columns.*;
 import client.view.model.AbstractTreeItem;
 import client.view.model.RootTreeItem;
+import com.catchex.util.Constants;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeTableView;
 

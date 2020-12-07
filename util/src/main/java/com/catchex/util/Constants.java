@@ -1,7 +1,9 @@
 package com.catchex.util;
 
 import java.nio.file.Paths;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Locale;
 
 import static java.util.Arrays.asList;
 
@@ -49,7 +51,17 @@ public class Constants
 
     public static final String DATE = "Date";
 
+    public static final String DESCRIPTION = "Description";
+
+    public static final String FILE_NAME = "File name";
+
     public static final String AMOUNT = "Amount";
+
+    public static final String ID = "ID";
+
+    public static final String INTERVAL = "Interval";
+
+    public static final String BANK = "Bank";
 
     public static final String TYPE = "Type";
 
@@ -64,4 +76,9 @@ public class Constants
     public static final String GENERATE_REPORT = "Generate report";
 
     public static final String OPERATIONS = "Operations";
+
+    public static final DateTimeFormatter intervalTreeItemFormatter =
+        DateTimeFormatter.ofPattern( "MMMM yyyy", Locale.US );
+
+    public static final String[] supportedBanks = { PKO };
 }

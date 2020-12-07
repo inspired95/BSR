@@ -1,6 +1,7 @@
 package client.view.columns;
 
 import client.control.RepositoryCreatorDialogController;
+import com.catchex.util.Constants;
 import com.catchex.util.Log;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 
@@ -17,34 +18,7 @@ public class AmountColumn
 
     public AmountColumn( RepositoryCreatorDialogController controller )
     {
-        super( "Amount", controller );
-    }
-
-
-    @Override
-    void init()
-    {
-        setCellValueFactory();
-        setDefaultWidth();
-        setComparator();
-    }
-
-
-    @Override
-    void setCellValueFactory()
-    {
-        setCellValueFactory( p -> {
-            Double amount = p.getValue().getValue().getAmount();
-            if( amount.equals( Double.NaN ) )
-                return new ReadOnlyObjectWrapper<>( "" );
-            return new ReadOnlyObjectWrapper<>( String.format( "%.2f", amount ) );
-        } );
-    }
-
-
-    void setDefaultWidth()
-    {
-        setPrefWidth( 100 );
+        super( Constants.AMOUNT, controller );
     }
 
 
@@ -74,5 +48,32 @@ public class AmountColumn
             Log.LOGGER.warning( "Cannot amount to double value:" + s );
         }
         return Double.NaN;
+    }
+
+
+    @Override
+    void init()
+    {
+        setCellValueFactory();
+        setDefaultWidth();
+        setComparator();
+    }
+
+
+    @Override
+    void setCellValueFactory()
+    {
+        setCellValueFactory( p -> {
+            Double amount = p.getValue().getValue().getAmount();
+            if( amount.equals( Double.NaN ) )
+                return new ReadOnlyObjectWrapper<>( "" );
+            return new ReadOnlyObjectWrapper<>( String.format( "%.2f", amount ) );
+        } );
+    }
+
+
+    void setDefaultWidth()
+    {
+        setPrefWidth( 100 );
     }
 }

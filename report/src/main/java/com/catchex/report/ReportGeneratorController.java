@@ -1,24 +1,21 @@
-package com.catchex.client.gui;
+package com.catchex.report;
 
 import com.catchex.models.Operation;
 import com.catchex.report.statictics.OperationsStatistics;
 import com.catchex.report.web.CssStyleCreator;
 import com.catchex.report.web.ReportGeneratorEngine;
-import com.catchex.util.Log;
+import com.catchex.util.Constants;
 import com.catchex.util.OperationsTableComparatorFactory;
 import com.catchex.util.Util;
 
-import javax.swing.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 import static com.catchex.util.Constants.*;
 import static com.catchex.util.Log.LOGGER;
@@ -26,42 +23,26 @@ import static com.catchex.util.Util.showError;
 import static com.catchex.util.Util.showInformation;
 
 
-public class GenerateReportActionListener
-    implements ActionListener
+public class ReportGeneratorController
 {
-    private List<Operation> allOperations;
-    private List<String> sources;
-    private JComboBox<String> operationsTableSortingBy;
+    private Set<Operation> operations;
 
 
-    public GenerateReportActionListener(
-        List<Operation> allOperations, List<String> sources,
-        JComboBox<String> operationsTableSortingBy )
+    public ReportGeneratorController( Set<Operation> operations )
     {
-        this.allOperations = allOperations;
-        this.sources = sources;
-        this.operationsTableSortingBy = operationsTableSortingBy;
+        this.operations = operations;
     }
 
 
-    @Override
-    public void actionPerformed( ActionEvent e )
+    public void generate()
     {
-        Log.LOGGER.info( "Report saving started" );
-        if( allOperations.isEmpty() || sources.isEmpty() )
-        {
-            LOGGER.warning( "There is no data to save" );
-            showError( "There is no data to save" );
-            return;
-        }
-
         OperationsStatistics operationsStatistics =
-            new OperationsStatistics( new ArrayList<>( allOperations ) );
+            new OperationsStatistics( new ArrayList<>( operations ) );
 
         ReportGeneratorEngine reportGenerator = new ReportGeneratorEngine( operationsStatistics );
 
         Comparator<Operation> operationComparator = OperationsTableComparatorFactory
-            .get( (String)Objects.requireNonNull( operationsTableSortingBy.getSelectedItem() ) );
+            .get( (String)Objects.requireNonNull( Constants.AMOUNT ) );
 
         String report = reportGenerator.generateHtml( operationComparator );
 

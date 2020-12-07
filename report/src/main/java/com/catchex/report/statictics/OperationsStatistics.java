@@ -192,6 +192,12 @@ public class OperationsStatistics
     }
 
 
+    public List<Operation> getOperations()
+    {
+        return operations;
+    }
+
+
     public Map<String, Map<String, Double>> getExpensesCategoriesPerMonth()
     {
         return expensesCategoriesPerMonth;

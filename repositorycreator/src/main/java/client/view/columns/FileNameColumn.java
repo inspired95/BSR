@@ -1,6 +1,7 @@
 package client.view.columns;
 
 import client.control.RepositoryCreatorDialogController;
+import com.catchex.util.Constants;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 
 
@@ -9,7 +10,7 @@ public class FileNameColumn
 {
     public FileNameColumn( RepositoryCreatorDialogController controller )
     {
-        super( "File name", controller );
+        super( Constants.FILE_NAME, controller );
     }
 
 

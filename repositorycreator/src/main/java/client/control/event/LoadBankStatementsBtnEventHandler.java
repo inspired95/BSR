@@ -23,7 +23,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
-import static client.Constants.supportedBanks;
+import static com.catchex.util.Constants.supportedBanks;
 
 
 public class LoadBankStatementsBtnEventHandler

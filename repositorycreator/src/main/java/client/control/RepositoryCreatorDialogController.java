@@ -1,6 +1,7 @@
 package client.control;
 
 import client.Repository;
+import client.control.event.GenerateReportBtnEventHandler;
 import client.control.event.LoadBankStatementsBtnEventHandler;
 import client.control.event.LoadRepositoryBtnEventHandler;
 import client.control.event.SaveRepositoryBtnEventHandler;
@@ -10,8 +11,10 @@ import com.catchex.bankstmt.categories.OperationCategoryResolverImpl;
 import com.catchex.configuration.Configuration;
 import com.catchex.models.Category;
 import com.catchex.models.Operation;
+import javafx.scene.control.TreeTableColumn;
 import javafx.stage.Stage;
 
+import java.util.Optional;
 import java.util.Set;
 
 
@@ -75,6 +78,7 @@ public class RepositoryCreatorDialogController
         loadBankStatementsMenuItemActionEventHandling();
         loadRepositoryMenuItemActionEventHandling();
         saveRepositoryMenuItemActionEventHandling();
+        generateReportMenuItemActionEventHandling();
     }
 
 
@@ -93,6 +97,13 @@ public class RepositoryCreatorDialogController
     {
         view.getLoadRepositoryMenuItem()
             .setOnAction( new LoadRepositoryBtnEventHandler( this )::handle );
+    }
+
+
+    private void generateReportMenuItemActionEventHandling()
+    {
+        view.getGenerateReportMenuItem()
+            .setOnAction( new GenerateReportBtnEventHandler( repository, view )::handle );
     }
 
 
@@ -123,5 +134,21 @@ public class RepositoryCreatorDialogController
     private Category resolveCategoryForDescription( String newOperationDescription )
     {
         return categoryResolver.resolve( newOperationDescription );
+    }
+
+
+    private String getSortedByColumnName()
+    {
+        Optional<String> sortedByColumn =
+            getView().getTreeTableView().getSortOrder().stream().map( TreeTableColumn::getText )
+                .findFirst();
+        if( sortedByColumn.isPresent() )
+        {
+            return sortedByColumn.get();
+        }
+        else
+        {
+            return "";
+        }
     }
 }

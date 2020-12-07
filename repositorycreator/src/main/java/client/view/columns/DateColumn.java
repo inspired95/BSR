@@ -2,6 +2,7 @@ package client.view.columns;
 
 import client.control.RepositoryCreatorDialogController;
 import client.view.model.OperationTreeItem;
+import com.catchex.util.Constants;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 
 import java.time.LocalDate;
@@ -12,7 +13,7 @@ public class DateColumn
 {
     public DateColumn( RepositoryCreatorDialogController controller )
     {
-        super( "Date", controller );
+        super( Constants.DATE, controller );
     }
 
 

@@ -50,12 +50,11 @@ public class LoadBankStatementsBtnEventHandler
         {
             for( File bankStatementFile : selectedBankStatementsFiles )
             {
-                Optional<String> readBankStatementContent =
-                    PDFReader.read( bankStatementFile.getAbsolutePath() );
-                readBankStatementContent.ifPresentOrElse(
-                    s -> manageReadBankStatementFile( selectedBankName, bankStatementFile.getName(),
-                        s ), () -> Log.LOGGER.warning(
-                        "Cannot read bank statement file: " + bankStatementFile.getName() ) );
+                Optional<String> readBankStatementFileContent =
+                    PDFReader.read( bankStatement.getAbsolutePath() );
+                readBankStatementFileContent.ifPresent(
+                    fileContent -> manageReadBankStatementFile( selectedBankName,
+                        bankStatement.getName(), fileContent ) );
             }
         }
     }
@@ -69,20 +68,21 @@ public class LoadBankStatementsBtnEventHandler
                 bankStatementFileName, readBankStatementFile );
         if( !rawOperations.isEmpty() )
         {
-            controller.addOperations( decorate( bankChoiceDialog, rawOperations ) );
+            decorate( bankChoiceDialog, rawOperations );
         }
     }
 
 
-    private Set<Operation> decorate(
-        String bankChoiceDialog, List<RawOperation> convert )
+    private void decorate(
+        String bankChoiceDialog, List<RawOperation> rawOperations )
     {
         Optional<OperationTypeResolver> operationTypeResolver =
             new OperationTypeResolverFactory().match( bankChoiceDialog );
         if( operationTypeResolver.isPresent() )
         {
             RawOperationExtender extender = getRawOperationExtender( operationTypeResolver.get() );
-            return extender.extend( convert );
+            Set<Operation> operations = extender.extend( rawOperations );
+            controller.addOperations( operations );
         }
         return Collections.emptySet();
     }

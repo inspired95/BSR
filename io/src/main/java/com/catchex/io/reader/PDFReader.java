@@ -32,8 +32,7 @@ public class PDFReader
         }
         catch( IOException e )
         {
-            LOGGER.warning( "PDF cannot be read" );
-            e.printStackTrace();
+            LOGGER.warning( "PDF cannot be read. Reason: " + e.getCause() );
         }
         return Optional.empty();
     }

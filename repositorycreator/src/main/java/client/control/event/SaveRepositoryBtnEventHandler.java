@@ -27,12 +27,13 @@ public class SaveRepositoryBtnEventHandler
     @Override
     public void handle( ActionEvent event )
     {
-        Stage window = (Stage)controller.getView().getScene().getWindow();
-        FileChooser repositorySaveFileChooser = new FileChooser();
-        repositorySaveFileChooser.setTitle( "Save repository" );
-        repositorySaveFileChooser.getExtensionFilters().add(
-            new FileChooser.ExtensionFilter( "BSR repository selectedFile", "*.bsrrepository" ) );
-        File selectedFile = repositorySaveFileChooser.showSaveDialog( window );
+        File fileToFile = getFileToSave();
+        saveRepositoryToFile( fileToFile );
+    }
+
+
+    private void saveRepositoryToFile( File selectedFile )
+    {
         if( selectedFile != null )
         {
             try
@@ -46,5 +47,16 @@ public class SaveRepositoryBtnEventHandler
                 e.printStackTrace();
             }
         }
+    }
+
+
+    private File getFileToSave()
+    {
+        Stage window = (Stage)controller.getView().getScene().getWindow();
+        FileChooser repositorySaveFileChooser = new FileChooser();
+        repositorySaveFileChooser.setTitle( "Save repository" );
+        repositorySaveFileChooser.getExtensionFilters().add(
+            new FileChooser.ExtensionFilter( "BSR repository selectedFile", "*.bsrrepository" ) );
+        return repositorySaveFileChooser.showSaveDialog( window );
     }
 }

@@ -28,14 +28,14 @@ public class LoadRepositoryBtnEventHandler
     @Override
     public void handle( ActionEvent event )
     {
-        Stage window = (Stage)controller.getView().getScene().getWindow();
-        FileChooser repositoryToLoadFileChooser = new FileChooser();
-        repositoryToLoadFileChooser.setTitle( "Select repository" );
-        repositoryToLoadFileChooser.getExtensionFilters()
-            .add( new FileChooser.ExtensionFilter( "BSR repository file", "*.bsrrepository" ) );
+        File selectedRepository = getFileToLoad();
 
-        File selectedRepository = repositoryToLoadFileChooser.showOpenDialog( window );
+        loadRepositoryFromFile( selectedRepository );
+    }
 
+
+    private void loadRepositoryFromFile( File selectedRepository )
+    {
         if( selectedRepository != null )
         {
             Repository loadedRepository = null;
@@ -53,5 +53,17 @@ public class LoadRepositoryBtnEventHandler
                 controller.getView().updateView( loadedRepository );
             }
         }
+    }
+
+
+    private File getFileToLoad()
+    {
+        Stage window = (Stage)controller.getView().getScene().getWindow();
+        FileChooser repositoryToLoadFileChooser = new FileChooser();
+        repositoryToLoadFileChooser.setTitle( "Select repository" );
+        repositoryToLoadFileChooser.getExtensionFilters()
+            .add( new FileChooser.ExtensionFilter( "BSR repository file", "*.bsrrepository" ) );
+
+        return repositoryToLoadFileChooser.showOpenDialog( window );
     }
 }

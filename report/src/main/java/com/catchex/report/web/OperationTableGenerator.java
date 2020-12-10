@@ -136,7 +136,8 @@ public class OperationTableGenerator
     private boolean isIncome( Operation operation )
     {
         return operation.getType().equals( OperationType.INCOME_TRANSFER ) ||
-            operation.getType().equals( OperationType.REFUND );
+            operation.getType().equals( OperationType.REFUND ) ||
+            operation.getType().equals( PROFIT );
     }
 
 
@@ -146,7 +147,7 @@ public class OperationTableGenerator
             operation.getType().equals( DEBIT_CARD_PAYMENT ) ||
             operation.getType().equals( MOBILE_CODE_PAYMENT ) ||
             operation.getType().equals( CASH_WITHDRAWAL ) ||
-            operation.getType().equals( COMMISSION );
+            operation.getType().equals( COMMISSION ) || operation.getType().equals( LOSS );
     }
 
 

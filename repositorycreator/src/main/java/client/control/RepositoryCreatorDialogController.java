@@ -1,16 +1,14 @@
 package client.control;
 
 import client.Repository;
-import client.control.event.GenerateReportBtnEventHandler;
-import client.control.event.LoadBankStatementsBtnEventHandler;
-import client.control.event.LoadRepositoryBtnEventHandler;
-import client.control.event.SaveRepositoryBtnEventHandler;
+import client.control.event.*;
 import client.view.RepositoryCreatorDialogView;
 import client.view.model.OperationTreeItem;
 import com.catchex.bankstmt.categories.OperationCategoryResolverImpl;
 import com.catchex.configuration.Configuration;
 import com.catchex.models.Category;
 import com.catchex.models.Operation;
+import javafx.scene.control.Alert;
 import javafx.scene.control.TreeTableColumn;
 import javafx.stage.Stage;
 
@@ -24,6 +22,7 @@ public class RepositoryCreatorDialogController
     private Repository repository;
     private RepositoryCreatorDialogView view;
     private OperationCategoryResolverImpl categoryResolver;
+
 
     public RepositoryCreatorDialogController()
     {
@@ -73,12 +72,14 @@ public class RepositoryCreatorDialogController
     }
 
 
-    private void initMenuBtnsEventHandler()
+    public void showAlert( Alert.AlertType type, String title, String header, String content )
     {
-        loadBankStatementsMenuItemActionEventHandling();
-        loadRepositoryMenuItemActionEventHandling();
-        saveRepositoryMenuItemActionEventHandling();
-        generateReportMenuItemActionEventHandling();
+        Alert alert = new Alert( type );
+        alert.setTitle( title );
+        alert.setHeaderText( header );
+        alert.setContentText( content );
+
+        alert.showAndWait();
     }
 
 
@@ -90,6 +91,16 @@ public class RepositoryCreatorDialogController
             stage.close();*/
         view.getLoadBankStatementsMenuItem()
             .setOnAction( new LoadBankStatementsBtnEventHandler( this )::handle );
+    }
+
+
+    private void initMenuBtnsEventHandler()
+    {
+        loadBankStatementsMenuItemActionEventHandling();
+        loadRepositoryMenuItemActionEventHandling();
+        addBankOperationMenuItemActionEventHandling();
+        saveRepositoryMenuItemActionEventHandling();
+        generateReportMenuItemActionEventHandling();
     }
 
 
@@ -150,5 +161,12 @@ public class RepositoryCreatorDialogController
         {
             return "";
         }
+    }
+
+
+    private void addBankOperationMenuItemActionEventHandling()
+    {
+        view.getAddBankOperationMenuItem()
+            .setOnAction( new AddBankOperationBtnEventHandler( this )::handle );
     }
 }

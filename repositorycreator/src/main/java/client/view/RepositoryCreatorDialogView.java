@@ -23,6 +23,7 @@ public class RepositoryCreatorDialogView
     RepositoryCreatorDialogController controller;
     private Scene scene;
     private MenuItem loadBankStatementsMenuItem;
+    private MenuItem addBankOperationMenuItem;
     private MenuItem loadRepositoryMenuItem;
     private MenuItem saveRepositoryMenuItem;
     private MenuItem generateReportMenuItem;
@@ -45,9 +46,11 @@ public class RepositoryCreatorDialogView
         repositoryMenu.getItems().add( saveRepositoryMenuItem );
 
         loadBankStatementsMenuItem = new MenuItem( "Append bank statements" );
+        addBankOperationMenuItem = new MenuItem( "Add bank operation manually" );
         generateReportMenuItem = new MenuItem( "Generate report" );
         Menu bankStatementsMenu = new Menu( "Actions" );
         bankStatementsMenu.getItems().add( loadBankStatementsMenuItem );
+        bankStatementsMenu.getItems().add( addBankOperationMenuItem );
         bankStatementsMenu.getItems().add( generateReportMenuItem );
 
         MenuBar menuBar = new MenuBar();
@@ -120,6 +123,12 @@ public class RepositoryCreatorDialogView
     public MenuItem getLoadBankStatementsMenuItem()
     {
         return loadBankStatementsMenuItem;
+    }
+
+
+    public MenuItem getAddBankOperationMenuItem()
+    {
+        return addBankOperationMenuItem;
     }
 
 

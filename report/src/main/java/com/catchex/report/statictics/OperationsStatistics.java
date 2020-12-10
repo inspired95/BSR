@@ -146,7 +146,8 @@ public class OperationsStatistics
     private boolean isIncome( Operation operation )
     {
         return operation.getType().equals( OperationType.INCOME_TRANSFER ) ||
-            operation.getType().equals( OperationType.REFUND );
+            operation.getType().equals( OperationType.REFUND ) ||
+            operation.getType().equals( OperationType.PROFIT );
     }
 
 

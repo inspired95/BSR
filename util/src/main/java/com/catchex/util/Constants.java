@@ -77,6 +77,12 @@ public class Constants
 
     public static final String OPERATIONS = "Operations";
 
+    public static final String NOT_APPLICABLE = "N/A";
+
+    public static final String PROFIT = "Profit";
+
+    public static final String LOSS = "Loss";
+
     public static final DateTimeFormatter intervalTreeItemFormatter =
         DateTimeFormatter.ofPattern( "MMMM yyyy", Locale.US );
 

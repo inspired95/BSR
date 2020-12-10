@@ -4,6 +4,7 @@ import javax.swing.*;
 import java.util.Optional;
 import java.util.StringJoiner;
 
+import static com.catchex.util.Constants.NOT_APPLICABLE;
 import static com.catchex.util.Constants.PKO;
 import static com.catchex.util.Log.LOGGER;
 
@@ -12,12 +13,16 @@ public class OperationTypeResolverFactory
 {
     public Optional<OperationTypeResolver> match( String chosenBank )
     {
-        if( PKO.equals( chosenBank ) )
+        switch( chosenBank )
         {
-            return Optional.of( new PKOOperationTypeResolver() );
+            case PKO:
+                return Optional.of( new PKOOperationTypeResolver() );
+            case NOT_APPLICABLE:
+                return Optional.of( new NotApplicableTypeResolver() );
+            default:
+                reportError( getErrorMessage( chosenBank ) );
+                return Optional.empty();
         }
-        reportError( getErrorMessage( chosenBank ) );
-        return Optional.empty();
     }
 
 

@@ -11,7 +11,6 @@ import com.catchex.configuration.Configuration;
 import com.catchex.io.reader.PDFReader;
 import com.catchex.models.Operation;
 import com.catchex.models.RawOperation;
-import com.catchex.util.Log;
 import javafx.event.ActionEvent;
 import javafx.scene.control.ChoiceDialog;
 import javafx.stage.FileChooser;
@@ -51,10 +50,10 @@ public class LoadBankStatementsBtnEventHandler
             for( File bankStatementFile : selectedBankStatementsFiles )
             {
                 Optional<String> readBankStatementFileContent =
-                    PDFReader.read( bankStatement.getAbsolutePath() );
+                    PDFReader.read( bankStatementFile.getAbsolutePath() );
                 readBankStatementFileContent.ifPresent(
                     fileContent -> manageReadBankStatementFile( selectedBankName,
-                        bankStatement.getName(), fileContent ) );
+                        bankStatementFile.getName(), fileContent ) );
             }
         }
     }
@@ -84,7 +83,6 @@ public class LoadBankStatementsBtnEventHandler
             Set<Operation> operations = extender.extend( rawOperations );
             controller.addOperations( operations );
         }
-        return Collections.emptySet();
     }
 
 

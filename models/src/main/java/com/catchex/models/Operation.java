@@ -10,11 +10,10 @@ public class Operation
 {
     private RawOperation rawOperation;
     private OperationType type;
-    private Category category;
-
     public static final Operation DUMMY_OPERATION =
         new Operation( RawOperation.DUMMY_RAW_OPERATION, OperationType.NOT_RESOLVED,
-            Category.OTHER_CATEGORY );
+            CategoryV2.OTHER_CATEGORY );
+    private CategoryV2 category;
 
 
     public Operation()
@@ -24,7 +23,7 @@ public class Operation
 
 
     public Operation(
-        RawOperation rawOperation, OperationType type, Category category )
+        RawOperation rawOperation, OperationType type, CategoryV2 category )
     {
         this.rawOperation = rawOperation;
         this.type = type;
@@ -44,13 +43,13 @@ public class Operation
     }
 
 
-    public Category getCategory()
+    public CategoryV2 getCategory()
     {
         return category;
     }
 
 
-    public void setCategory( Category category )
+    public void setCategory( CategoryV2 category )
     {
         this.category = category;
     }

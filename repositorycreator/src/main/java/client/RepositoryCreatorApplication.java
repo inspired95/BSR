@@ -4,7 +4,7 @@ import client.control.RepositoryCreatorDialogController;
 import javafx.application.Application;
 import javafx.stage.Stage;
 
-import static com.catchex.configuration.ConfigurationLoader.loadConfiguration;
+import static com.catchex.configuration.ConfigurationLoader.loadCategoriesConfigurationV2;
 import static com.catchex.util.Log.initLogging;
 
 
@@ -24,7 +24,8 @@ public class RepositoryCreatorApplication
     public static void main( String[] args )
     {
         initLogging();
-        loadConfiguration( true );
+        loadCategoriesConfigurationV2();
+        //loadConfiguration( true );
         launch();
     }
 

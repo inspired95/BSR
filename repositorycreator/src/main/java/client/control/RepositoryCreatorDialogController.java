@@ -5,8 +5,8 @@ import client.control.event.*;
 import client.view.RepositoryCreatorDialogView;
 import client.view.model.OperationTreeItem;
 import com.catchex.bankstmt.categories.OperationCategoryResolverImpl;
-import com.catchex.configuration.Configuration;
-import com.catchex.models.Category;
+import com.catchex.models.CategoryV2;
+import com.catchex.models.ConfigurationV2;
 import com.catchex.models.Operation;
 import javafx.scene.control.Alert;
 import javafx.scene.control.TreeTableColumn;
@@ -29,7 +29,7 @@ public class RepositoryCreatorDialogController
         this.repository = new Repository();
         this.view = new RepositoryCreatorDialogView( this );
         this.categoryResolver = new OperationCategoryResolverImpl(
-            Configuration.getCategoriesConfiguration().getCategories() );
+            ConfigurationV2.getInstance().getCategoriesConfiguration().getCategories() );
     }
 
 
@@ -52,7 +52,7 @@ public class RepositoryCreatorDialogController
     public void handleDescriptionChange(
         OperationTreeItem operationTreeItem, String newDescription )
     {
-        Category newCategory = resolveCategoryForDescription( newDescription );
+        CategoryV2 newCategory = resolveCategoryForDescription( newDescription );
 
         updateModel( operationTreeItem.getOperation(), newDescription, newCategory );
 
@@ -126,7 +126,7 @@ public class RepositoryCreatorDialogController
 
 
     private void updateView(
-        OperationTreeItem operationTreeItem, String newDescription, Category newCategory )
+        OperationTreeItem operationTreeItem, String newDescription, CategoryV2 newCategory )
     {
         operationTreeItem.setDesc( newDescription );
         operationTreeItem.setCategory( newCategory );
@@ -135,14 +135,14 @@ public class RepositoryCreatorDialogController
 
 
     private void updateModel(
-        Operation operation, String newDescription, Category newCategory )
+        Operation operation, String newDescription, CategoryV2 newCategory )
     {
         operation.getRawOperation().setDesc( newDescription );
         operation.setCategory( newCategory );
     }
 
 
-    private Category resolveCategoryForDescription( String newOperationDescription )
+    private CategoryV2 resolveCategoryForDescription( String newOperationDescription )
     {
         return categoryResolver.resolve( newOperationDescription );
     }

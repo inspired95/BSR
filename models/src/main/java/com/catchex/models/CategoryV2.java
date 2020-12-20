@@ -11,8 +11,8 @@ public class CategoryV2
 {
     private static final long serialVersionUID = -7588980448693010398L;
 
-    public static CategoryV2 OTHER_CATEGORY = new CategoryV2( "Other", new TreeSet<>() );
-    public static CategoryV2 CASH_WITHDRAWAL = new CategoryV2( "Cash withdrawal", new TreeSet<>() );
+    public static CategoryV2 OTHER_CATEGORY = new CategoryV2( "OTHER", new TreeSet<>() );
+    public static CategoryV2 CASH_WITHDRAWAL = new CategoryV2( "CASH WITHDRAWAL", new TreeSet<>() );
     private String categoryName;
     private SortedSet<Keyword> keywords;
 

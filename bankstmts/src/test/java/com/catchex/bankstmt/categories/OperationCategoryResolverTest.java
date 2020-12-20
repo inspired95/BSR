@@ -1,7 +1,12 @@
 package com.catchex.bankstmt.categories;
 
 import com.catchex.models.Category;
+import com.catchex.models.CategoryV2;
+import com.catchex.models.Keyword;
 import org.junit.jupiter.api.Test;
+
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -16,7 +21,7 @@ public class OperationCategoryResolverTest
             new OperationCategoryResolverImpl( null );
 
         //WHEN
-        Category resolvedCategory = operationCategoryResolver.resolve( null );
+        CategoryV2 resolvedCategory = operationCategoryResolver.resolve( null );
 
         //THEN
         assertEquals( Category.OTHER_CATEGORY, resolvedCategory );
@@ -31,7 +36,7 @@ public class OperationCategoryResolverTest
             new OperationCategoryResolverImpl( null );
 
         //WHEN
-        Category resolvedCategory = operationCategoryResolver.resolve( "" );
+        CategoryV2 resolvedCategory = operationCategoryResolver.resolve( "" );
 
         //THEN
         assertEquals( Category.OTHER_CATEGORY, resolvedCategory );
@@ -46,7 +51,7 @@ public class OperationCategoryResolverTest
             new OperationCategoryResolverImpl( createCategoriesMock() );
 
         //WHEN
-        Category resolvedCategory = operationCategoryResolver.resolve( "NOT_MATCHING_KEYWORD" );
+        CategoryV2 resolvedCategory = operationCategoryResolver.resolve( "NOT_MATCHING_KEYWORD" );
 
         //THEN
         assertEquals( Category.OTHER_CATEGORY, resolvedCategory );
@@ -61,21 +66,27 @@ public class OperationCategoryResolverTest
             new OperationCategoryResolverImpl( createCategoriesMock() );
 
         //WHEN
-        Category resolvedCategory = operationCategoryResolver.resolve( "qwert" );
+        CategoryV2 resolvedCategory = operationCategoryResolver.resolve( "qwert" );
 
         //THEN
         assertEquals( createCategoryMock().getCategoryName(), resolvedCategory.getCategoryName() );
     }
 
 
-    private Category[] createCategoriesMock()
+    private SortedSet<CategoryV2> createCategoriesMock()
     {
-        return new Category[] { createCategoryMock() };
+        SortedSet<CategoryV2> categories = new TreeSet<>();
+        categories.add( createCategoryMock() );
+        return categories;
     }
 
 
-    private Category createCategoryMock()
+    private CategoryV2 createCategoryMock()
     {
-        return new Category( "MOCK_CATEGORY", new String[] { "qwert", "asdfg", "zxcvb" } );
+        SortedSet<Keyword> keywords = new TreeSet<>();
+        keywords.add( new Keyword( "qwert" ) );
+        keywords.add( new Keyword( "asdfg" ) );
+        keywords.add( new Keyword( "zxcvb" ) );
+        return new CategoryV2( "MOCK_CATEGORY", keywords );
     }
 }

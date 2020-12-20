@@ -1,27 +1,27 @@
 package com.catchex.bankstmt.categories;
 
-import com.catchex.models.Category;
+import com.catchex.models.CategoryV2;
 
-import java.util.Arrays;
+import java.util.SortedSet;
 
-import static com.catchex.models.Category.OTHER_CATEGORY;
+import static com.catchex.models.CategoryV2.OTHER_CATEGORY;
 import static com.catchex.util.Log.LOGGER;
 
 
 public class OperationCategoryResolverImpl
     implements OperationCategoryResolver
 {
-    private Category[] categories;
+    private SortedSet<CategoryV2> categories;
 
 
-    public OperationCategoryResolverImpl( Category[] categories )
+    public OperationCategoryResolverImpl( SortedSet<CategoryV2> categories )
     {
         this.categories = categories;
     }
 
 
     @Override
-    public Category resolve( String operationDescription )
+    public CategoryV2 resolve( String operationDescription )
     {
         if( operationDescription == null || operationDescription.isEmpty() )
         {
@@ -29,10 +29,10 @@ public class OperationCategoryResolverImpl
             return OTHER_CATEGORY;
         }
         String descriptionCaseLowered = operationDescription.toLowerCase();
-        for( Category category : categories )
+        for( CategoryV2 category : categories )
         {
-            if( Arrays.stream( category.getKeywords() ).parallel()
-                .anyMatch( keyword -> descriptionCaseLowered.contains( keyword.toLowerCase() ) ) )
+            if( category.getKeywords().stream().anyMatch(
+                keyword -> descriptionCaseLowered.contains( keyword.getValue().toLowerCase() ) ) )
                 return category;
         }
         LOGGER.warning( "Operation category of based on description cannot be resolved : " +

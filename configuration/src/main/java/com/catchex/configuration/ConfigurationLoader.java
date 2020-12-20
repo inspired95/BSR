@@ -31,7 +31,7 @@ public class ConfigurationLoader
     }
 
 
-    private static void loadCategoriesConfigurationV2()
+    public static void loadCategoriesConfigurationV2()
     {
         Optional<CategoriesConfigurationV2> defaultConfiguration =
             ConfigurationUtil.getDefaultConfiguration();

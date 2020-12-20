@@ -1,7 +1,7 @@
 package client.view;
 
 import client.view.model.AbstractTreeItem;
-import com.catchex.models.Category;
+import com.catchex.models.CategoryV2;
 import javafx.scene.control.TreeTableCell;
 import javafx.scene.control.TreeTableRow;
 
@@ -23,7 +23,7 @@ public class CategoryColumnCellFactory
         }
         else
         {
-            if( item.equals( Category.OTHER_CATEGORY.getCategoryName() ) )
+            if( item.equals( CategoryV2.OTHER_CATEGORY.getCategoryName() ) )
             {
                 setStyle( "-fx-background-color:rgba(228, 117, 27, 0.36);" );
             }

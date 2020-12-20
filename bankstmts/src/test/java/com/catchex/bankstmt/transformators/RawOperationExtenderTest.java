@@ -2,16 +2,14 @@ package com.catchex.bankstmt.transformators;
 
 import com.catchex.bankstmt.categories.OperationCategoryResolver;
 import com.catchex.bankstmt.operationtype.OperationTypeResolver;
-import com.catchex.models.Category;
-import com.catchex.models.Operation;
-import com.catchex.models.OperationType;
-import com.catchex.models.RawOperation;
+import com.catchex.models.*;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import java.util.TreeSet;
 
 import static java.util.List.of;
 import static org.easymock.EasyMock.*;
@@ -24,17 +22,6 @@ public class RawOperationExtenderTest
     private RawOperationExtender rawOperationExtender =
         new RawOperationExtender( createOperationTypeResolverMock(),
             createOperationCategoryResolverMock() );
-
-
-    @Test
-    public void should_Return_Empty_List_When_Null_As_List_Given()
-    {
-        //WHEN
-        Set<Operation> operations = rawOperationExtender.extend( null );
-
-        //THEN
-        assertEquals( operations, of() );
-    }
 
 
     @Test
@@ -80,11 +67,11 @@ public class RawOperationExtenderTest
     }
 
 
-    private Category createCategoryMock()
+    private CategoryV2 createCategoryMock()
     {
-        Category category = mock( Category.class );
+        CategoryV2 category = mock( Category.class );
         expect( category.getCategoryName() ).andReturn( "CATEGORY_MOCK" ).anyTimes();
-        expect( category.getKeywords() ).andReturn( new String[] {} );
+        expect( category.getKeywords() ).andReturn( new TreeSet<>() );
         replay( category );
         return category;
     }

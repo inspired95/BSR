@@ -1,7 +1,7 @@
 package com.catchex.configuration.editor.view;
 
 import com.catchex.configuration.editor.control.ConfigurationEditorDialogController;
-import com.catchex.models.CategoryV2;
+import com.catchex.models.Category;
 import com.catchex.models.Keyword;
 import javafx.collections.ObservableList;
 import javafx.geometry.Pos;
@@ -76,7 +76,7 @@ public class ConfigurationEditorDialogView
 
         clearCategoriesContainer();
         clearKeywordsContainer();
-        for( CategoryV2 category : controller.getCategoriesConfiguration().getCategories() )
+        for( Category category : controller.getCategoriesConfiguration().getCategories() )
         {
             putNewCategoryButtonIntoContainer( category );
         }
@@ -105,7 +105,7 @@ public class ConfigurationEditorDialogView
     }
 
 
-    public void setKeywords( CategoryV2 category )
+    public void setKeywords( Category category )
     {
         clearKeywordsContainer();
         for( Keyword keyword : category.getKeywords() )
@@ -138,10 +138,10 @@ public class ConfigurationEditorDialogView
 
 
     public Optional<String> showChoiceFromListDialog(
-        String dialogHeader, String dialogMessage, SortedSet<CategoryV2> categories )
+        String dialogHeader, String dialogMessage, SortedSet<Category> categories )
     {
         List<String> choices = new ArrayList<>();
-        for( CategoryV2 category : categories )
+        for( Category category : categories )
         {
             choices.add( category.getCategoryName() );
         }
@@ -348,7 +348,7 @@ public class ConfigurationEditorDialogView
     }
 
 
-    private void putNewCategoryButtonIntoContainer( CategoryV2 category )
+    private void putNewCategoryButtonIntoContainer( Category category )
     {
         Button categoryButton = new Button( category.getCategoryName() );
         categoryButton.setMaxHeight( WINDOW_WIDTH / 5 );
@@ -401,10 +401,10 @@ public class ConfigurationEditorDialogView
     private static class ActiveCategoryButton
     {
         private Button button;
-        private CategoryV2 category;
+        private Category category;
 
 
-        public ActiveCategoryButton( Button button, CategoryV2 category )
+        public ActiveCategoryButton( Button button, Category category )
         {
             this.button = button;
             this.category = category;
@@ -417,7 +417,7 @@ public class ConfigurationEditorDialogView
         }
 
 
-        public CategoryV2 getCategory()
+        public Category getCategory()
         {
             return category;
         }

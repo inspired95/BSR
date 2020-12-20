@@ -2,7 +2,7 @@ package com.catchex.bankstmt.transformators;
 
 import com.catchex.bankstmt.categories.OperationCategoryResolver;
 import com.catchex.bankstmt.operationtype.OperationTypeResolver;
-import com.catchex.models.CategoryV2;
+import com.catchex.models.Category;
 import com.catchex.models.Operation;
 import com.catchex.models.OperationType;
 import com.catchex.models.RawOperation;
@@ -70,9 +70,9 @@ public class RawOperationExtenderTest
     }
 
 
-    private CategoryV2 createCategoryMock()
+    private Category createCategoryMock()
     {
-        CategoryV2 category = mock( CategoryV2.class );
+        Category category = mock( Category.class );
         expect( category.getCategoryName() ).andReturn( "CATEGORY_MOCK" ).anyTimes();
         expect( category.getKeywords() ).andReturn( new TreeSet<>() );
         replay( category );

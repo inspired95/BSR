@@ -2,8 +2,8 @@ package com.catchex.configuration.editor.control;
 
 import com.catchex.configuration.ConfigurationUtil;
 import com.catchex.configuration.editor.view.ConfigurationEditorDialogView;
-import com.catchex.models.CategoriesConfigurationV2;
-import com.catchex.models.CategoryV2;
+import com.catchex.models.CategoriesConfiguration;
+import com.catchex.models.Category;
 import com.catchex.models.Keyword;
 import javafx.scene.control.ButtonType;
 import javafx.stage.Stage;
@@ -14,7 +14,7 @@ import java.util.Optional;
 
 public class ConfigurationEditorDialogController
 {
-    private CategoriesConfigurationV2 currentCategoriesConfiguration;
+    private CategoriesConfiguration currentCategoriesConfiguration;
     private ConfigurationEditorDialogView view;
 
     private Stage stage;
@@ -23,7 +23,7 @@ public class ConfigurationEditorDialogController
     public ConfigurationEditorDialogController()
     {
         this.view = new ConfigurationEditorDialogView( this );
-        this.currentCategoriesConfiguration = new CategoriesConfigurationV2();
+        this.currentCategoriesConfiguration = new CategoriesConfiguration();
 
     }
 
@@ -36,7 +36,7 @@ public class ConfigurationEditorDialogController
     }
 
 
-    public CategoriesConfigurationV2 getCategoriesConfiguration()
+    public CategoriesConfiguration getCategoriesConfiguration()
     {
         return this.currentCategoriesConfiguration;
     }
@@ -73,7 +73,7 @@ public class ConfigurationEditorDialogController
         Optional<String> newCategoryName =
             view.showAskForStringDialog( "New category", "Enter new category's name", "" );
         newCategoryName.ifPresent( categoryName -> {
-            Optional<CategoryV2> newCategory =
+            Optional<Category> newCategory =
                 currentCategoriesConfiguration.addCategory( categoryName );
             newCategory.ifPresentOrElse( category -> view.refreshView(), () -> {
                 view.showWaringDialog( "New category",
@@ -84,12 +84,12 @@ public class ConfigurationEditorDialogController
     }
 
 
-    public void renameCategory( CategoryV2 category )
+    public void renameCategory( Category category )
     {
         Optional<String> newCategoryName = view.showAskForStringDialog( "Category rename",
             "Enter new " + "name for " + category.getCategoryName(), "" );
         newCategoryName.ifPresent( categoryName -> {
-            Optional<CategoryV2> categoryWithName = findCategoryWithName( categoryName );
+            Optional<Category> categoryWithName = findCategoryWithName( categoryName );
             if( categoryWithName.isEmpty() )
             {
                 category.setCategoryName( categoryName );
@@ -121,7 +121,7 @@ public class ConfigurationEditorDialogController
                     "confirm this operation?" );
             if( choice.isPresent() && choice.get() == ButtonType.OK )
             {
-                Optional<CategoryV2> categoryToRemove = findCategoryWithName( categoryName );
+                Optional<Category> categoryToRemove = findCategoryWithName( categoryName );
                 categoryToRemove.ifPresent(
                     categoryV2 -> this.currentCategoriesConfiguration.getCategories()
                         .remove( categoryV2 ) );
@@ -141,7 +141,7 @@ public class ConfigurationEditorDialogController
             view.showChoiceFromListDialog( "New keyword", "Select category",
                 this.currentCategoriesConfiguration.getCategories() );
         selectedCategoryName.ifPresent( categoryName -> {
-            Optional<CategoryV2> selectedCategory = findCategoryWithName( categoryName );
+            Optional<Category> selectedCategory = findCategoryWithName( categoryName );
             selectedCategory.ifPresentOrElse(
                 category -> {
                     Optional<String> newKeyword =
@@ -166,7 +166,7 @@ public class ConfigurationEditorDialogController
     }
 
 
-    public void removeKeyword( CategoryV2 category, Keyword keyword )
+    public void removeKeyword( Category category, Keyword keyword )
     {
         category.getKeywords().remove( keyword );
         view.refreshView();
@@ -215,7 +215,7 @@ public class ConfigurationEditorDialogController
     }
 
 
-    private void addNewKeyword( CategoryV2 category, String newKeyword )
+    private void addNewKeyword( Category category, String newKeyword )
     {
         if( category != null )
         {
@@ -236,7 +236,7 @@ public class ConfigurationEditorDialogController
 
     private boolean isKeywordAlreadyExists( String keywordToCheck )
     {
-        for( CategoryV2 category : this.currentCategoriesConfiguration.getCategories() )
+        for( Category category : this.currentCategoriesConfiguration.getCategories() )
         {
             for( Keyword keyword : category.getKeywords() )
             {
@@ -248,9 +248,9 @@ public class ConfigurationEditorDialogController
     }
 
 
-    private Optional<CategoryV2> findCategoryWithName( String categoryName )
+    private Optional<Category> findCategoryWithName( String categoryName )
     {
-        for( CategoryV2 category : this.currentCategoriesConfiguration.getCategories() )
+        for( Category category : this.currentCategoriesConfiguration.getCategories() )
         {
             if( category.getCategoryName().equals( categoryName.toUpperCase() ) )
             {

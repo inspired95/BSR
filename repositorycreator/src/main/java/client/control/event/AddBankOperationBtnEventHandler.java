@@ -5,7 +5,7 @@ import com.catchex.bankstmt.categories.OperationCategoryResolverImpl;
 import com.catchex.bankstmt.operationtype.OperationTypeResolver;
 import com.catchex.bankstmt.operationtype.OperationTypeResolverFactory;
 import com.catchex.bankstmt.transformators.RawOperationExtender;
-import com.catchex.models.ConfigurationV2;
+import com.catchex.models.Configuration;
 import com.catchex.models.Operation;
 import com.catchex.models.RawOperation;
 import javafx.application.Application;
@@ -204,9 +204,9 @@ public class AddBankOperationBtnEventHandler
         private RawOperationExtender getRawOperationExtender(
             OperationTypeResolver operationTypeResolver )
         {
-            return new RawOperationExtender(
-                operationTypeResolver, new OperationCategoryResolverImpl(
-                ConfigurationV2.getInstance().getCategoriesConfiguration().getCategories() ) );
+            return new RawOperationExtender( operationTypeResolver,
+                new OperationCategoryResolverImpl(
+                    Configuration.getInstance().getCategoriesConfiguration().getCategories() ) );
         }
     }
 }

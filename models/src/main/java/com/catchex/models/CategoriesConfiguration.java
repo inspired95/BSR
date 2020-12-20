@@ -6,41 +6,41 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 
 
-public class CategoriesConfigurationV2
+public class CategoriesConfiguration
     implements Serializable, Cloneable
 {
     private static final long serialVersionUID = -7588980448693010397L;
 
-    private SortedSet<CategoryV2> categories;
+    private SortedSet<Category> categories;
 
 
-    public CategoriesConfigurationV2()
+    public CategoriesConfiguration()
     {
         this.categories = new TreeSet<>();
     }
 
 
-    public CategoriesConfigurationV2( SortedSet<CategoryV2> categories )
+    public CategoriesConfiguration( SortedSet<Category> categories )
     {
         this.categories = categories;
     }
 
 
-    public Optional<CategoryV2> addCategory( String newCategoryName )
+    public Optional<Category> addCategory( String newCategoryName )
     {
-        CategoryV2 newCategory = new CategoryV2( newCategoryName, new TreeSet<>() );
+        Category newCategory = new Category( newCategoryName, new TreeSet<>() );
         this.categories.add( newCategory );
         return Optional.of( newCategory );
     }
 
 
-    public SortedSet<CategoryV2> getCategories()
+    public SortedSet<Category> getCategories()
     {
         return categories;
     }
 
 
-    public void setCategories( SortedSet<CategoryV2> categories )
+    public void setCategories( SortedSet<Category> categories )
     {
         this.categories = new TreeSet<>( categories );
     }
@@ -49,6 +49,6 @@ public class CategoriesConfigurationV2
     @Override
     public Object clone()
     {
-        return new CategoriesConfigurationV2( new TreeSet<>( categories ) );
+        return new CategoriesConfiguration( new TreeSet<>( categories ) );
     }
 }

@@ -6,18 +6,18 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 
 
-public class CategoryV2
-    implements Comparable<CategoryV2>, Serializable, Cloneable
+public class Category
+    implements Comparable<Category>, Serializable, Cloneable
 {
     private static final long serialVersionUID = -7588980448693010398L;
 
-    public static CategoryV2 OTHER_CATEGORY = new CategoryV2( "OTHER", new TreeSet<>() );
-    public static CategoryV2 CASH_WITHDRAWAL = new CategoryV2( "CASH WITHDRAWAL", new TreeSet<>() );
+    public static Category OTHER_CATEGORY = new Category( "OTHER", new TreeSet<>() );
+    public static Category CASH_WITHDRAWAL = new Category( "CASH WITHDRAWAL", new TreeSet<>() );
     private String categoryName;
     private SortedSet<Keyword> keywords;
 
 
-    public CategoryV2( String categoryName, SortedSet<Keyword> keywords )
+    public Category( String categoryName, SortedSet<Keyword> keywords )
     {
         this.categoryName = categoryName.toUpperCase();
         this.keywords = keywords;
@@ -43,9 +43,9 @@ public class CategoryV2
 
 
     @Override
-    public int compareTo( CategoryV2 categoryV2 )
+    public int compareTo( Category category )
     {
-        return this.categoryName.compareTo( categoryV2.categoryName );
+        return this.categoryName.compareTo( category.categoryName );
     }
 
 
@@ -59,7 +59,7 @@ public class CategoryV2
         if( getClass() != obj.getClass() )
             return false;
 
-        CategoryV2 other = (CategoryV2)obj;
+        Category other = (Category)obj;
 
         if( categoryName == null )
         {
@@ -91,6 +91,6 @@ public class CategoryV2
     @Override
     protected Object clone()
     {
-        return new CategoryV2( categoryName, new TreeSet<>( keywords ) );
+        return new Category( categoryName, new TreeSet<>( keywords ) );
     }
 }

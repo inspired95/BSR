@@ -1,6 +1,6 @@
 package com.catchex.io.writer;
 
-import com.catchex.models.CategoriesConfigurationV2;
+import com.catchex.models.CategoriesConfiguration;
 
 import java.io.*;
 import java.nio.file.Path;
@@ -8,7 +8,7 @@ import java.nio.file.Path;
 
 public class ConfigurationWriter
 {
-    public static boolean write( CategoriesConfigurationV2 configuration, Path path )
+    public static boolean write( CategoriesConfiguration configuration, Path path )
     {
         try
         {

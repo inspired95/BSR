@@ -1,7 +1,7 @@
 package com.catchex.configuration;
 
-import com.catchex.models.CategoriesConfigurationV2;
-import com.catchex.models.ConfigurationV2;
+import com.catchex.models.CategoriesConfiguration;
+import com.catchex.models.Configuration;
 
 import java.util.Optional;
 
@@ -13,11 +13,10 @@ public class ConfigurationLoader
 
     public static void loadCategoriesConfigurationV2()
     {
-        Optional<CategoriesConfigurationV2> defaultConfiguration =
+        Optional<CategoriesConfiguration> defaultConfiguration =
             ConfigurationUtil.getDefaultConfiguration();
-        defaultConfiguration.ifPresentOrElse(
-            categoriesConfiguration -> ConfigurationV2.getInstance()
-                .setCategoriesConfiguration( categoriesConfiguration ), () -> {
+        defaultConfiguration.ifPresentOrElse( categoriesConfiguration -> Configuration.getInstance()
+            .setCategoriesConfiguration( categoriesConfiguration ), () -> {
                 LOGGER.info( "Cannot load default configuration" );
             } );
     }

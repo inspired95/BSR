@@ -1,9 +1,9 @@
 package com.catchex.bankstmt.categories;
 
-import com.catchex.models.CategoryV2;
+import com.catchex.models.Category;
 
 
 public interface OperationCategoryResolver
 {
-    CategoryV2 resolve( String operationDescription );
+    Category resolve( String operationDescription );
 }

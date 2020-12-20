@@ -1,6 +1,6 @@
 package com.catchex.io.reader;
 
-import com.catchex.models.CategoriesConfigurationV2;
+import com.catchex.models.CategoriesConfiguration;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -14,15 +14,15 @@ import static com.catchex.util.Log.LOGGER;
 
 public class ConfigurationReader
 {
-    public static Optional<CategoriesConfigurationV2> readConfiguration( Path path )
+    public static Optional<CategoriesConfiguration> readConfiguration( Path path )
     {
         try
         {
             FileInputStream fi = new FileInputStream( new File( path.toString() ) );
             ObjectInputStream oi = new ObjectInputStream( fi );
 
-            CategoriesConfigurationV2 categoriesConfiguration =
-                (CategoriesConfigurationV2)oi.readObject();
+            CategoriesConfiguration categoriesConfiguration =
+                (CategoriesConfiguration)oi.readObject();
 
             oi.close();
             fi.close();

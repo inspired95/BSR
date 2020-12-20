@@ -1,6 +1,6 @@
 package client.view.model;
 
-import com.catchex.models.CategoryV2;
+import com.catchex.models.Category;
 import com.catchex.models.Operation;
 
 import java.io.Serializable;
@@ -28,7 +28,7 @@ public class OperationTreeItem
     }
 
 
-    public void setCategory( CategoryV2 category )
+    public void setCategory( Category category )
     {
         this.category.set( category.getCategoryName() );
     }

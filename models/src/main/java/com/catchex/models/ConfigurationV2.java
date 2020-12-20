@@ -6,7 +6,7 @@ import java.io.Serializable;
 public class ConfigurationV2
     implements Serializable
 {
-    static final long serialVersionUID = -7588980448693010399L;
+    private static final long serialVersionUID = -7588980448693010399L;
 
     private static ConfigurationV2 INSTANCE;
 

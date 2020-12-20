@@ -6,7 +6,7 @@ import java.io.Serializable;
 public class Keyword
     implements Serializable, Comparable<Keyword>, Cloneable
 {
-    static final long serialVersionUID = -7588980448693010396L;
+    private static final long serialVersionUID = -7588980448693010396L;
 
     private String value;
 

@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
 public class CategoriesConfigurationV2
     implements Serializable, Cloneable
 {
-    static final long serialVersionUID = -7588980448693010397L;
+    private static final long serialVersionUID = -7588980448693010397L;
 
     private SortedSet<CategoryV2> categories;
 

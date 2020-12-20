@@ -45,14 +45,4 @@ public class ConfigurationV2
     {
         this.categoriesConfiguration = categoriesConfiguration;
     }
-
-
-    public void setCategoriesConfiguration( CategoriesConfiguration categoriesConfiguration )
-    {
-        if( this.categoriesConfiguration == null )
-        {
-            this.categoriesConfiguration = new CategoriesConfigurationV2();
-        }
-        this.categoriesConfiguration.setCategories( categoriesConfiguration.getCategories() );
-    }
 }

@@ -1,6 +1,5 @@
 package com.catchex.configuration.editor.control;
 
-import com.catchex.configuration.Configuration;
 import com.catchex.configuration.ConfigurationUtil;
 import com.catchex.configuration.editor.view.ConfigurationEditorDialogView;
 import com.catchex.models.CategoriesConfigurationV2;
@@ -43,13 +42,13 @@ public class ConfigurationEditorDialogController
     }
 
 
-    @Deprecated
+    /*@Deprecated
     public void loadOldConfiguration()
     {
         currentCategoriesConfiguration
             .setCategories( Configuration.getCategoriesConfiguration().getCategories() );
         view.refreshView();
-    }
+    }*/
 
 
     public void loadDefaultConfiguration()

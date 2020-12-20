@@ -1,6 +1,7 @@
 package com.catchex.report.web;
 
-import com.catchex.models.Category;
+import com.catchex.models.CategoryV2;
+import com.catchex.models.ConfigurationV2;
 import com.catchex.report.statictics.OperationsStatistics;
 import j2html.tags.ContainerTag;
 
@@ -8,7 +9,6 @@ import java.time.Month;
 import java.time.format.TextStyle;
 import java.util.*;
 
-import static com.catchex.configuration.Configuration.getCategoriesConfiguration;
 import static j2html.TagCreator.*;
 
 
@@ -86,7 +86,7 @@ public class OperationChartGenerator
     private String generateExpensesSummaryLabels()
     {
         StringBuilder labels = new StringBuilder( "\"labels\":[\n" );
-        for( Category category : computeCategories() )
+        for( CategoryV2 category : computeCategories() )
         {
             labels.append( "'" + category.getCategoryName() + "'," );
         }
@@ -106,7 +106,7 @@ public class OperationChartGenerator
     {
         StringBuilder datasets = new StringBuilder( "datasets: [\n" );
 
-        for( Category category : computeCategories() )
+        for( CategoryV2 category : computeCategories() )
         {
             datasets.append( generateCategoryDataset( category,
                 operationsStatistics.getExpensesCategoriesPerMonth().values() ) );
@@ -118,7 +118,7 @@ public class OperationChartGenerator
 
 
     private String generateCategoryDataset(
-        Category category, Collection<Map<String, Double>> monthExpenses )
+        CategoryV2 category, Collection<Map<String, Double>> monthExpenses )
     {
         String color = randomColor();
         StringBuilder categoryDataset = new StringBuilder( "{label:\n" );
@@ -141,7 +141,7 @@ public class OperationChartGenerator
     {
         StringBuilder datasets = new StringBuilder( "datasets: [{\n" );
         datasets.append( "backgroundColor: [" );
-        for( Category computeCategory : computeCategories() )
+        for( CategoryV2 computeCategory : computeCategories() )
         {
             datasets.append( "'" + randomColor() ).append( "'," );
         }
@@ -149,7 +149,7 @@ public class OperationChartGenerator
         datasets.append( "]," );
 
         datasets.append( "data: [" );
-        for( Category category : computeCategories() )
+        for( CategoryV2 category : computeCategories() )
         {
             Double amount = operationsStatistics.getExpenses().get( category.getCategoryName() );
             datasets.append( amount == null ? 0 : Math.abs( amount ) ).append( "," );
@@ -174,12 +174,12 @@ public class OperationChartGenerator
     }
 
 
-    private List<Category> computeCategories()
+    private List<CategoryV2> computeCategories()
     {
-        List<Category> categories =
-            new ArrayList( Arrays.asList( getCategoriesConfiguration().getCategories() ) );
-        categories.add( Category.OTHER_CATEGORY );
-        categories.add( Category.CASH_WITHDRAWAL );
+        List<CategoryV2> categories = new ArrayList( Arrays
+            .asList( ConfigurationV2.getInstance().getCategoriesConfiguration().getCategories() ) );
+        categories.add( CategoryV2.OTHER_CATEGORY );
+        categories.add( CategoryV2.CASH_WITHDRAWAL );
         return categories;
     }
 }

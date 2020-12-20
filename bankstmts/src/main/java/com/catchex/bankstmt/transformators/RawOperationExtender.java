@@ -11,7 +11,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import static com.catchex.models.Category.OTHER_CATEGORY;
+import static com.catchex.models.CategoryV2.OTHER_CATEGORY;
 import static com.catchex.models.OperationType.NOT_RESOLVED;
 import static com.catchex.util.Log.LOGGER;
 import static java.util.Set.of;

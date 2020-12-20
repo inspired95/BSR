@@ -1,11 +1,9 @@
 package com.catchex.models;
 
 import java.io.Serializable;
-import java.util.Arrays;
 import java.util.Optional;
 import java.util.SortedSet;
 import java.util.TreeSet;
-import java.util.stream.Collectors;
 
 
 public class CategoriesConfigurationV2
@@ -45,22 +43,6 @@ public class CategoriesConfigurationV2
     public void setCategories( SortedSet<CategoryV2> categories )
     {
         this.categories = new TreeSet<>( categories );
-    }
-
-
-    @Deprecated
-    public void setCategories( Category[] categories )
-    {
-        SortedSet<CategoryV2> categoriesList = new TreeSet<>();
-        for( Category category : categories )
-        {
-            SortedSet<Keyword> keywords =
-                Arrays.stream( category.getKeywords() ).map( Keyword::new )
-                    .collect( Collectors.toCollection( TreeSet::new ) );
-
-            categoriesList.add( new CategoryV2( category.getCategoryName(), keywords ) );
-        }
-        setCategories( categoriesList );
     }
 
 

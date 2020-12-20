@@ -45,7 +45,6 @@ public class ConfigurationEditorDialogView
     private MenuItem addNewCategoryMenuItem;
     private MenuItem removeCategoryMenuItem;
     private MenuItem addNewKeywordMenuItem;
-    private MenuItem loadOldConfigMenuItem;
 
 
     public ConfigurationEditorDialogView( ConfigurationEditorDialogController controller )
@@ -245,7 +244,6 @@ public class ConfigurationEditorDialogView
         createExportConfigurationMenuItem();
         createLoadDefaultConfigurationMenuItem();
         createSetCurrentConfigurationAsDefaultMenuItem();
-        createLoadOldConfigMenuItem();
         createExitMenuItem();
         createAddNewCategoryMenuItem();
         createRemoveNewCategoryMenuItem();
@@ -277,7 +275,6 @@ public class ConfigurationEditorDialogView
         configurationMenu.getItems().add( exportConfigurationMenuItem );
         configurationMenu.getItems().add( loadDefaultConfigurationMenuItem );
         configurationMenu.getItems().add( setCurrentConfigurationAsDefaultMenuItem );
-        configurationMenu.getItems().add( loadOldConfigMenuItem );
         configurationMenu.getItems().add( exitMenuItem );
     }
 
@@ -338,13 +335,6 @@ public class ConfigurationEditorDialogView
     {
         importConfigurationMenuItem = new MenuItem( "Import configuration" );
         importConfigurationMenuItem.setOnAction( actionEvent -> controller.importConfiguration() );
-    }
-
-
-    private void createLoadOldConfigMenuItem()
-    {
-        loadOldConfigMenuItem = new MenuItem( "loadOldConfig" );
-        loadOldConfigMenuItem.setOnAction( actionEvent -> controller.loadOldConfiguration() );
     }
 
 

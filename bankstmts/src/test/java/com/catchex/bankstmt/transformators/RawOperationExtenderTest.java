@@ -2,7 +2,10 @@ package com.catchex.bankstmt.transformators;
 
 import com.catchex.bankstmt.categories.OperationCategoryResolver;
 import com.catchex.bankstmt.operationtype.OperationTypeResolver;
-import com.catchex.models.*;
+import com.catchex.models.CategoryV2;
+import com.catchex.models.Operation;
+import com.catchex.models.OperationType;
+import com.catchex.models.RawOperation;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
@@ -69,7 +72,7 @@ public class RawOperationExtenderTest
 
     private CategoryV2 createCategoryMock()
     {
-        CategoryV2 category = mock( Category.class );
+        CategoryV2 category = mock( CategoryV2.class );
         expect( category.getCategoryName() ).andReturn( "CATEGORY_MOCK" ).anyTimes();
         expect( category.getKeywords() ).andReturn( new TreeSet<>() );
         replay( category );

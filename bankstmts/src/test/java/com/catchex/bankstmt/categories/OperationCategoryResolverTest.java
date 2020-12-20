@@ -1,6 +1,5 @@
 package com.catchex.bankstmt.categories;
 
-import com.catchex.models.Category;
 import com.catchex.models.CategoryV2;
 import com.catchex.models.Keyword;
 import org.junit.jupiter.api.Test;
@@ -24,7 +23,7 @@ public class OperationCategoryResolverTest
         CategoryV2 resolvedCategory = operationCategoryResolver.resolve( null );
 
         //THEN
-        assertEquals( Category.OTHER_CATEGORY, resolvedCategory );
+        assertEquals( CategoryV2.OTHER_CATEGORY, resolvedCategory );
     }
 
 
@@ -39,7 +38,7 @@ public class OperationCategoryResolverTest
         CategoryV2 resolvedCategory = operationCategoryResolver.resolve( "" );
 
         //THEN
-        assertEquals( Category.OTHER_CATEGORY, resolvedCategory );
+        assertEquals( CategoryV2.OTHER_CATEGORY, resolvedCategory );
     }
 
 
@@ -54,7 +53,7 @@ public class OperationCategoryResolverTest
         CategoryV2 resolvedCategory = operationCategoryResolver.resolve( "NOT_MATCHING_KEYWORD" );
 
         //THEN
-        assertEquals( Category.OTHER_CATEGORY, resolvedCategory );
+        assertEquals( CategoryV2.OTHER_CATEGORY, resolvedCategory );
     }
 
 

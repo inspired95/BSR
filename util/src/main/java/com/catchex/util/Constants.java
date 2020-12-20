@@ -11,7 +11,9 @@ import static java.util.Arrays.asList;
 public class Constants
 {
     public static final String BSR = "BSR";
-    public static final String APP_TITLE = "BSR - Bank Statement Reader";
+    public static final String APP_TITLE = "Bank Statement Reader";
+    public static final String APP_CONFIGURATION_EDITOR_TITLE =
+        APP_TITLE + " - Configuration " + "Editor";
     public static final String SELECT_BANK_TXT = "Select bank";
     public static final String SELECT_BANK_STATEMENT_TXT = "Select bank statement";
 
@@ -39,6 +41,11 @@ public class Constants
 
     public static final String CONFIGURATION_PATH =
         Paths.get( System.getProperty( "user.home" ), BSR ).toString();
+
+    public static final String BSR_CONFIGURATION_EXTENSION = ".bsrconfig";
+
+    public static final String DEFAULT_CONFIGURATION_FILE_NAME =
+        "Configuration" + BSR_CONFIGURATION_EXTENSION;
 
     public static final String REPORT = "Report";
 

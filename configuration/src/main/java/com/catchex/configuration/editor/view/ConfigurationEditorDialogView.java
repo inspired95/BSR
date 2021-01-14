@@ -10,6 +10,9 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyCodeCombination;
+import javafx.scene.input.KeyCombination;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
@@ -229,6 +232,8 @@ public class ConfigurationEditorDialogView
     {
         addNewCategoryMenuItem = new MenuItem( "Add new category" );
         addNewCategoryMenuItem.setOnAction( actionEvent -> controller.addNewCategory() );
+        addNewCategoryMenuItem
+            .setAccelerator( new KeyCodeCombination( KeyCode.C, KeyCombination.ALT_DOWN ) );
     }
 
 
@@ -243,6 +248,8 @@ public class ConfigurationEditorDialogView
     {
         addNewKeywordMenuItem = new MenuItem( "Add new keyword" );
         addNewKeywordMenuItem.setOnAction( actionEvent -> controller.addNewKeyword() );
+        addNewKeywordMenuItem
+            .setAccelerator( new KeyCodeCombination( KeyCode.K, KeyCombination.ALT_DOWN ) );
     }
 
 
@@ -259,6 +266,8 @@ public class ConfigurationEditorDialogView
             new MenuItem( "Set current configuration as default" );
         setCurrentConfigurationAsDefaultMenuItem
             .setOnAction( actionEvent -> controller.setConfigurationAsDefault() );
+        setCurrentConfigurationAsDefaultMenuItem
+            .setAccelerator( new KeyCodeCombination( KeyCode.S, KeyCombination.CONTROL_DOWN ) );
     }
 
 

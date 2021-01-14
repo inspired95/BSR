@@ -11,6 +11,8 @@ import javafx.stage.Stage;
 import java.io.File;
 import java.util.Optional;
 
+import static com.catchex.configuration.editor.AlertsDialogsUtil.*;
+
 
 public class ConfigurationEditorDialogController
 {
@@ -56,7 +58,7 @@ public class ConfigurationEditorDialogController
         ConfigurationUtil.getDefaultConfiguration().ifPresentOrElse( categoriesConfiguration -> {
             this.currentCategoriesConfiguration = categoriesConfiguration;
             view.refreshView();
-        }, () -> view.showWaringDialog( "Load default configuration",
+        }, () -> showWaringDialog( "Load default configuration",
             "Error during default configuration loading\n" +
                 "Check logs to get to know issue root cause" ) );
     }
@@ -71,12 +73,12 @@ public class ConfigurationEditorDialogController
     public void addNewCategory()
     {
         Optional<String> newCategoryName =
-            view.showAskForStringDialog( "New category", "Enter new category's name", "" );
+            showAskForStringDialog( "New category", "Enter new category's name", "" );
         newCategoryName.ifPresent( categoryName -> {
             Optional<Category> newCategory =
                 currentCategoriesConfiguration.addCategory( categoryName );
             newCategory.ifPresentOrElse( category -> view.refreshView(), () -> {
-                view.showWaringDialog( "New category",
+                showWaringDialog( "New category",
                     "Given category already exists in categories configuration" );
                 addNewCategory();
             } );
@@ -86,7 +88,7 @@ public class ConfigurationEditorDialogController
 
     public void renameCategory( Category category )
     {
-        Optional<String> newCategoryName = view.showAskForStringDialog( "Category rename",
+        Optional<String> newCategoryName = showAskForStringDialog( "Category rename",
             "Enter new " + "name for " + category.getCategoryName(), "" );
         newCategoryName.ifPresent( categoryName -> {
             Optional<Category> categoryWithName = findCategoryWithName( categoryName );
@@ -97,7 +99,7 @@ public class ConfigurationEditorDialogController
             }
             else
             {
-                view.showWaringDialog(
+                showWaringDialog(
                     "Category rename",
                     "Given category name already exists in categories configuration. \n Please " +
                         "enter other name" );
@@ -113,10 +115,10 @@ public class ConfigurationEditorDialogController
             return;
 
         Optional<String> categoryNameToRemove =
-            view.showChoiceFromListDialog( "Remove category", "Select " + "category to remove",
+            showChoiceFromListDialog( "Remove category", "Select " + "category to remove",
                 this.currentCategoriesConfiguration.getCategories() );
         categoryNameToRemove.ifPresent( categoryName -> {
-            Optional<ButtonType> choice = view.showConfirmationDialog( "Remove category",
+            Optional<ButtonType> choice = showConfirmationDialog( "Remove category",
                 "Category " + categoryName + " will be removed with all keywords. \nDo you " +
                     "confirm this operation?" );
             if( choice.isPresent() && choice.get() == ButtonType.OK )
@@ -138,18 +140,15 @@ public class ConfigurationEditorDialogController
             return;
 
         Optional<String> selectedCategoryName =
-            view.showChoiceFromListDialog( "New keyword", "Select category",
+            showChoiceFromListDialog( "New keyword", "Select category",
                 this.currentCategoriesConfiguration.getCategories() );
         selectedCategoryName.ifPresent( categoryName -> {
             Optional<Category> selectedCategory = findCategoryWithName( categoryName );
-            selectedCategory.ifPresentOrElse(
-                category -> {
-                    Optional<String> newKeyword =
-                        view.showAskForStringDialog( "New keyword", "Enter new keyword's name",
-                            "" );
-                    newKeyword.ifPresent( keyword -> addNewKeyword( category, keyword ) );
-                }, () -> view
-                    .showWaringDialog( "New keyword", "Category with given name already exists" ) );
+            selectedCategory.ifPresentOrElse( category -> {
+                Optional<String> newKeyword =
+                    showAskForStringDialog( "New keyword", "Enter new keyword's name", "" );
+                newKeyword.ifPresent( keyword -> addNewKeyword( category, keyword ) );
+            }, () -> showWaringDialog( "New keyword", "Category with given name already exists" ) );
         } );
     }
 
@@ -157,7 +156,7 @@ public class ConfigurationEditorDialogController
     public void renameKeyword( Keyword keyword )
     {
         Optional<String> newKeywordName =
-            view.showAskForStringDialog( "Keyword rename", "Enter new keyword name",
+            showAskForStringDialog( "Keyword rename", "Enter new keyword name",
                 keyword.getValue() );
         newKeywordName.ifPresent( newKeyword -> {
             keyword.setValue( newKeyword );
@@ -208,7 +207,7 @@ public class ConfigurationEditorDialogController
     {
         if( this.currentCategoriesConfiguration.getCategories().size() == 0 )
         {
-            view.showWaringDialog( "Operation cannot be performed", "There are no categories" );
+            showWaringDialog( "Operation cannot be performed", "There are no categories" );
             return true;
         }
         return false;
@@ -226,7 +225,7 @@ public class ConfigurationEditorDialogController
             }
             else
             {
-                view.showWaringDialog( "New keyword",
+                showWaringDialog( "New keyword",
                     "Given keyword " + "already exists in categories configuration" );
             }
 

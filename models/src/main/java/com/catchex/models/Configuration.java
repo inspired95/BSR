@@ -1,5 +1,7 @@
 package com.catchex.models;
 
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
 import java.io.Serializable;
 
 
@@ -12,10 +14,13 @@ public class Configuration
 
     private CategoriesConfiguration categoriesConfiguration;
 
+    private PropertyChangeSupport categoriesConfigurationChangeSupport;
+
 
     private Configuration()
     {
         this.categoriesConfiguration = new CategoriesConfiguration();
+        categoriesConfigurationChangeSupport = new PropertyChangeSupport( this );
     }
 
 
@@ -44,5 +49,21 @@ public class Configuration
     public void setCategoriesConfiguration( CategoriesConfiguration categoriesConfiguration )
     {
         this.categoriesConfiguration = categoriesConfiguration;
+        categoriesConfigurationChangeSupport
+            .firePropertyChange( "categoriesConfiguration", true, false );
+    }
+
+
+    public void addCategoriesConfigurationChangeListener(
+        PropertyChangeListener propertyChangeListener )
+    {
+        categoriesConfigurationChangeSupport.addPropertyChangeListener( propertyChangeListener );
+    }
+
+
+    public void removeCategoriesConfigurationChangeListener(
+        PropertyChangeListener propertyChangeListener )
+    {
+        categoriesConfigurationChangeSupport.removePropertyChangeListener( propertyChangeListener );
     }
 }

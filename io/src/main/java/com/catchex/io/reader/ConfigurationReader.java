@@ -30,6 +30,7 @@ public class ConfigurationReader
         }
         catch( IOException | ClassNotFoundException e )
         {
+            e.printStackTrace();
             LOGGER.warning( e.getMessage() );
         }
         return Optional.empty();

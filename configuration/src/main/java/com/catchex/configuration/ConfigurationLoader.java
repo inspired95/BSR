@@ -11,14 +11,16 @@ import static com.catchex.util.Log.LOGGER;
 public class ConfigurationLoader
 {
 
-    public static void loadCategoriesConfigurationV2()
+    public static void loadCategoriesConfiguration()
     {
         Optional<CategoriesConfiguration> defaultConfiguration =
             ConfigurationUtil.getDefaultConfiguration();
-        defaultConfiguration.ifPresentOrElse( categoriesConfiguration -> Configuration.getInstance()
-            .setCategoriesConfiguration( categoriesConfiguration ), () -> {
-                LOGGER.info( "Cannot load default configuration" );
-            } );
+        defaultConfiguration.ifPresentOrElse( categoriesConfiguration -> {
+            Configuration.getInstance().setCategoriesConfiguration( categoriesConfiguration );
+            LOGGER.info( "Default configuration loaded" );
+        }, () -> {
+            LOGGER.info( "Cannot load default configuration" );
+        } );
     }
 
 }

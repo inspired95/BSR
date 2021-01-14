@@ -26,8 +26,7 @@ public class DescriptionCellEditEventHandler
         Object editedRow = event.getRowValue().getValue();
         if( editedRow instanceof OperationTreeItem )
         {
-            controller.handleDescriptionChange( (OperationTreeItem)editedRow,
-                (String)event.getNewValue() );
+            controller.updateCategory( (OperationTreeItem)editedRow, (String)event.getNewValue() );
         }
     }
 

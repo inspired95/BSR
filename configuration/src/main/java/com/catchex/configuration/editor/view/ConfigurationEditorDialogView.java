@@ -16,10 +16,7 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
-import java.util.SortedSet;
 
 import static com.catchex.util.Constants.*;
 
@@ -134,57 +131,6 @@ public class ConfigurationEditorDialogView
     public void clearCategoriesContainer()
     {
         categoriesContainer.getChildren().clear();
-    }
-
-
-    public Optional<String> showChoiceFromListDialog(
-        String dialogHeader, String dialogMessage, SortedSet<Category> categories )
-    {
-        List<String> choices = new ArrayList<>();
-        for( Category category : categories )
-        {
-            choices.add( category.getCategoryName() );
-        }
-        ChoiceDialog<String> dialog = new ChoiceDialog<>( choices.get( 0 ), choices );
-        dialog.setTitle( APP_CONFIGURATION_EDITOR_TITLE );
-        dialog.setHeaderText( dialogHeader );
-        dialog.setContentText( dialogMessage );
-
-        return dialog.showAndWait();
-    }
-
-
-    public Optional<String> showAskForStringDialog(
-        String dialogHeader, String dialogMessage, String defaultValue )
-    {
-        TextInputDialog dialog = new TextInputDialog( defaultValue );
-        dialog.setTitle( APP_TITLE );
-        dialog.setHeaderText( dialogHeader );
-        dialog.setContentText( dialogMessage );
-
-        return dialog.showAndWait();
-    }
-
-
-    public void showWaringDialog( String dialogHeader, String dialogMessage )
-    {
-        Alert alert = new Alert( Alert.AlertType.WARNING );
-        alert.setTitle( APP_CONFIGURATION_EDITOR_TITLE );
-        alert.setHeaderText( dialogHeader );
-        alert.setContentText( dialogMessage );
-
-        alert.showAndWait();
-    }
-
-
-    public Optional<ButtonType> showConfirmationDialog( String dialogHeader, String dialogMessage )
-    {
-        Alert alert = new Alert( Alert.AlertType.CONFIRMATION );
-        alert.setTitle( APP_CONFIGURATION_EDITOR_TITLE );
-        alert.setHeaderText( dialogHeader );
-        alert.setContentText( dialogMessage );
-
-        return alert.showAndWait();
     }
 
 

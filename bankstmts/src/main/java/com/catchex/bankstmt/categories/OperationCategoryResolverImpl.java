@@ -1,8 +1,7 @@
 package com.catchex.bankstmt.categories;
 
 import com.catchex.models.Category;
-
-import java.util.SortedSet;
+import com.catchex.models.Configuration;
 
 import static com.catchex.models.Category.OTHER_CATEGORY;
 import static com.catchex.util.Log.LOGGER;
@@ -11,12 +10,9 @@ import static com.catchex.util.Log.LOGGER;
 public class OperationCategoryResolverImpl
     implements OperationCategoryResolver
 {
-    private SortedSet<Category> categories;
 
-
-    public OperationCategoryResolverImpl( SortedSet<Category> categories )
+    public OperationCategoryResolverImpl()
     {
-        this.categories = categories;
     }
 
 
@@ -29,7 +25,8 @@ public class OperationCategoryResolverImpl
             return OTHER_CATEGORY;
         }
         String descriptionCaseLowered = operationDescription.toLowerCase();
-        for( Category category : categories )
+        for( Category category : Configuration.getInstance().getCategoriesConfiguration()
+            .getCategories() )
         {
             if( category.getKeywords().stream().anyMatch(
                 keyword -> descriptionCaseLowered.contains( keyword.getValue().toLowerCase() ) ) )

@@ -16,8 +16,7 @@ public class OperationCategoryResolverTest
     public void should_Return_Other_Category_When_Null_As_Desc_Given()
     {
         //GIVEN
-        OperationCategoryResolver operationCategoryResolver =
-            new OperationCategoryResolverImpl( null );
+        OperationCategoryResolver operationCategoryResolver = new OperationCategoryResolverImpl();
 
         //WHEN
         Category resolvedCategory = operationCategoryResolver.resolve( null );
@@ -31,8 +30,7 @@ public class OperationCategoryResolverTest
     public void should_Return_Other_Category_When_Empty_String_As_Desc_Given()
     {
         //GIVEN
-        OperationCategoryResolver operationCategoryResolver =
-            new OperationCategoryResolverImpl( null );
+        OperationCategoryResolver operationCategoryResolver = new OperationCategoryResolverImpl();
 
         //WHEN
         Category resolvedCategory = operationCategoryResolver.resolve( "" );
@@ -46,8 +44,7 @@ public class OperationCategoryResolverTest
     public void should_Return_Other_Category_When_Cannot_Match_Given_Desc_To_Any_Keyword()
     {
         //GIVEN
-        OperationCategoryResolver operationCategoryResolver =
-            new OperationCategoryResolverImpl( createCategoriesMock() );
+        OperationCategoryResolver operationCategoryResolver = new OperationCategoryResolverImpl();
 
         //WHEN
         Category resolvedCategory = operationCategoryResolver.resolve( "NOT_MATCHING_KEYWORD" );
@@ -61,8 +58,7 @@ public class OperationCategoryResolverTest
     public void should_Return_Category_When_Can_Match_Given_Desc_To_Some_Keyword()
     {
         //GIVEN
-        OperationCategoryResolver operationCategoryResolver =
-            new OperationCategoryResolverImpl( createCategoriesMock() );
+        OperationCategoryResolver operationCategoryResolver = new OperationCategoryResolverImpl();
 
         //WHEN
         Category resolvedCategory = operationCategoryResolver.resolve( "qwert" );

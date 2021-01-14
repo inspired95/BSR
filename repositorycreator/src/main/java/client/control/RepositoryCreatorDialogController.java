@@ -3,12 +3,15 @@ package client.control;
 import client.Repository;
 import client.control.event.*;
 import client.view.RepositoryCreatorDialogView;
+import client.view.model.AbstractTreeItem;
 import client.view.model.OperationTreeItem;
 import com.catchex.bankstmt.categories.OperationCategoryResolverImpl;
+import com.catchex.configuration.editor.ConfigurationEditorApplication;
 import com.catchex.models.Category;
-import com.catchex.models.Configuration;
 import com.catchex.models.Operation;
+import javafx.application.Platform;
 import javafx.scene.control.Alert;
+import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeTableColumn;
 import javafx.stage.Stage;
 
@@ -23,22 +26,35 @@ public class RepositoryCreatorDialogController
     private RepositoryCreatorDialogView view;
     private OperationCategoryResolverImpl categoryResolver;
 
+    private CategoriesConfigurationChangeListener categoriesConfigurationChangeListener;
+
 
     public RepositoryCreatorDialogController()
     {
         this.repository = new Repository();
         this.view = new RepositoryCreatorDialogView( this );
-        this.categoryResolver = new OperationCategoryResolverImpl(
-            Configuration.getInstance().getCategoriesConfiguration().getCategories() );
+        this.categoryResolver = new OperationCategoryResolverImpl();
     }
 
 
     public void init( Stage stage )
     {
-        view.initView( stage );
+        this.view.initView( stage );
         initMenuBtnsEventHandler();
-
+        this.categoriesConfigurationChangeListener =
+            new CategoriesConfigurationChangeListener( this );
         stage.show();
+
+        Platform.runLater( () -> {
+            try
+            {
+                new ConfigurationEditorApplication().start( new Stage() );
+            }
+            catch( Exception e )
+            {
+                e.printStackTrace();
+            }
+        } );
     }
 
 
@@ -49,7 +65,7 @@ public class RepositoryCreatorDialogController
     }
 
 
-    public void handleDescriptionChange(
+    public void updateCategory(
         OperationTreeItem operationTreeItem, String newDescription )
     {
         Category newCategory = resolveCategoryForDescription( newDescription );
@@ -57,6 +73,21 @@ public class RepositoryCreatorDialogController
         updateModel( operationTreeItem.getOperation(), newDescription, newCategory );
 
         updateView( operationTreeItem, newDescription, newCategory );
+    }
+
+
+    public void handleConfigurationChange()
+    {
+        for( TreeItem<AbstractTreeItem> interval : view.getTreeTableView().getRoot().getChildren() )
+        {
+            for( TreeItem<AbstractTreeItem> operation : interval.getChildren() )
+            {
+                OperationTreeItem operationTreeItem = (OperationTreeItem)operation.getValue();
+                updateCategory(
+                    operationTreeItem,
+                    operationTreeItem.getOperation().getRawOperation().getDesc() );
+            }
+        }
     }
 
 
@@ -80,6 +111,16 @@ public class RepositoryCreatorDialogController
         alert.setContentText( content );
 
         alert.showAndWait();
+    }
+
+
+    public void onApplicationClose()
+    {
+        categoriesConfigurationChangeListener.stopListen();
+        categoriesConfigurationChangeListener = null;
+        this.repository = null;
+        this.view = null;
+        this.categoryResolver = null;
     }
 
 
@@ -142,9 +183,9 @@ public class RepositoryCreatorDialogController
     }
 
 
-    private Category resolveCategoryForDescription( String newOperationDescription )
+    private Category resolveCategoryForDescription( String description )
     {
-        return categoryResolver.resolve( newOperationDescription );
+        return categoryResolver.resolve( description );
     }
 
 

@@ -8,11 +8,11 @@ import java.util.Objects;
 public class Operation
     implements Serializable
 {
-    private RawOperation rawOperation;
-    private OperationType type;
     public static final Operation DUMMY_OPERATION =
         new Operation( RawOperation.DUMMY_RAW_OPERATION, OperationType.NOT_RESOLVED,
             Category.OTHER_CATEGORY );
+    private RawOperation rawOperation;
+    private OperationType type;
     private Category category;
 
 

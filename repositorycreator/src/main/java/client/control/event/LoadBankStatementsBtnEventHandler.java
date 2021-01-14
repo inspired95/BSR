@@ -8,7 +8,6 @@ import com.catchex.bankstmt.pdfconverters.BankStmtConverter;
 import com.catchex.bankstmt.pdfconverters.BankStmtConverterFactory;
 import com.catchex.bankstmt.transformators.RawOperationExtender;
 import com.catchex.io.reader.PDFReader;
-import com.catchex.models.Configuration;
 import com.catchex.models.Operation;
 import com.catchex.models.RawOperation;
 import javafx.event.ActionEvent;
@@ -89,8 +88,8 @@ public class LoadBankStatementsBtnEventHandler
     private RawOperationExtender getRawOperationExtender(
         OperationTypeResolver operationTypeResolver )
     {
-        return new RawOperationExtender( operationTypeResolver, new OperationCategoryResolverImpl(
-            Configuration.getInstance().getCategoriesConfiguration().getCategories() ) );
+        return new RawOperationExtender(
+            operationTypeResolver, new OperationCategoryResolverImpl() );
     }
 
 

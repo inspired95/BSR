@@ -23,7 +23,7 @@
                     <archive>
                         <manifest>
                             <mainClass>
-                                com.catchex.repositorycreator.client.RepositoryCreatorApplication
+                                com.catchex.repositorycreator.RepositoryCreatorApplication
                             </mainClass>
                         </manifest>
                     </archive>
@@ -60,14 +60,14 @@
         </plugins>
     </build>
     <modules>
-        <module>report</module>
+        <module>reportcreator</module>
         <module>models</module>
         <module>io</module>
-        <module>bankstmts</module>
-        <module>client</module>
         <module>util</module>
-        <module>configuration</module>
+        <module>configurationcreator</module>
         <module>repositorycreator</module>
+        <module>logging</module>
+        <module>core</module>
     </modules>
     <dependencies>
         <!-- https://mvnrepository.com/artifact/org.apache.pdfbox/pdfbox -->

@@ -9,7 +9,7 @@ import java.io.ObjectInputStream;
 import java.nio.file.Path;
 import java.util.Optional;
 
-import static com.catchex.util.Log.LOGGER;
+import static com.catchex.logging.Log.LOGGER;
 
 
 public class ConfigurationReader

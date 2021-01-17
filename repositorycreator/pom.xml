@@ -36,18 +36,18 @@
         </dependency>
         <dependency>
             <groupId>com.catchex</groupId>
-            <artifactId>bankstmts</artifactId>
-            <version>1.0</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.catchex</groupId>
             <artifactId>configuration</artifactId>
             <version>1.0</version>
         </dependency>
         <dependency>
             <groupId>com.catchex</groupId>
             <artifactId>report</artifactId>
+            <version>1.0</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.catchex</groupId>
+            <artifactId>reportcreator</artifactId>
             <version>1.0</version>
             <scope>compile</scope>
         </dependency>

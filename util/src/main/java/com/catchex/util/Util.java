@@ -1,9 +1,7 @@
 package com.catchex.util;
 
-import javax.swing.*;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
+import com.catchex.logging.Log;
+
 import java.text.NumberFormat;
 import java.text.ParseException;
 import java.time.LocalDate;
@@ -12,8 +10,6 @@ import java.time.format.DateTimeParseException;
 import java.util.Optional;
 import java.util.StringJoiner;
 
-import static com.catchex.util.Log.LOGGER;
-
 
 public class Util
 {
@@ -21,7 +17,7 @@ public class Util
     {
         if( string.isPresent() )
             return string.get().split( regex );
-        LOGGER.warning( "Can not split null" );
+        Log.LOGGER.warning( "Can not split null" );
         return new String[0];
     }
 
@@ -69,7 +65,7 @@ public class Util
             }
             catch( ParseException e )
             {
-                LOGGER.warning( "Cannot parse number:" + number.get() );
+                Log.LOGGER.warning( "Cannot parse number:" + number.get() );
             }
         }
         return Double.NaN;
@@ -81,7 +77,7 @@ public class Util
     {
         if( lastWordIdx < firstWordIdx )
         {
-            LOGGER.warning( "Given last index is lower than first index" );
+            Log.LOGGER.warning( "Given last index is lower than first index" );
             return "";
         }
         if( words.isPresent() )
@@ -94,7 +90,7 @@ public class Util
             }
             return combinedString.toString();
         }
-        LOGGER.warning( "Cannot combine null" );
+        Log.LOGGER.warning( "Cannot combine null" );
         return "";
     }
 
@@ -107,34 +103,16 @@ public class Util
         }
         else if( string1.isPresent() && !string2.isPresent() )
         {
-            LOGGER.warning( "Second string is null" );
+            Log.LOGGER.warning( "Second string is null" );
             return string1.get();
         }
         else if( !string1.isPresent() && string2.isPresent() )
         {
-            LOGGER.warning( "First string is null" );
+            Log.LOGGER.warning( "First string is null" );
             return string2.get();
         }
-        LOGGER.warning( "Cannot combine nulls" );
+        Log.LOGGER.warning( "Cannot combine nulls" );
         return "";
 
-    }
-
-
-    public static void writeToFile( String content, Path path ) throws IOException
-    {
-        Files.write( path, content.getBytes() );
-    }
-
-
-    public static void showError( String msg )
-    {
-        JOptionPane.showMessageDialog( null, msg, "Error", JOptionPane.ERROR_MESSAGE );
-    }
-
-
-    public static void showInformation( String msg )
-    {
-        JOptionPane.showMessageDialog( null, msg, "Information", JOptionPane.INFORMATION_MESSAGE );
     }
 }

@@ -1,5 +1,6 @@
 package com.catchex.repositorycreator.client.control.event;
 
+import GuiHelpers.Alerts;
 import com.catchex.io.reader.PDFReader;
 import com.catchex.models.Operation;
 import com.catchex.models.RawOperation;
@@ -12,20 +13,16 @@ import com.catchex.repositorycreator.typeresolving.OperationTypeResolver;
 import com.catchex.repositorycreator.typeresolving.OperationTypeResolverFactory;
 import com.catchex.util.Constants;
 import javafx.event.ActionEvent;
-import javafx.scene.control.ChoiceDialog;
-import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
 import java.io.File;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 
 public class LoadBankStatementsBtnEventHandler
     implements EventHandler<ActionEvent>
 {
+    private SortedSet<String> banks = new TreeSet<>( Arrays.asList( Constants.supportedBanks ) );
 
     private RepositoryCreatorDialogController controller;
 
@@ -39,21 +36,24 @@ public class LoadBankStatementsBtnEventHandler
     @Override
     public void handle( ActionEvent event )
     {
-        String selectedBankName = getSelectedBank();
+        Optional<String> selectedBankName = getSelectedBank();
 
-        List<File> selectedBankStatementsFiles = getBankStatementsFileToLoad();
+        selectedBankName.ifPresent( bankName -> {
+            List<File> selectedBankStatementsFiles = getBankStatementsFileToLoad();
 
-        if( selectedBankStatementsFiles != null )
-        {
-            for( File bankStatementFile : selectedBankStatementsFiles )
+            if( selectedBankStatementsFiles != null )
             {
-                Optional<String> readBankStatementFileContent =
-                    PDFReader.read( bankStatementFile.getAbsolutePath() );
-                readBankStatementFileContent.ifPresent(
-                    fileContent -> manageReadBankStatementFile( selectedBankName,
-                        bankStatementFile.getName(), fileContent ) );
+                for( File bankStatementFile : selectedBankStatementsFiles )
+                {
+                    Optional<String> readBankStatementFileContent =
+                        PDFReader.read( bankStatementFile.getAbsolutePath() );
+                    readBankStatementFileContent.ifPresent(
+                        fileContent -> manageReadBankStatementFile( bankName,
+                            bankStatementFile.getName(), fileContent ) );
+                }
             }
-        }
+        } );
+
     }
 
 
@@ -113,21 +113,17 @@ public class LoadBankStatementsBtnEventHandler
     }
 
 
-    private String getSelectedBank()
+    private Optional<String> getSelectedBank()
     {
-        ChoiceDialog<String> bankChoiceDialog =
-            new ChoiceDialog<>( Constants.supportedBanks[0], Constants.supportedBanks );
-        bankChoiceDialog.showAndWait();
-        return bankChoiceDialog.getSelectedItem();
+        return Alerts.showChoiceFromListDialog( "Repository creator", Constants.SELECT_BANK_TXT,
+            new ArrayList<>( banks ) );
     }
 
 
     private List<File> getBankStatementsFileToLoad()
     {
-        Stage window = (Stage)controller.getView().getScene().getWindow();
-        FileChooser fileChooser = new FileChooser();
-        fileChooser.setTitle( "Select bank statements" );
-
-        return fileChooser.showOpenMultipleDialog( window );
+        return Alerts.showOpenMultipleDialog( (Stage)controller.getView().getScene().getWindow(),
+            "Select bank statements" );
     }
+
 }

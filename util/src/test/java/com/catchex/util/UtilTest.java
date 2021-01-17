@@ -6,7 +6,6 @@ import org.junit.jupiter.api.Test;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 import java.util.Optional;
-import java.util.StringJoiner;
 
 import static com.catchex.util.Util.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -14,38 +13,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class UtilTest
 {
-
-    @Test
-    public void should_Split_Correctly_When_NonNull_Given()
-    {
-        //GIVEN
-        String ala = "Ala";
-        String ma = "ma";
-        String kota = "kota";
-        String textToSplit = new StringJoiner( " " ).add( ala ).add( ma ).add( kota ).toString();
-
-        //WHEN
-        String[] splittedStrings = split( Optional.of( textToSplit ), " " );
-
-        //THEN
-        assertEquals( 3, splittedStrings.length );
-        assertEquals( ala, splittedStrings[0] );
-        assertEquals( ma, splittedStrings[1] );
-        assertEquals( kota, splittedStrings[2] );
-    }
-
-
-    @Test
-    public void should_Return_Empty_Array_When_Null_Given()
-    {
-        //WHEN
-        String[] splittedStrings = split( Optional.empty(), " " );
-
-        //THEN
-        assertEquals( 0, splittedStrings.length );
-    }
-
-
     @Test
     public void should_Parse_Corretly_When_Date_In_Format_Given()
     {

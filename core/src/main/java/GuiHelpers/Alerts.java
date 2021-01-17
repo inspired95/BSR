@@ -5,7 +5,10 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.ChoiceDialog;
 import javafx.scene.control.TextInputDialog;
+import javafx.stage.FileChooser;
+import javafx.stage.Stage;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -37,6 +40,14 @@ public class Alerts
         {
             choices.add( category.getCategoryName() );
         }
+
+        return showChoiceFromListDialog( dialogHeader, dialogMessage, choices );
+    }
+
+
+    public static Optional<String> showChoiceFromListDialog(
+        String dialogHeader, String dialogMessage, List<String> choices )
+    {
         ChoiceDialog<String> dialog = new ChoiceDialog<>( choices.get( 0 ), choices );
         dialog.setTitle( APP_CONFIGURATION_EDITOR_TITLE );
         dialog.setHeaderText( dialogHeader );
@@ -55,6 +66,15 @@ public class Alerts
         dialog.setContentText( dialogMessage );
 
         return dialog.showAndWait();
+    }
+
+
+    public static List<File> showOpenMultipleDialog( Stage stage, String title )
+    {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle( title );
+
+        return fileChooser.showOpenMultipleDialog( stage );
     }
 
 

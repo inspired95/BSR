@@ -32,7 +32,7 @@ public class PKOBankStmtConverter
     public List<RawOperation> convert( String name, String bankStatementPdf )
     {
         //LOGGER.info( "Converting started" );
-        String[] bankStmtLines = split( Optional.ofNullable( bankStatementPdf ), "\\r?\\n" );
+        String[] bankStmtLines = bankStatementPdf.split( "\\r?\\n" );
         List<RawOperation> bankStmtEntries = new ArrayList<>();
 
         for( int currentLineNumber = 0;
@@ -41,8 +41,7 @@ public class PKOBankStmtConverter
             String currentLine = bankStmtLines[currentLineNumber];
             if( isFirstRowInEntry( currentLine ) )
             {
-                String[] splittedFirstLineIntoWords =
-                    split( Optional.ofNullable( currentLine ), " " );
+                String[] splittedFirstLineIntoWords = splitLineIntoWords( currentLine );
 
                 RawOperation.Builder operationBuilder =
                     new RawOperation.Builder( splittedFirstLineIntoWords[1] );
@@ -54,7 +53,7 @@ public class PKOBankStmtConverter
 
                 currentLineNumber++;
                 String[] splittedSecondLineIntoWords =
-                    split( Optional.ofNullable( bankStmtLines[currentLineNumber] ), " " );
+                    splitLineIntoWords( bankStmtLines[currentLineNumber] );
 
                 operationBuilder.setDesc(
                     getDescription( currentLineNumber, splittedSecondLineIntoWords,
@@ -113,10 +112,16 @@ public class PKOBankStmtConverter
 
     private boolean isFirstRowInEntry( String line )
     {
-        String[] splittedWords = split( Optional.ofNullable( line ), " " );
+        String[] splittedWords = splitLineIntoWords( line );
         if( splittedWords.length < 3 )
             return false;
         return isFirstWordDate( splittedWords[0] ) && isSecondWordOperationID( splittedWords[1] );
+    }
+
+
+    private String[] splitLineIntoWords( String line )
+    {
+        return line.split( " " );
     }
 
 

@@ -13,15 +13,6 @@ import java.util.StringJoiner;
 
 public class Util
 {
-    public static String[] split( Optional<String> string, String regex )
-    {
-        if( string.isPresent() )
-            return string.get().split( regex );
-        Log.LOGGER.warning( "Can not split null" );
-        return new String[0];
-    }
-
-
     public static LocalDate parseDate( Optional<String> date, String format )
         throws DateTimeParseException
     {

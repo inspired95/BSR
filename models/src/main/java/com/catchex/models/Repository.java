@@ -28,22 +28,4 @@ public class Repository
     {
         return operations;
     }
-
-
-    public void setOperations( Set<Operation> operations )
-    {
-        this.operations = this.operations;
-    }
-
-
-    public void addOperation( Operation operation )
-    {
-        this.operations.add( operation );
-    }
-
-
-    public void addOperations( Set<Operation> operations )
-    {
-        this.operations.addAll( operations );
-    }
 }

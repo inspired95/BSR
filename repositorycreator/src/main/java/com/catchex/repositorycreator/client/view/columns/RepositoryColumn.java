@@ -12,7 +12,7 @@ public abstract class RepositoryColumn<T>
     protected RepositoryCreatorDialogController controller;
 
 
-    public RepositoryColumn( String columnName, RepositoryCreatorDialogController controller )
+    protected RepositoryColumn( String columnName, RepositoryCreatorDialogController controller )
     {
         super( columnName );
         this.controller = controller;

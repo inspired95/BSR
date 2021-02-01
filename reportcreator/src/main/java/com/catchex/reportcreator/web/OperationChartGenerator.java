@@ -16,6 +16,8 @@ public class OperationChartGenerator
 {
     private OperationsStatistics operationsStatistics;
 
+    private final Random rand = new Random();
+
 
     public OperationChartGenerator(
         OperationsStatistics operationsStatistics )
@@ -164,7 +166,6 @@ public class OperationChartGenerator
 
     private String randomColor()
     {
-        Random rand = new Random();
         StringBuilder color = new StringBuilder( "rgba(" );
         color.append( rand.nextInt( 255 ) + 1 ).append( "," );
         color.append( rand.nextInt( 255 ) + 1 ).append( "," );
@@ -177,7 +178,7 @@ public class OperationChartGenerator
 
     private List<Category> computeCategories()
     {
-        List<Category> categories = new ArrayList();
+        List<Category> categories = new ArrayList<>();
         categories
             .addAll( Configuration.getInstance().getCategoriesConfiguration().getCategories() );
         categories.add( Category.OTHER_CATEGORY );

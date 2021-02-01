@@ -11,7 +11,7 @@ public class OperationCategoryResolverImpl
     implements OperationCategoryResolver
 {
 
-    private static OperationCategoryResolverImpl INSTANCE;
+    private static OperationCategoryResolverImpl instance;
 
 
     private OperationCategoryResolverImpl()
@@ -21,11 +21,11 @@ public class OperationCategoryResolverImpl
 
     public static OperationCategoryResolverImpl getInstance()
     {
-        if( INSTANCE == null )
+        if( instance == null )
         {
-            INSTANCE = new OperationCategoryResolverImpl();
+            instance = new OperationCategoryResolverImpl();
         }
-        return INSTANCE;
+        return instance;
     }
 
 

@@ -72,9 +72,7 @@ public class RepositoryCreatorDialogView
         scene = new Scene( container, 1280, 800 );
         stage.setScene( scene );
 
-        stage.setOnHiding( actionEvent -> {
-            controller.onClose();
-        } );
+        stage.setOnHiding( actionEvent -> controller.onClose() );
     }
 
 

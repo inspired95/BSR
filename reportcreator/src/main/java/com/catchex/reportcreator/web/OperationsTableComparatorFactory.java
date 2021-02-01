@@ -8,6 +8,12 @@ import java.util.Comparator;
 
 public class OperationsTableComparatorFactory
 {
+    private OperationsTableComparatorFactory()
+    {
+
+    }
+
+
     public static Comparator<CurrentOperation> get( String operationsSortingBy )
     {
         switch( operationsSortingBy )

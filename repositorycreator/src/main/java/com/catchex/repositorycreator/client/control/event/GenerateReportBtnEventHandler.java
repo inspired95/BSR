@@ -4,10 +4,11 @@ import com.catchex.reportcreator.ReportGeneratorController;
 import com.catchex.repositorycreator.client.control.RepositoryCreatorDialogController;
 import com.catchex.repositorycreator.client.model.repository.CurrentRepositoryHolder;
 import dialogs.EventHandler;
+import javafx.event.ActionEvent;
 
 
 public class GenerateReportBtnEventHandler
-    extends EventHandler
+    extends EventHandler<ActionEvent>
 {
     private RepositoryCreatorDialogController controller;
 
@@ -21,7 +22,7 @@ public class GenerateReportBtnEventHandler
 
 
     @Override
-    public void handle( Object event )
+    public void handle( ActionEvent event )
     {
         super.handle( event );
         new ReportGeneratorController( CurrentRepositoryHolder.getInstance().get().getOperations() )

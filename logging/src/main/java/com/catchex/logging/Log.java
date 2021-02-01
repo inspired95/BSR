@@ -8,6 +8,12 @@ import static java.util.logging.Logger.getLogger;
 
 public class Log
 {
+
+    private Log()
+    {
+    }
+
+
     public static Logger LOGGER;
 
 

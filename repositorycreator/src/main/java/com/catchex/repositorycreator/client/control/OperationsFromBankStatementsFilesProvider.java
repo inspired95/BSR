@@ -34,14 +34,14 @@ public class OperationsFromBankStatementsFilesProvider
     public Set<Operation> get()
     {
         Set<Operation> operations = new HashSet<>();
-        typeResolver.ifPresent( typeResolver -> {
+        typeResolver.ifPresent( resolver -> {
             for( File bankStatementFile : bankStatementFiles )
             {
                 PDFReader.read( bankStatementFile.getAbsolutePath() ).ifPresent(
                     bankStatementContent -> createRawOperationsList( bankStatementFile.getName(),
                         bankStatementContent ).forEach( rawOperation -> operations.add(
                         new Operation( rawOperation,
-                            typeResolver.resolve( rawOperation.getType() ) ) ) ) );
+                            resolver.resolve( rawOperation.getType() ) ) ) ) );
             }
         } );
 

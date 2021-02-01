@@ -23,15 +23,10 @@ public class PKOBankStmtConverter
     public static final String BANK_NAME = PKO;
 
 
-    public PKOBankStmtConverter()
-    {
-    }
-
-
     @Override
     public List<RawOperation> convert( String name, String bankStatementPdf )
     {
-        //LOGGER.info( "Converting started" );
+        LOGGER.info( "Converting bank statement:" + name + " started" );
         String[] bankStmtLines = bankStatementPdf.split( "\\r?\\n" );
         List<RawOperation> bankStmtEntries = new ArrayList<>();
 
@@ -61,12 +56,16 @@ public class PKOBankStmtConverter
                 operationBuilder.setBank( BANK_NAME );
 
                 if( operationBuilder.isValid() )
+                {
                     bankStmtEntries.add( operationBuilder.build() );
-                //else
-                //LOGGER.warning( "Cannot convert entry: \n" + currentLine );
+                }
+                else
+                {
+                    LOGGER.warning( "OperationBuilder is not valid: \n" + currentLine );
+                }
             }
         }
-        //LOGGER.info( "Converting finished" );
+        LOGGER.info( "Converting finished" );
         return bankStmtEntries;
     }
 

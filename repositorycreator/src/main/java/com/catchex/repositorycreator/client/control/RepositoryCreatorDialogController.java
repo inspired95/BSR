@@ -23,7 +23,7 @@ public class RepositoryCreatorDialogController
         view = new RepositoryCreatorDialogView( this );
     }
 
-
+    @Override
     public void start( Stage stage ) throws Exception
     {
         super.start( stage );
@@ -45,25 +45,6 @@ public class RepositoryCreatorDialogController
     {
         getView().refresh();
     }
-
-/*
-    public void syncViewWithModelsCategories()
-    {
-        ObservableList<TreeItem<AbstractTreeItem>> intervals =
-            getView().getTreeTableView().getRoot().getChildren();
-        for( TreeItem<AbstractTreeItem> interval : intervals )
-        {
-            interval.getChildren().stream().map( treeItem -> treeItem.getValue() )
-                .filter( treeItem -> treeItem instanceof OperationTreeItem )
-                .forEach( operationTreeItem -> {
-                    ((OperationTreeItem)operationTreeItem).setCategory(
-                        ((OperationTreeItem)operationTreeItem).getOperation().getCategory() );
-                } );
-        }
-        refreshView();
-    }
-
- */
 
 
     public RepositoryCreatorDialogView getView()

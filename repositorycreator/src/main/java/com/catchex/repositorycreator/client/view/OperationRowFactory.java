@@ -20,6 +20,16 @@ public class OperationRowFactory
     }
 
 
+    private void initContextMenu()
+    {
+        contextMenu = new ContextMenu();
+        MenuItem removeOperationMenuItem = new MenuItem( "Remove item" );
+        removeOperationMenuItem.setOnAction(
+            evt -> this.getTreeItem().getParent().getChildren().remove( this.getTreeItem() ) );
+        contextMenu.getItems().add( removeOperationMenuItem );
+    }
+
+
     @Override
     protected void updateItem( AbstractTreeItem item, boolean empty )
     {
@@ -33,16 +43,5 @@ public class OperationRowFactory
             setContextMenu( contextMenu );
         }
 
-    }
-
-
-    private void initContextMenu()
-    {
-        contextMenu = new ContextMenu();
-        MenuItem removeOperationMenuItem = new MenuItem( "Remove item" );
-        removeOperationMenuItem.setOnAction( evt -> {
-            this.getTreeItem().getParent().getChildren().remove( this.getTreeItem() );
-        } );
-        contextMenu.getItems().add( removeOperationMenuItem );
     }
 }

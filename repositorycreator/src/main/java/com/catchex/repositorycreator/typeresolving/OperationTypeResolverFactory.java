@@ -11,7 +11,7 @@ import static com.catchex.util.Constants.PKO;
 
 public class OperationTypeResolverFactory
 {
-    private static OperationTypeResolverFactory INSTANCE;
+    private static OperationTypeResolverFactory instance;
 
 
     private OperationTypeResolverFactory()
@@ -21,11 +21,11 @@ public class OperationTypeResolverFactory
 
     public static OperationTypeResolverFactory getInstance()
     {
-        if( INSTANCE == null )
+        if( instance == null )
         {
-            INSTANCE = new OperationTypeResolverFactory();
+            instance = new OperationTypeResolverFactory();
         }
-        return INSTANCE;
+        return instance;
     }
 
 

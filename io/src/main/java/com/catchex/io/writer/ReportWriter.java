@@ -9,7 +9,7 @@ public class ReportWriter
     implements IWriter<String>
 {
 
-    private static ReportWriter INSTANCE;
+    private static ReportWriter instance;
 
 
     private ReportWriter()
@@ -19,11 +19,11 @@ public class ReportWriter
 
     public static ReportWriter getInstance()
     {
-        if( INSTANCE == null )
+        if( instance == null )
         {
-            INSTANCE = new ReportWriter();
+            instance = new ReportWriter();
         }
-        return INSTANCE;
+        return instance;
     }
 
 

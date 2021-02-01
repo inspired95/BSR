@@ -13,6 +13,11 @@ import java.util.Optional;
 public class PDFReader
 {
 
+    private PDFReader()
+    {
+    }
+
+
     public static Optional<String> read( String path )
     {
         try

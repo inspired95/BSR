@@ -34,4 +34,11 @@ public class Keyword
     {
         return this.getValue().compareTo( keyword.getValue() );
     }
+
+
+    @Override
+    protected Object clone()
+    {
+        return new Keyword( value );
+    }
 }

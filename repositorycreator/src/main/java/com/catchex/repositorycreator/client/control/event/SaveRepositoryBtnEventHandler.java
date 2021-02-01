@@ -45,15 +45,16 @@ public class SaveRepositoryBtnEventHandler
     {
         if( selectedFile != null )
         {
-            try
+            try (FileOutputStream fileOutputStream = new FileOutputStream( selectedFile );
+                ObjectOutputStream objectOutputStream = new ObjectOutputStream( fileOutputStream ))
             {
-                FileOutputStream f = new FileOutputStream( selectedFile );
-                ObjectOutputStream o = new ObjectOutputStream( f );
-                o.writeObject( new CurrentRepositoryUtil().getRepositoryFromCurrentRepository() );
+                objectOutputStream.writeObject(
+                    new CurrentRepositoryUtil().getRepositoryFromCurrentRepository() );
             }
             catch( IOException e )
             {
                 e.printStackTrace();
+                //TODO GUI alert
             }
         }
     }

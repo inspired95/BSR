@@ -56,7 +56,7 @@ public class ReportGeneratorController
             Alerts
                 .showAlert( Alert.AlertType.INFORMATION, "Report generator - saving", "Successful",
                     "Report has been saved in:\n" + path );
-            LOGGER.info( "Report has been saved successfully in:" + path );
+            LOGGER.info( "Report has been saved successfully in: " + path );
         }
         else
         {

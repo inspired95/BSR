@@ -1,28 +1,8 @@
 package com.catchex.repositorycreator.operationextention;
 
-import com.catchex.models.Category;
-import com.catchex.models.Operation;
-import com.catchex.models.OperationType;
-import com.catchex.models.RawOperation;
-import com.catchex.repositorycreator.categoryresolving.OperationCategoryResolver;
-import com.catchex.repositorycreator.typeresolving.OperationTypeResolver;
-import org.junit.jupiter.api.Test;
-
-import java.time.LocalDate;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
-import java.util.TreeSet;
-
-import static java.util.List.of;
-import static org.easymock.EasyMock.*;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-
 public class RawOperationExtenderTest
 {
-    private RawOperationExtender rawOperationExtender =
+    /*private RawOperationExtender rawOperationExtender =
         new RawOperationExtender( createOperationTypeResolverMock(),
             createOperationCategoryResolverMock() );
 
@@ -90,5 +70,5 @@ public class RawOperationExtenderTest
         expect( rawOperation.getAmount() ).andReturn( Double.NaN );
         replay( rawOperation );
         return rawOperation;
-    }
+    }*/
 }

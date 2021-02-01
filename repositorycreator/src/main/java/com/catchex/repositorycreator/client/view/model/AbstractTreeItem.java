@@ -1,19 +1,20 @@
 package com.catchex.repositorycreator.client.view.model;
 
-import com.catchex.models.Operation;
+import com.catchex.models.CurrentOperation;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleStringProperty;
 
+import java.beans.PropertyChangeListener;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.Objects;
 
 
 public abstract class AbstractTreeItem
-    implements Serializable
+    implements Serializable, PropertyChangeListener
 {
 
-    protected Operation operation;
+    protected CurrentOperation operation;
     protected LocalDate date;
     protected SimpleStringProperty ID;
     protected SimpleStringProperty type;
@@ -30,17 +31,21 @@ public abstract class AbstractTreeItem
     }
 
 
-    public AbstractTreeItem( Operation operation )
+    public AbstractTreeItem( CurrentOperation operation )
     {
         this.operation = operation;
-        this.date = operation.getRawOperation().getDate();
-        this.ID = new SimpleStringProperty( operation.getRawOperation().getID() );
-        this.type = new SimpleStringProperty( operation.getType().toString() );
-        this.amount = new SimpleDoubleProperty( operation.getRawOperation().getAmount() );
-        this.desc = new SimpleStringProperty( operation.getRawOperation().getDesc() );
+        this.date = operation.getOperation().getRawOperation().getDate();
+        this.ID = new SimpleStringProperty( operation.getOperation().getRawOperation().getID() );
+        this.type = new SimpleStringProperty( operation.getOperation().getType().toString() );
+        this.amount =
+            new SimpleDoubleProperty( operation.getOperation().getRawOperation().getAmount() );
+        this.desc =
+            new SimpleStringProperty( operation.getOperation().getRawOperation().getDesc() );
         this.category = new SimpleStringProperty( operation.getCategory().getCategoryName() );
-        this.fileName = new SimpleStringProperty( operation.getRawOperation().getFileName() );
-        this.bankName = new SimpleStringProperty( operation.getRawOperation().getBank() );
+        this.fileName =
+            new SimpleStringProperty( operation.getOperation().getRawOperation().getFileName() );
+        this.bankName =
+            new SimpleStringProperty( operation.getOperation().getRawOperation().getBank() );
     }
 
 

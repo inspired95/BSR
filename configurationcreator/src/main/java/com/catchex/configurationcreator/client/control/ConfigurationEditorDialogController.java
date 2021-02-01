@@ -191,7 +191,6 @@ public class ConfigurationEditorDialogController
         Optional<File> configurationFileToImport =
             view.showSaveFileChooser( "Select file to export current configuration" );
         configurationFileToImport.ifPresent( configurationFile -> {
-            System.out.println( configurationFile.toPath() );
             ConfigurationUtil.saveConfiguration( this.currentCategoriesConfiguration,
                 configurationFile.toPath() );
         } );

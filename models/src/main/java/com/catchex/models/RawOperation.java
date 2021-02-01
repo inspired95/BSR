@@ -237,8 +237,8 @@ public class RawOperation
     @Override
     public String toString()
     {
-        return "BankStmtEntry{" + "\n\tdate=" + date + "\n\tID='" + ID + '\'' + "\n\ttype='" +
-            type + '\'' + "\n\tamount=" + amount + "\n\tdesc='" + desc + '\'' + "\n}";
+        return "RawOperation{" + "date=" + date + "ID='" + ID + '\'' + "type='" + type + '\'' +
+            "amount=" + amount + "desc='" + desc + '\'' + "}";
     }
 
 

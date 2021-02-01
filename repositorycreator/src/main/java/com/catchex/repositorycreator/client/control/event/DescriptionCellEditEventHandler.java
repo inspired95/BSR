@@ -1,5 +1,6 @@
 package com.catchex.repositorycreator.client.control.event;
 
+import com.catchex.repositorycreator.client.control.CurrentOperationsUtil;
 import com.catchex.repositorycreator.client.control.RepositoryCreatorDialogController;
 import com.catchex.repositorycreator.client.view.model.AbstractTreeItem;
 import com.catchex.repositorycreator.client.view.model.OperationTreeItem;
@@ -26,7 +27,10 @@ public class DescriptionCellEditEventHandler
         Object editedRow = event.getRowValue().getValue();
         if( editedRow instanceof OperationTreeItem )
         {
-            controller.updateCategory( (OperationTreeItem)editedRow, (String)event.getNewValue() );
+            new CurrentOperationsUtil()
+                .updateDescription( ((OperationTreeItem)editedRow).getOperation(),
+                    (String)event.getNewValue() );
+            controller.refreshView();
         }
     }
 

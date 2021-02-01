@@ -1,25 +1,27 @@
 package com.catchex.reportcreator.web;
 
-import com.catchex.models.Operation;
-import com.catchex.models.OperationType;
+import com.catchex.models.CurrentOperation;
+import com.catchex.reportcreator.ReportUtil;
 import com.catchex.reportcreator.statictics.OperationsStatistics;
 import j2html.tags.ContainerTag;
 
 import java.util.*;
 import java.util.function.Predicate;
 
-import static com.catchex.models.OperationType.*;
 import static j2html.TagCreator.*;
 
 
 public class OperationTableGenerator
 {
     private OperationsStatistics operationsStatistics;
+    private ReportUtil reportUtil;
 
 
-    public OperationTableGenerator( OperationsStatistics operationsStatistics )
+    public OperationTableGenerator(
+        OperationsStatistics operationsStatistics, ReportUtil reportUtil )
     {
         this.operationsStatistics = operationsStatistics;
+        this.reportUtil = reportUtil;
     }
 
 
@@ -29,21 +31,22 @@ public class OperationTableGenerator
     }
 
 
-    public ContainerTag generateNotResolvedOperationsTable( Comparator<Operation> comparator )
+    public ContainerTag generateNotResolvedOperationsTable(
+        Comparator<CurrentOperation> comparator )
     {
         return div( generateHeader( "Not resolved operations list" ),
             generateOperations( this::isNotResolved, comparator ) );
     }
 
 
-    public ContainerTag generateExpensesOperationsTable( Comparator<Operation> comparator )
+    public ContainerTag generateExpensesOperationsTable( Comparator<CurrentOperation> comparator )
     {
         return div(
             generateHeader( "Expenses list" ), generateOperations( this::isExpense, comparator ) );
     }
 
 
-    public ContainerTag generateIncomesOperationsTable( Comparator<Operation> comparator )
+    public ContainerTag generateIncomesOperationsTable( Comparator<CurrentOperation> comparator )
     {
         return div(
             generateHeader( "Incomes list" ), generateOperations( this::isIncome, comparator ) );
@@ -107,14 +110,14 @@ public class OperationTableGenerator
 
 
     private ContainerTag generateOperations(
-        Predicate<Operation> predicate, Comparator<Operation> comparator )
+        Predicate<CurrentOperation> predicate, Comparator<CurrentOperation> comparator )
     {
         ContainerTag table = table().with( generateOperationsTableHeader() );
         sortOperationByComparator( comparator );
-        for( Operation operation : operationsStatistics.getOperations() )
+        for( CurrentOperation currentOperation : operationsStatistics.getCurrentOperations() )
         {
-            if( predicate.test( operation ) )
-                table.with( generateContent( operation ) );
+            if( predicate.test( currentOperation ) )
+                table.with( generateContent( currentOperation ) );
         }
         return table;
     }
@@ -133,38 +136,36 @@ public class OperationTableGenerator
     }
 
 
-    private boolean isIncome( Operation operation )
+    private boolean isIncome( CurrentOperation currentOperation )
     {
-        return operation.getType().equals( OperationType.INCOME_TRANSFER ) ||
-            operation.getType().equals( OperationType.REFUND ) ||
-            operation.getType().equals( PROFIT );
+        return reportUtil.isIncome( currentOperation );
     }
 
 
-    private boolean isExpense( Operation operation )
+    private boolean isExpense( CurrentOperation currentOperation )
     {
-        return operation.getType().equals( OUTGOING_TRANSFER ) ||
-            operation.getType().equals( DEBIT_CARD_PAYMENT ) ||
-            operation.getType().equals( MOBILE_CODE_PAYMENT ) ||
-            operation.getType().equals( CASH_WITHDRAWAL ) ||
-            operation.getType().equals( COMMISSION ) || operation.getType().equals( LOSS );
+        return reportUtil.isExpense( currentOperation );
+
     }
 
 
-    private boolean isNotResolved( Operation operation )
+    private boolean isNotResolved( CurrentOperation currentOperation )
     {
-        return operation.getType().equals( OperationType.NOT_RESOLVED );
+        return reportUtil.isNotResolved( currentOperation );
     }
 
 
-    private ContainerTag generateContent( Operation operation )
+    private ContainerTag generateContent( CurrentOperation currentOperation )
     {
-        return tr().with( td().with( span( operation.getRawOperation().getID() ) ),
-            td().with( span( operation.getRawOperation().getDate().toString() ) ),
-            td().with( span( operation.getType().name() ) ),
-            td().with( span( operation.getCategory().getCategoryName() ) ),
-            td().with( span( operation.getRawOperation().getAmount().toString() ) ),
-            td().with( span( operation.getRawOperation().getDesc() ) ) );
+        return tr()
+            .with( td().with( span( currentOperation.getOperation().getRawOperation().getID() ) ),
+                td().with( span(
+                    currentOperation.getOperation().getRawOperation().getDate().toString() ) ),
+                td().with( span( currentOperation.getOperation().getType().name() ) ),
+                td().with( span( currentOperation.getCategory().getCategoryName() ) ), td().with(
+                    span( currentOperation.getOperation().getRawOperation().getAmount()
+                        .toString() ) ),
+                td().with( span( currentOperation.getOperation().getRawOperation().getDesc() ) ) );
 
     }
 
@@ -177,18 +178,18 @@ public class OperationTableGenerator
     }
 
 
-    private void sortOperationByComparator( Comparator<Operation> comparator )
+    private void sortOperationByComparator( Comparator<CurrentOperation> comparator )
     {
-        operationsStatistics.getOperations().sort( comparator );
+        operationsStatistics.getCurrentOperations().sort( comparator );
     }
 
 
     private Set<String> getSources()
     {
         Set<String> sources = new HashSet<>();
-        for( Operation operation : operationsStatistics.getOperations() )
+        for( CurrentOperation currentOperation : operationsStatistics.getCurrentOperations() )
         {
-            sources.add( operation.getRawOperation().getFileName() );
+            sources.add( currentOperation.getOperation().getRawOperation().getFileName() );
         }
         return sources;
     }

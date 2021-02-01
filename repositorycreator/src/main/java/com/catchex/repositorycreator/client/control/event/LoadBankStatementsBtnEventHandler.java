@@ -1,17 +1,14 @@
 package com.catchex.repositorycreator.client.control.event;
 
 import GuiHelpers.Alerts;
-import com.catchex.io.reader.PDFReader;
+import com.catchex.models.CurrentOperation;
 import com.catchex.models.Operation;
-import com.catchex.models.RawOperation;
-import com.catchex.repositorycreator.bankstatementsconverter.BankStmtConverter;
-import com.catchex.repositorycreator.bankstatementsconverter.BankStmtConverterFactory;
-import com.catchex.repositorycreator.categoryresolving.OperationCategoryResolverImpl;
+import com.catchex.repositorycreator.client.control.CurrentOperationsUtil;
+import com.catchex.repositorycreator.client.control.OperationsFromBankStatementsFilesProvider;
 import com.catchex.repositorycreator.client.control.RepositoryCreatorDialogController;
-import com.catchex.repositorycreator.operationextention.RawOperationExtender;
-import com.catchex.repositorycreator.typeresolving.OperationTypeResolver;
-import com.catchex.repositorycreator.typeresolving.OperationTypeResolverFactory;
+import com.catchex.repositorycreator.client.model.CurrentRepositoryUtil;
 import com.catchex.util.Constants;
+import dialogs.EventHandler;
 import javafx.event.ActionEvent;
 import javafx.stage.Stage;
 
@@ -20,7 +17,7 @@ import java.util.*;
 
 
 public class LoadBankStatementsBtnEventHandler
-    implements EventHandler<ActionEvent>
+    extends EventHandler<ActionEvent>
 {
     private SortedSet<String> banks = new TreeSet<>( Arrays.asList( Constants.supportedBanks ) );
 
@@ -29,6 +26,7 @@ public class LoadBankStatementsBtnEventHandler
 
     public LoadBankStatementsBtnEventHandler( RepositoryCreatorDialogController controller )
     {
+        super( "LoadBankStatements" );
         this.controller = controller;
     }
 
@@ -36,80 +34,27 @@ public class LoadBankStatementsBtnEventHandler
     @Override
     public void handle( ActionEvent event )
     {
+        super.handle( event );
         Optional<String> selectedBankName = getSelectedBank();
 
-        selectedBankName.ifPresent( bankName -> {
+        selectedBankName.ifPresentOrElse( bankName -> {
             List<File> selectedBankStatementsFiles = getBankStatementsFileToLoad();
 
             if( selectedBankStatementsFiles != null )
             {
-                for( File bankStatementFile : selectedBankStatementsFiles )
-                {
-                    Optional<String> readBankStatementFileContent =
-                        PDFReader.read( bankStatementFile.getAbsolutePath() );
-                    readBankStatementFileContent.ifPresent(
-                        fileContent -> manageReadBankStatementFile( bankName,
-                            bankStatementFile.getName(), fileContent ) );
-                }
+                Set<Operation> operations = new OperationsFromBankStatementsFilesProvider( bankName,
+                    selectedBankStatementsFiles ).get();
+
+                Set<CurrentOperation> currentRepository =
+                    new CurrentOperationsUtil().mapToCurrentOperations( operations );
+                new CurrentRepositoryUtil()
+                    .addCurrentOperations( Optional.of( currentRepository ) );
             }
-        } );
-
-    }
-
-
-    private void manageReadBankStatementFile(
-        String bankChoiceDialog, String bankStatementFileName, String readBankStatementFile )
-    {
-        List<RawOperation> rawOperations =
-            convertRawReadBankStatementFileToRawBankOperations( bankChoiceDialog,
-                bankStatementFileName, readBankStatementFile );
-        if( !rawOperations.isEmpty() )
-        {
-            decorate( bankChoiceDialog, rawOperations );
-        }
-    }
-
-
-    private void decorate(
-        String bankChoiceDialog, List<RawOperation> rawOperations )
-    {
-        Optional<OperationTypeResolver> operationTypeResolver =
-            new OperationTypeResolverFactory().match( bankChoiceDialog );
-        if( operationTypeResolver.isPresent() )
-        {
-            RawOperationExtender extender = getRawOperationExtender( operationTypeResolver.get() );
-            Set<Operation> operations = extender.extend( rawOperations );
-            controller.addOperations( operations );
-        }
-    }
-
-
-    private RawOperationExtender getRawOperationExtender(
-        OperationTypeResolver operationTypeResolver )
-    {
-        return new RawOperationExtender(
-            operationTypeResolver, new OperationCategoryResolverImpl() );
-    }
-
-
-    private List<RawOperation> convertRawReadBankStatementFileToRawBankOperations(
-        String bankChoiceDialog, String bankStatementFileName, String readBankStatementFile )
-    {
-        Optional<BankStmtConverter> bankStmtConverter =
-            getBankStatementConverter( bankChoiceDialog );
-        List<RawOperation> rawOperations = Collections.emptyList();
-        if( bankStmtConverter.isPresent() )
-        {
-            rawOperations =
-                bankStmtConverter.get().convert( bankStatementFileName, readBankStatementFile );
-        }
-        return rawOperations;
-    }
-
-
-    private Optional<BankStmtConverter> getBankStatementConverter( String bankChoiceDialog )
-    {
-        return BankStmtConverterFactory.match( bankChoiceDialog );
+            else
+            {
+                actionCancelled();
+            }
+        }, this::actionCancelled );
     }
 
 
@@ -125,5 +70,4 @@ public class LoadBankStatementsBtnEventHandler
         return Alerts.showOpenMultipleDialog( (Stage)controller.getView().getScene().getWindow(),
             "Select bank statements" );
     }
-
 }

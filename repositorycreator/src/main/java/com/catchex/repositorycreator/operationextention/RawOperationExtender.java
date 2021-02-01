@@ -1,10 +1,7 @@
 package com.catchex.repositorycreator.operationextention;
 
 import com.catchex.logging.Log;
-import com.catchex.models.Category;
-import com.catchex.models.Operation;
-import com.catchex.models.OperationType;
-import com.catchex.models.RawOperation;
+import com.catchex.models.*;
 import com.catchex.repositorycreator.categoryresolving.OperationCategoryResolver;
 import com.catchex.repositorycreator.typeresolving.OperationTypeResolver;
 
@@ -31,11 +28,11 @@ public class RawOperationExtender
     }
 
 
-    public Set<Operation> extend( List<RawOperation> rawOperations )
+    public Set<CurrentOperation> extend( List<RawOperation> rawOperations )
     {
         if( rawOperations != null )
         {
-            Set<Operation> operations = new HashSet<>();
+            Set<CurrentOperation> operations = new HashSet<>();
             for( RawOperation rawOperation : rawOperations )
             {
                 operations.add( extend( rawOperation ) );
@@ -47,7 +44,7 @@ public class RawOperationExtender
     }
 
 
-    public Operation extend( RawOperation rawOperation )
+    public CurrentOperation extend( RawOperation rawOperation )
     {
         if( rawOperation != null )
         {
@@ -59,14 +56,15 @@ public class RawOperationExtender
             }
             else
             {
-                category = operationCategoryResolver.resolve( rawOperation.getDesc() );
+                category =
+                    operationCategoryResolver.resolve( rawOperation.getDesc(), operationType );
             }
             if( category.equals( Category.OTHER_CATEGORY ) || operationType.equals( NOT_RESOLVED ) )
             {
                 Log.LOGGER.warning( "Cannot resolve category of\n" + rawOperation.getDesc() );
             }
 
-            return new Operation( rawOperation, operationType, category );
+            return new CurrentOperation( new Operation( rawOperation, operationType ), category );
         }
         Log.LOGGER.warning( "Cannot transform null" );
         return null;

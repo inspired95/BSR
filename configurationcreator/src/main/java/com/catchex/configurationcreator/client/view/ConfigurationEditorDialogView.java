@@ -3,6 +3,7 @@ package com.catchex.configurationcreator.client.view;
 import com.catchex.configurationcreator.client.control.ConfigurationEditorDialogController;
 import com.catchex.models.Category;
 import com.catchex.models.Keyword;
+import dialogs.DialogView;
 import javafx.collections.ObservableList;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
@@ -25,6 +26,7 @@ import static com.catchex.util.Constants.*;
 
 
 public class ConfigurationEditorDialogView
+    extends DialogView
 {
     private static final int WINDOW_WIDTH = 1280;
     private static final int WINDOW_HEIGHT = 400;

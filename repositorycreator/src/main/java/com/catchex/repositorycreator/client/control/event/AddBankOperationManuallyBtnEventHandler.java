@@ -1,50 +1,29 @@
 package com.catchex.repositorycreator.client.control.event;
 
-import com.catchex.models.Operation;
-import com.catchex.models.RawOperation;
-import com.catchex.repositorycreator.categoryresolving.OperationCategoryResolverImpl;
-import com.catchex.repositorycreator.client.control.RepositoryCreatorDialogController;
-import com.catchex.repositorycreator.operationextention.RawOperationExtender;
-import com.catchex.repositorycreator.typeresolving.OperationTypeResolver;
-import com.catchex.repositorycreator.typeresolving.OperationTypeResolverFactory;
-import javafx.application.Application;
+import com.catchex.repositorycreator.client.control.dialog.AddBankOperationDialogController;
+import dialogs.EventHandler;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
-import javafx.geometry.Insets;
-import javafx.geometry.Pos;
-import javafx.scene.Scene;
-import javafx.scene.control.*;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
-import java.time.LocalDate;
-import java.util.*;
 
-import static com.catchex.util.Constants.LOSS;
-import static com.catchex.util.Constants.NOT_APPLICABLE;
-
-
-public class AddBankOperationBtnEventHandler
-    implements EventHandler<ActionEvent>
+public class AddBankOperationManuallyBtnEventHandler
+    extends EventHandler<ActionEvent>
 {
-    private RepositoryCreatorDialogController controller;
-
-
-    public AddBankOperationBtnEventHandler(
-        RepositoryCreatorDialogController controller )
+    public AddBankOperationManuallyBtnEventHandler()
     {
-        this.controller = controller;
+        super( "AddBankOperationManually" );
     }
 
 
     @Override
     public void handle( ActionEvent event )
     {
+        super.handle( event );
         Platform.runLater( () -> {
             try
             {
-                new AddBankOperationDialog().start( new Stage() );
+                new AddBankOperationDialogController().start( new Stage() );
             }
             catch( Exception e )
             {
@@ -55,7 +34,7 @@ public class AddBankOperationBtnEventHandler
     }
 
 
-    class AddBankOperationDialog
+    /*class AddBankOperationDialog
         extends Application
     {
         private DatePicker datePicker;
@@ -65,12 +44,16 @@ public class AddBankOperationBtnEventHandler
 
         private Button addOperationBtn;
 
+        private OperationTypeResolver typeResolver = new NotApplicableTypeResolver();
+
 
         @Override
         public void start( Stage stage ) throws Exception
         {
             Label operationDateLabel = new Label( "Operation date" );
             datePicker = new DatePicker();
+
+            stage.setOnHiding( event -> actionCancelled() );
 
             Label operationAmountLabel = new Label( "Operation amount" );
             amountField = new TextField();
@@ -129,8 +112,14 @@ public class AddBankOperationBtnEventHandler
                 builder.setDesc( description );
                 builder.setBank( NOT_APPLICABLE );
                 builder.setFileName( NOT_APPLICABLE );
-                builder.setType( operationType );
-                decorate( builder.build() );
+                builder.setType( NOT_APPLICABLE );
+                Operation operation =
+                    new Operation( builder.build(), typeResolver.resolve( description ) );
+                CurrentOperation currentOperation =
+                    new CurrentOperationsUtil().mapToCurrentOperation( operation );
+                new CurrentRepositoryUtil()
+                    .addCurrentOperations( Optional.of( Set.of( currentOperation ) ) );
+                stage.close();
             } );
             container.getChildren().add( addOperationBtn );
 
@@ -172,39 +161,12 @@ public class AddBankOperationBtnEventHandler
                 {
                     joiner.add( validationErrorMessage );
                 }
-                controller.showAlert( Alert.AlertType.ERROR, "Error", "Validation error",
+                LOGGER.warning( joiner.toString() );
+                Alerts.showAlert( Alert.AlertType.ERROR, "Error", "Validation error",
                     joiner.toString() );
                 return false;
             }
             return true;
         }
-
-
-        private void decorate(
-            RawOperation rawOperation )
-        {
-            Optional<OperationTypeResolver> operationTypeResolver =
-                new OperationTypeResolverFactory().match( rawOperation.getBank() );
-            if( operationTypeResolver.isPresent() )
-            {
-                RawOperationExtender extender =
-                    getRawOperationExtender( operationTypeResolver.get() );
-                Operation operation = extender.extend( rawOperation );
-                controller.addOperations( new HashSet<>()
-                {
-                    {
-                        add( operation );
-                    }
-                } );
-            }
-        }
-
-
-        private RawOperationExtender getRawOperationExtender(
-            OperationTypeResolver operationTypeResolver )
-        {
-            return new RawOperationExtender( operationTypeResolver,
-                new OperationCategoryResolverImpl() );
-        }
-    }
+    }*/
 }

@@ -1,40 +1,35 @@
 package com.catchex.repositorycreator.client.control.event;
 
-import com.catchex.models.Repository;
 import com.catchex.reportcreator.ReportGeneratorController;
-import com.catchex.repositorycreator.client.view.RepositoryCreatorDialogView;
-import javafx.scene.control.TreeTableColumn;
-
-import java.util.Optional;
-
-import static com.catchex.logging.Log.LOGGER;
+import com.catchex.repositorycreator.client.control.RepositoryCreatorDialogController;
+import com.catchex.repositorycreator.client.model.repository.CurrentRepositoryHolder;
+import dialogs.EventHandler;
 
 
 public class GenerateReportBtnEventHandler
-    implements EventHandler
+    extends EventHandler
 {
-    private Repository repository;
-    private RepositoryCreatorDialogView view;
+    private RepositoryCreatorDialogController controller;
 
 
     public GenerateReportBtnEventHandler(
-        Repository repository, RepositoryCreatorDialogView view )
+        RepositoryCreatorDialogController controller )
     {
-        this.repository = repository;
-        this.view = view;
+        super( "GenerateReport" );
+        this.controller = controller;
     }
 
 
     @Override
     public void handle( Object event )
     {
-        LOGGER.info( "Report saving started" );
-        //System.out.println( getSortedByColumnName() );
-        new ReportGeneratorController( repository.getOperations() ).generate();
+        super.handle( event );
+        new ReportGeneratorController( CurrentRepositoryHolder.getInstance().get().getOperations() )
+            .generate();
     }
 
 
-    private String getSortedByColumnName()
+    /*private String getSortedByColumnName()
     {
         Optional<String> sortedByColumn =
             view.getTreeTableView().getSortOrder().stream().map( TreeTableColumn::getText )
@@ -47,6 +42,6 @@ public class GenerateReportBtnEventHandler
         {
             return "";
         }
-    }
+    }*/
 
 }

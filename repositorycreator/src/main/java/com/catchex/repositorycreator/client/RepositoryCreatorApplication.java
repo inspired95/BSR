@@ -26,7 +26,6 @@ public class RepositoryCreatorApplication
     {
         initLogging();
         ConfigurationLoader.loadCategoriesConfiguration();
-        //loadConfiguration( true );
         launch();
     }
 
@@ -34,15 +33,22 @@ public class RepositoryCreatorApplication
     @Override
     public void stop() throws Exception
     {
-        dialogController.onApplicationClose();
+        dialogController = null;
         super.stop();
-        LOGGER.info( "Repository creator application has been closed" );
     }
 
 
     @Override
     public void start( Stage stage )
     {
-        dialogController.init( stage );
+        try
+        {
+            dialogController.start( stage );
+        }
+        catch( Exception e )
+        {
+            LOGGER.severe( "Error during application staring" );
+            e.printStackTrace();
+        }
     }
 }

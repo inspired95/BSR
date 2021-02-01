@@ -2,7 +2,7 @@ package com.catchex.reportcreator;
 
 import GuiHelpers.Alerts;
 import com.catchex.io.writer.ReportWriter;
-import com.catchex.models.Operation;
+import com.catchex.models.CurrentOperation;
 import com.catchex.reportcreator.statictics.OperationsStatistics;
 import com.catchex.reportcreator.web.CssStyleCreator;
 import com.catchex.reportcreator.web.OperationsTableComparatorFactory;
@@ -24,26 +24,28 @@ import static com.catchex.util.Constants.*;
 
 public class ReportGeneratorController
 {
-    private Set<Operation> operations;
+    private Set<CurrentOperation> currentOperations;
 
 
-    public ReportGeneratorController( Set<Operation> operations )
+    public ReportGeneratorController( Set<CurrentOperation> currentOperations )
     {
-        this.operations = operations;
+        this.currentOperations = currentOperations;
     }
 
 
     public void generate()
     {
+        ReportUtil reportUtil = new ReportUtil();
         OperationsStatistics operationsStatistics =
-            new OperationsStatistics( new ArrayList<>( operations ) );
+            new OperationsStatistics( new ArrayList<>( currentOperations ), reportUtil );
 
-        ReportGeneratorEngine reportGenerator = new ReportGeneratorEngine( operationsStatistics );
+        ReportGeneratorEngine reportGenerator =
+            new ReportGeneratorEngine( operationsStatistics, reportUtil );
 
-        Comparator<Operation> operationComparator =
+        Comparator<CurrentOperation> currentOperationComparator =
             OperationsTableComparatorFactory.get( Objects.requireNonNull( Constants.AMOUNT ) );
 
-        String report = reportGenerator.generateHtml( operationComparator );
+        String report = reportGenerator.generateHtml( currentOperationComparator );
 
         Path path = Paths.get( CONFIGURATION_PATH, REPORT + LocalDate.now() + HTML_EXTENSION );
 

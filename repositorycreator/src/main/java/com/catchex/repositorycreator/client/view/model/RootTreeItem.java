@@ -1,6 +1,8 @@
 package com.catchex.repositorycreator.client.view.model;
 
-import com.catchex.models.Operation;
+import com.catchex.models.CurrentOperation;
+
+import java.beans.PropertyChangeEvent;
 
 
 public class RootTreeItem
@@ -9,6 +11,13 @@ public class RootTreeItem
 
     public RootTreeItem()
     {
-        super( Operation.DUMMY_OPERATION );
+        super( CurrentOperation.DUMMY_CURRENT_OPERATION );
+    }
+
+
+    @Override
+    public void propertyChange( PropertyChangeEvent propertyChangeEvent )
+    {
+        //left blank intentionally
     }
 }

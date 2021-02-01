@@ -1,6 +1,6 @@
 package com.catchex.repositorycreator.categoryresolving;
 
-import com.catchex.models.Repository;
+import com.catchex.models.CurrentRepository;
 
 
 public class CategoriesUtil
@@ -13,7 +13,7 @@ public class CategoriesUtil
 
     private CategoriesUtil()
     {
-        this.categoryResolver = new OperationCategoryResolverImpl();
+        this.categoryResolver = OperationCategoryResolverImpl.getInstance();
     }
 
 
@@ -28,9 +28,9 @@ public class CategoriesUtil
 
 
     @Override
-    public void updateCategories( Repository repository )
+    public void updateCategories( CurrentRepository repository )
     {
-        repository.getOperations().forEach( operation -> operation
-            .setCategory( categoryResolver.resolve( operation.getRawOperation().getDesc() ) ) );
+        repository.getOperations().forEach( operation -> operation.setCategory(
+            categoryResolver.resolve( operation.getOperation().getRawOperation().getDesc() ) ) );
     }
 }

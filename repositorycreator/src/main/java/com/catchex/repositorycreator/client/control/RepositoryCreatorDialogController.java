@@ -1,123 +1,90 @@
 package com.catchex.repositorycreator.client.control;
 
-import com.catchex.models.Category;
-import com.catchex.models.Operation;
-import com.catchex.models.Repository;
-import com.catchex.repositorycreator.categoryresolving.OperationCategoryResolverImpl;
 import com.catchex.repositorycreator.client.control.event.*;
+import com.catchex.repositorycreator.client.model.CurrentRepositoryUtil;
 import com.catchex.repositorycreator.client.view.RepositoryCreatorDialogView;
-import com.catchex.repositorycreator.client.view.model.AbstractTreeItem;
-import com.catchex.repositorycreator.client.view.model.OperationTreeItem;
-import javafx.scene.control.Alert;
-import javafx.scene.control.TreeItem;
-import javafx.scene.control.TreeTableColumn;
+import dialogs.DialogController;
 import javafx.stage.Stage;
 
 import java.util.Optional;
-import java.util.Set;
 
 
 public class RepositoryCreatorDialogController
+    extends DialogController
 {
 
-    private Repository repository;
-    private RepositoryCreatorDialogView view;
-    private OperationCategoryResolverImpl categoryResolver;
 
     private CategoriesConfigurationChangeListener categoriesConfigurationChangeListener;
 
 
     public RepositoryCreatorDialogController()
     {
-        this.repository = new Repository();
-        this.view = new RepositoryCreatorDialogView( this );
-        this.categoryResolver = new OperationCategoryResolverImpl();
+        super( "RepositoryCreator" );
+        view = new RepositoryCreatorDialogView( this );
     }
 
 
-    public void init( Stage stage )
+    public void start( Stage stage ) throws Exception
     {
-        this.view.initView( stage );
+        super.start( stage );
         initMenuBtnsEventHandler();
+        initCurrentRepository();
         this.categoriesConfigurationChangeListener =
             new CategoriesConfigurationChangeListener( this );
         stage.show();
     }
 
 
-    public void addOperations( Set<Operation> operations )
+    public void onCurrentRepositoryChange()
     {
-        repository.addOperations( operations );
-        view.updateView( operations );
+        getView().applyCurrentRepository();
     }
 
 
-    public void updateCategory(
-        OperationTreeItem operationTreeItem, String newDescription )
+    public void refreshView()
     {
-        Category newCategory = resolveCategoryForDescription( newDescription );
-
-        updateModel( operationTreeItem.getOperation(), newDescription, newCategory );
-
-        updateView( operationTreeItem, newDescription, newCategory );
+        getView().refresh();
     }
 
-
-    public void handleConfigurationChange()
+/*
+    public void syncViewWithModelsCategories()
     {
-        for( TreeItem<AbstractTreeItem> interval : view.getTreeTableView().getRoot().getChildren() )
+        ObservableList<TreeItem<AbstractTreeItem>> intervals =
+            getView().getTreeTableView().getRoot().getChildren();
+        for( TreeItem<AbstractTreeItem> interval : intervals )
         {
-            for( TreeItem<AbstractTreeItem> operation : interval.getChildren() )
-            {
-                OperationTreeItem operationTreeItem = (OperationTreeItem)operation.getValue();
-                updateCategory(
-                    operationTreeItem,
-                    operationTreeItem.getOperation().getRawOperation().getDesc() );
-            }
+            interval.getChildren().stream().map( treeItem -> treeItem.getValue() )
+                .filter( treeItem -> treeItem instanceof OperationTreeItem )
+                .forEach( operationTreeItem -> {
+                    ((OperationTreeItem)operationTreeItem).setCategory(
+                        ((OperationTreeItem)operationTreeItem).getOperation().getCategory() );
+                } );
         }
+        refreshView();
     }
 
-
-    public Repository getRepository()
-    {
-        return repository;
-    }
+ */
 
 
     public RepositoryCreatorDialogView getView()
     {
-        return view;
+        return (RepositoryCreatorDialogView)view;
     }
 
 
-    public void showAlert( Alert.AlertType type, String title, String header, String content )
+    @Override
+    public void onClose()
     {
-        Alert alert = new Alert( type );
-        alert.setTitle( title );
-        alert.setHeaderText( header );
-        alert.setContentText( content );
-
-        alert.showAndWait();
-    }
-
-
-    public void onApplicationClose()
-    {
+        logOnDialogClose();
         categoriesConfigurationChangeListener.stopListen();
         categoriesConfigurationChangeListener = null;
-        this.repository = null;
         this.view = null;
-        this.categoryResolver = null;
     }
 
 
     private void loadBankStatementsMenuItemActionEventHandling()
     {
-        /*Platform.runLater(() -> {
-                new PdfEditorApplication().start(new Stage());
-            });
-            stage.close();*/
-        view.getLoadBankStatementsMenuItem()
+        getView().getLoadBankStatementsMenuItem()
             .setOnAction( new LoadBankStatementsBtnEventHandler( this )::handle );
     }
 
@@ -126,57 +93,56 @@ public class RepositoryCreatorDialogController
     {
         loadBankStatementsMenuItemActionEventHandling();
         loadRepositoryMenuItemActionEventHandling();
-        addBankOperationMenuItemActionEventHandling();
+        addBankOperationManuallyMenuItemActionEventHandling();
         saveRepositoryMenuItemActionEventHandling();
         generateReportMenuItemActionEventHandling();
+        editConfigurationMenuItemActionEventHandling();
+    }
+
+
+    private void initCurrentRepository()
+    {
+
+        new CurrentRepositoryUtil()
+            .addCurrentRepositoryListener( Optional.of( new CurrentRepositoryListener( this ) ) );
     }
 
 
     private void loadRepositoryMenuItemActionEventHandling()
     {
-        view.getLoadRepositoryMenuItem()
+        getView().getLoadRepositoryMenuItem()
             .setOnAction( new LoadRepositoryBtnEventHandler( this )::handle );
     }
 
 
     private void generateReportMenuItemActionEventHandling()
     {
-        view.getGenerateReportMenuItem()
-            .setOnAction( new GenerateReportBtnEventHandler( repository, view )::handle );
+        getView().getGenerateReportMenuItem()
+            .setOnAction( new GenerateReportBtnEventHandler( this )::handle );
+    }
+
+
+    private void editConfigurationMenuItemActionEventHandling()
+    {
+        getView().getEditConfigurationMenuItem()
+            .setOnAction( new EditConfigurationBtnEventHandler()::handle );
     }
 
 
     private void saveRepositoryMenuItemActionEventHandling()
     {
-        view.getSaveRepositoryMenuItem()
+        getView().getSaveRepositoryMenuItem()
             .setOnAction( new SaveRepositoryBtnEventHandler( this )::handle );
     }
 
 
-    private void updateView(
-        OperationTreeItem operationTreeItem, String newDescription, Category newCategory )
+    private void addBankOperationManuallyMenuItemActionEventHandling()
     {
-        operationTreeItem.setDesc( newDescription );
-        operationTreeItem.setCategory( newCategory );
-        view.refresh();
+        getView().getAddBankOperationManuallyMenuItem()
+            .setOnAction( new AddBankOperationManuallyBtnEventHandler()::handle );
     }
 
-
-    private void updateModel(
-        Operation operation, String newDescription, Category newCategory )
-    {
-        operation.getRawOperation().setDesc( newDescription );
-        operation.setCategory( newCategory );
-    }
-
-
-    private Category resolveCategoryForDescription( String description )
-    {
-        return categoryResolver.resolve( description );
-    }
-
-
-    private String getSortedByColumnName()
+    /*private String getSortedByColumnName()
     {
         Optional<String> sortedByColumn =
             getView().getTreeTableView().getSortOrder().stream().map( TreeTableColumn::getText )
@@ -189,12 +155,5 @@ public class RepositoryCreatorDialogController
         {
             return "";
         }
-    }
-
-
-    private void addBankOperationMenuItemActionEventHandling()
-    {
-        view.getAddBankOperationMenuItem()
-            .setOnAction( new AddBankOperationBtnEventHandler( this )::handle );
-    }
+    }*/
 }

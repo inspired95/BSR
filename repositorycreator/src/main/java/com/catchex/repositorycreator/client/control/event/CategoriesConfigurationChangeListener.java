@@ -2,7 +2,7 @@ package com.catchex.repositorycreator.client.control.event;
 
 import com.catchex.models.Configuration;
 import com.catchex.repositorycreator.client.control.RepositoryCreatorDialogController;
-import javafx.scene.control.Alert;
+import com.catchex.repositorycreator.client.model.CurrentRepositoryUtil;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -24,8 +24,10 @@ public class CategoriesConfigurationChangeListener
     @Override
     public void propertyChange( PropertyChangeEvent propertyChangeEvent )
     {
-        controller.showAlert( Alert.AlertType.ERROR, "Config", "Config change", "Listener" );
-        controller.handleConfigurationChange();
+        new CurrentRepositoryUtil().recalculateCategories();
+        controller.refreshView();
+        //controller.syncViewWithModelsCategories();
+
     }
 
 

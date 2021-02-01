@@ -14,7 +14,13 @@ public class Repository
 
     public Repository()
     {
-        operations = new HashSet<>();
+        this( new HashSet<>() );
+    }
+
+
+    public Repository( Set<Operation> operations )
+    {
+        this.operations = operations;
     }
 
 

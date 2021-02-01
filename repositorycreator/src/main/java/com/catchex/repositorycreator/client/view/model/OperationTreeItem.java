@@ -1,8 +1,9 @@
 package com.catchex.repositorycreator.client.view.model;
 
 import com.catchex.models.Category;
-import com.catchex.models.Operation;
+import com.catchex.models.CurrentOperation;
 
+import java.beans.PropertyChangeEvent;
 import java.io.Serializable;
 
 
@@ -16,7 +17,7 @@ public class OperationTreeItem
     }
 
 
-    public OperationTreeItem( Operation operation )
+    public OperationTreeItem( CurrentOperation operation )
     {
         super( operation );
     }
@@ -34,8 +35,23 @@ public class OperationTreeItem
     }
 
 
-    public Operation getOperation()
+    public CurrentOperation getOperation()
     {
         return this.operation;
+    }
+
+
+    @Override
+    public void propertyChange( PropertyChangeEvent propertyChangeEvent )
+    {
+        Object newValue = propertyChangeEvent.getNewValue();
+        if( propertyChangeEvent.getPropertyName().equals( "Description" ) )
+        {
+            setDesc( (String)newValue );
+        }
+        else if( propertyChangeEvent.getPropertyName().equals( "Category" ) )
+        {
+            setCategory( (Category)newValue );
+        }
     }
 }

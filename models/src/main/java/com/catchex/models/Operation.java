@@ -1,7 +1,6 @@
 package com.catchex.models;
 
 import java.io.Serializable;
-import java.util.Comparator;
 import java.util.Objects;
 
 
@@ -9,11 +8,9 @@ public class Operation
     implements Serializable
 {
     public static final Operation DUMMY_OPERATION =
-        new Operation( RawOperation.DUMMY_RAW_OPERATION, OperationType.NOT_RESOLVED,
-            Category.OTHER_CATEGORY );
-    private RawOperation rawOperation;
-    private OperationType type;
-    private Category category;
+        new Operation( RawOperation.DUMMY_RAW_OPERATION, OperationType.NOT_RESOLVED );
+    protected RawOperation rawOperation;
+    protected OperationType type;
 
 
     public Operation()
@@ -23,11 +20,10 @@ public class Operation
 
 
     public Operation(
-        RawOperation rawOperation, OperationType type, Category category )
+        RawOperation rawOperation, OperationType type )
     {
         this.rawOperation = rawOperation;
         this.type = type;
-        this.category = category;
     }
 
 
@@ -40,18 +36,6 @@ public class Operation
     public OperationType getType()
     {
         return type;
-    }
-
-
-    public Category getCategory()
-    {
-        return category;
-    }
-
-
-    public void setCategory( Category category )
-    {
-        this.category = category;
     }
 
 
@@ -82,13 +66,6 @@ public class Operation
         }
         else if( !type.equals( other.type ) )
             return false;
-
-        if( category == null )
-        {
-            return other.category == null;
-        }
-        else if( !category.equals( other.category ) )
-            return false;
         return true;
     }
 
@@ -96,55 +73,13 @@ public class Operation
     @Override
     public int hashCode()
     {
-        return Objects.hash( rawOperation, type, category );
+        return Objects.hash( rawOperation, type );
     }
 
 
-    public static class OperationAmountComparator
-        implements Comparator<Operation>
+    @Override
+    public String toString()
     {
-
-        @Override
-        public int compare( Operation o1, Operation o2 )
-        {
-            return o1.getRawOperation().getAmount().compareTo( o2.getRawOperation().getAmount() );
-        }
-    }
-
-
-    public static class OperationTypeComparator
-        implements Comparator<Operation>
-    {
-
-        @Override
-        public int compare( Operation o1, Operation o2 )
-        {
-            return o1.getType().compareTo( o2.getType() );
-        }
-    }
-
-
-    public static class OperationCategoryComparator
-        implements Comparator<Operation>
-    {
-
-        @Override
-        public int compare( Operation o1, Operation o2 )
-        {
-            return o1.getCategory().getCategoryName()
-                .compareTo( o2.getCategory().getCategoryName() );
-        }
-    }
-
-
-    public static class OperationDateComparator
-        implements Comparator<Operation>
-    {
-
-        @Override
-        public int compare( Operation o1, Operation o2 )
-        {
-            return o1.getRawOperation().getDate().compareTo( o2.getRawOperation().getDate() );
-        }
+        return "Operation{" + "rawOperation=" + rawOperation + ", type=" + type + '}';
     }
 }

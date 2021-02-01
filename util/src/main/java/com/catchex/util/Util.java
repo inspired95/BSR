@@ -7,6 +7,7 @@ import java.text.ParseException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.util.Collection;
 import java.util.Optional;
 import java.util.StringJoiner;
 
@@ -104,6 +105,16 @@ public class Util
         }
         Log.LOGGER.warning( "Cannot combine nulls" );
         return "";
+    }
 
+
+    public static String joinString( String delimiter, Collection<String> validationErrorMessages )
+    {
+        StringJoiner joiner = new StringJoiner( delimiter );
+        for( String validationErrorMessage : validationErrorMessages )
+        {
+            joiner.add( validationErrorMessage );
+        }
+        return joiner.toString();
     }
 }

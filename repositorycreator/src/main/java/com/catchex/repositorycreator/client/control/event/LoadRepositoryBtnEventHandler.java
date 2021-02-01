@@ -2,6 +2,8 @@ package com.catchex.repositorycreator.client.control.event;
 
 import com.catchex.models.Repository;
 import com.catchex.repositorycreator.client.control.RepositoryCreatorDialogController;
+import com.catchex.repositorycreator.client.model.CurrentRepositoryUtil;
+import dialogs.EventHandler;
 import javafx.event.ActionEvent;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
@@ -10,10 +12,11 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.util.Optional;
 
 
 public class LoadRepositoryBtnEventHandler
-    implements EventHandler<ActionEvent>
+    extends EventHandler<ActionEvent>
 {
 
     private RepositoryCreatorDialogController controller;
@@ -21,6 +24,7 @@ public class LoadRepositoryBtnEventHandler
 
     public LoadRepositoryBtnEventHandler( RepositoryCreatorDialogController controller )
     {
+        super( "LoadRepository" );
         this.controller = controller;
     }
 
@@ -28,8 +32,13 @@ public class LoadRepositoryBtnEventHandler
     @Override
     public void handle( ActionEvent event )
     {
+        super.handle( event );
         File selectedRepository = getFileToLoad();
-
+        if( selectedRepository == null )
+        {
+            actionCancelled();
+            return;
+        }
         loadRepositoryFromFile( selectedRepository );
     }
 
@@ -50,7 +59,7 @@ public class LoadRepositoryBtnEventHandler
             }
             if( loadedRepository != null )
             {
-                controller.getView().updateView( loadedRepository );
+                new CurrentRepositoryUtil().applyRepository( Optional.of( loadedRepository ) );
             }
         }
     }

@@ -1,6 +1,8 @@
 package com.catchex.repositorycreator.client.control.event;
 
 import com.catchex.repositorycreator.client.control.RepositoryCreatorDialogController;
+import com.catchex.repositorycreator.client.model.CurrentRepositoryUtil;
+import dialogs.EventHandler;
 import javafx.event.ActionEvent;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
@@ -12,7 +14,7 @@ import java.io.ObjectOutputStream;
 
 
 public class SaveRepositoryBtnEventHandler
-    implements EventHandler<ActionEvent>
+    extends EventHandler<ActionEvent>
 {
 
     private RepositoryCreatorDialogController controller;
@@ -20,6 +22,7 @@ public class SaveRepositoryBtnEventHandler
 
     public SaveRepositoryBtnEventHandler( RepositoryCreatorDialogController controller )
     {
+        super( "SaveRepository" );
         this.controller = controller;
     }
 
@@ -27,7 +30,13 @@ public class SaveRepositoryBtnEventHandler
     @Override
     public void handle( ActionEvent event )
     {
+        super.handle( event );
         File fileToFile = getFileToSave();
+        if( fileToFile == null )
+        {
+            actionCancelled();
+            return;
+        }
         saveRepositoryToFile( fileToFile );
     }
 
@@ -40,7 +49,7 @@ public class SaveRepositoryBtnEventHandler
             {
                 FileOutputStream f = new FileOutputStream( selectedFile );
                 ObjectOutputStream o = new ObjectOutputStream( f );
-                o.writeObject( controller.getRepository() );
+                o.writeObject( new CurrentRepositoryUtil().getRepositoryFromCurrentRepository() );
             }
             catch( IOException e )
             {

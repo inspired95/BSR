@@ -86,7 +86,8 @@ public class OperationChartGenerator
     private String generateExpensesSummaryLabels()
     {
         StringBuilder labels = new StringBuilder( "\"labels\":[\n" );
-        for( Category category : computeCategories() )
+        List<Category> categories = computeCategories();
+        for( Category category : categories )
         {
             labels.append( "'" + category.getCategoryName() + "'," );
         }
@@ -176,8 +177,9 @@ public class OperationChartGenerator
 
     private List<Category> computeCategories()
     {
-        List<Category> categories = new ArrayList( Arrays
-            .asList( Configuration.getInstance().getCategoriesConfiguration().getCategories() ) );
+        List<Category> categories = new ArrayList();
+        categories
+            .addAll( Configuration.getInstance().getCategoriesConfiguration().getCategories() );
         categories.add( Category.OTHER_CATEGORY );
         categories.add( Category.CASH_WITHDRAWAL );
         return categories;

@@ -1,12 +1,13 @@
 package com.catchex.repositorycreator.client.view;
 
-import com.catchex.models.Operation;
-import com.catchex.models.Repository;
+import com.catchex.models.CurrentOperation;
 import com.catchex.repositorycreator.client.control.RepositoryCreatorDialogController;
+import com.catchex.repositorycreator.client.model.repository.CurrentRepositoryHolder;
 import com.catchex.repositorycreator.client.view.model.AbstractTreeItem;
 import com.catchex.repositorycreator.client.view.model.IntervalTreeItem;
 import com.catchex.repositorycreator.client.view.model.OperationTreeItem;
 import com.catchex.util.Constants;
+import dialogs.DialogView;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -15,18 +16,19 @@ import javafx.stage.Stage;
 
 import java.time.LocalDate;
 import java.util.Optional;
-import java.util.Set;
 
 
 public class RepositoryCreatorDialogView
+    extends DialogView
 {
     RepositoryCreatorDialogController controller;
     private Scene scene;
     private MenuItem loadBankStatementsMenuItem;
-    private MenuItem addBankOperationMenuItem;
+    private MenuItem addBankOperationManuallyMenuItem;
     private MenuItem loadRepositoryMenuItem;
     private MenuItem saveRepositoryMenuItem;
     private MenuItem generateReportMenuItem;
+    private MenuItem editConfigurationMenuItem;
     private TreeTableView<AbstractTreeItem> treeTableView;
 
 
@@ -46,12 +48,14 @@ public class RepositoryCreatorDialogView
         repositoryMenu.getItems().add( saveRepositoryMenuItem );
 
         loadBankStatementsMenuItem = new MenuItem( "Append bank statements" );
-        addBankOperationMenuItem = new MenuItem( "Add bank operation manually" );
+        addBankOperationManuallyMenuItem = new MenuItem( "Add bank operation manually" );
         generateReportMenuItem = new MenuItem( "Generate report" );
+        editConfigurationMenuItem = new MenuItem( "Edit configuration" );
         Menu bankStatementsMenu = new Menu( "Actions" );
         bankStatementsMenu.getItems().add( loadBankStatementsMenuItem );
-        bankStatementsMenu.getItems().add( addBankOperationMenuItem );
+        bankStatementsMenu.getItems().add( addBankOperationManuallyMenuItem );
         bankStatementsMenu.getItems().add( generateReportMenuItem );
+        bankStatementsMenu.getItems().add( editConfigurationMenuItem );
 
         MenuBar menuBar = new MenuBar();
         menuBar.getMenus().add( repositoryMenu );
@@ -67,28 +71,29 @@ public class RepositoryCreatorDialogView
 
         scene = new Scene( container, 1280, 800 );
         stage.setScene( scene );
+
+        stage.setOnHiding( actionEvent -> {
+            controller.onClose();
+        } );
     }
 
 
-    public void updateView( Repository repository )
+    public void applyCurrentRepository()
     {
-        updateView( repository.getOperations() );
+        getTreeTableView().getRoot().getChildren().clear();
+        CurrentRepositoryHolder.getInstance().get().getOperations()
+            .forEach( this::applyCurrentOperation );
     }
 
 
-    public void updateView( Set<Operation> operations )
-    {
-        operations.forEach( this::updateView );
-    }
-
-
-    public void updateView( Operation operation )
+    public void applyCurrentOperation( CurrentOperation operation )
     {
         Optional<TreeItem<AbstractTreeItem>> intervalTreeItemToPutOperation =
-            findIntervalTreeItemOfOperation( operation.getRawOperation().getDate() );
+            findIntervalTreeItemOfOperation( operation.getOperation().getRawOperation().getDate() );
 
         TreeItem<AbstractTreeItem> treeItemToPut =
             new TreeItem<>( new OperationTreeItem( operation ) );
+        operation.addCategoryChangeListener( treeItemToPut.getValue() );
 
         if( intervalTreeItemToPutOperation.isPresent() ) //interval for particular operation exists
         {
@@ -126,9 +131,9 @@ public class RepositoryCreatorDialogView
     }
 
 
-    public MenuItem getAddBankOperationMenuItem()
+    public MenuItem getAddBankOperationManuallyMenuItem()
     {
-        return addBankOperationMenuItem;
+        return addBankOperationManuallyMenuItem;
     }
 
 
@@ -147,6 +152,12 @@ public class RepositoryCreatorDialogView
     public MenuItem getSaveRepositoryMenuItem()
     {
         return saveRepositoryMenuItem;
+    }
+
+
+    public MenuItem getEditConfigurationMenuItem()
+    {
+        return editConfigurationMenuItem;
     }
 
 

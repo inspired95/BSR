@@ -1,6 +1,6 @@
 package com.catchex.reportcreator.web;
 
-import com.catchex.models.Operation;
+import com.catchex.models.CurrentOperation;
 import com.catchex.util.Constants;
 
 import java.util.Comparator;
@@ -8,18 +8,18 @@ import java.util.Comparator;
 
 public class OperationsTableComparatorFactory
 {
-    public static Comparator<Operation> get( String operationsSortingBy )
+    public static Comparator<CurrentOperation> get( String operationsSortingBy )
     {
         switch( operationsSortingBy )
         {
             case Constants.AMOUNT:
-                return new Operation.OperationAmountComparator();
+                return new CurrentOperation.CurrentOperationAmountComparator();
             case Constants.TYPE:
-                return new Operation.OperationTypeComparator();
+                return new CurrentOperation.CurrentOperationTypeComparator();
             case Constants.CATEGORY:
-                return new Operation.OperationCategoryComparator();
+                return new CurrentOperation.CurrentOperationCategoryComparator();
             default:
-                return new Operation.OperationDateComparator();
+                return new CurrentOperation.CurrentOperationDateComparator();
         }
     }
 }

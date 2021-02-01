@@ -11,6 +11,24 @@ import static com.catchex.util.Constants.PKO;
 
 public class OperationTypeResolverFactory
 {
+    private static OperationTypeResolverFactory INSTANCE;
+
+
+    private OperationTypeResolverFactory()
+    {
+    }
+
+
+    public static OperationTypeResolverFactory getInstance()
+    {
+        if( INSTANCE == null )
+        {
+            INSTANCE = new OperationTypeResolverFactory();
+        }
+        return INSTANCE;
+    }
+
+
     public Optional<OperationTypeResolver> match( String chosenBank )
     {
         switch( chosenBank )

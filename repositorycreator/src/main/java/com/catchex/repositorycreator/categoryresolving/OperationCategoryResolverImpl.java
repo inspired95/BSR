@@ -2,6 +2,7 @@ package com.catchex.repositorycreator.categoryresolving;
 
 import com.catchex.models.Category;
 import com.catchex.models.Configuration;
+import com.catchex.models.OperationType;
 
 import static com.catchex.logging.Log.LOGGER;
 
@@ -10,12 +11,35 @@ public class OperationCategoryResolverImpl
     implements OperationCategoryResolver
 {
 
-    public OperationCategoryResolverImpl()
+    private static OperationCategoryResolverImpl INSTANCE;
+
+
+    private OperationCategoryResolverImpl()
     {
     }
 
 
+    public static OperationCategoryResolverImpl getInstance()
+    {
+        if( INSTANCE == null )
+        {
+            INSTANCE = new OperationCategoryResolverImpl();
+        }
+        return INSTANCE;
+    }
+
+
     @Override
+    public Category resolve( String operationDescription, OperationType type )
+    {
+        if( OperationType.CASH_WITHDRAWAL.equals( type ) )
+        {
+            return Category.CASH_WITHDRAWAL;
+        }
+        return resolve( operationDescription );
+    }
+
+
     public Category resolve( String operationDescription )
     {
         if( operationDescription == null || operationDescription.isEmpty() )

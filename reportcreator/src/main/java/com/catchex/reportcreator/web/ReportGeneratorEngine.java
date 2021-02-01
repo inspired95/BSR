@@ -1,6 +1,7 @@
 package com.catchex.reportcreator.web;
 
-import com.catchex.models.Operation;
+import com.catchex.models.CurrentOperation;
+import com.catchex.reportcreator.ReportUtil;
 import com.catchex.reportcreator.statictics.OperationsStatistics;
 import j2html.tags.ContainerTag;
 
@@ -16,16 +17,17 @@ public class ReportGeneratorEngine
     private OperationChartGenerator chartGenerator;
 
 
-    public ReportGeneratorEngine( OperationsStatistics operationsStatistics )
+    public ReportGeneratorEngine( OperationsStatistics operationsStatistics, ReportUtil reportUtil )
     {
-        this.tableGenerator = new OperationTableGenerator( operationsStatistics );
+        this.tableGenerator = new OperationTableGenerator( operationsStatistics, reportUtil );
         this.chartGenerator = new OperationChartGenerator( operationsStatistics );
     }
 
 
-    public String generateHtml( Comparator<Operation> operationTableComparator )
+    public String generateHtml( Comparator<CurrentOperation> operationTableComparator )
     {
-        return html( generateHead(), body( tableGenerator.generateIncomesStatisticsTable(),
+        return html( generateHead(), body(
+            tableGenerator.generateIncomesStatisticsTable(),
             tableGenerator.generateExpensesStatisticsTable()
                 .with( chartGenerator.generateCanvas( "expensesSummary", "smallChart" ) ).with(
                 chartGenerator.generateCanvas( "CategoriesExpensesPerMonthChart", "chart" ) ),

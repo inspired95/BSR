@@ -1,7 +1,7 @@
 package com.catchex.reportcreator.statictics;
 
-import com.catchex.models.Operation;
-import com.catchex.models.OperationType;
+import com.catchex.models.CurrentOperation;
+import com.catchex.reportcreator.ReportUtil;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -13,7 +13,9 @@ import java.util.TreeMap;
 
 public class OperationsStatistics
 {
-    private List<Operation> operations;
+    private List<CurrentOperation> currentOperations;
+
+    private ReportUtil reportUtil;
 
     private Map<String, Double> incomes;
     private Map<String, Double> expenses;
@@ -24,20 +26,21 @@ public class OperationsStatistics
     private TreeMap<String, Map<String, Double>> expensesCategoriesPerMonth;
 
 
-    public OperationsStatistics( List<Operation> operations )
+    public OperationsStatistics( List<CurrentOperation> currentOperations, ReportUtil reportUtil )
     {
-        this.operations = operations;
+        this.currentOperations = currentOperations;
+        this.reportUtil = reportUtil;
         this.incomes = new HashMap<>();
         this.expenses = new HashMap<>();
         this.notResolvedOperations = new HashMap<>();
-        expensesCategoriesPerMonth = new TreeMap<>();
+        this.expensesCategoriesPerMonth = new TreeMap<>();
         calculate();
     }
 
 
     public void calculate()
     {
-        for( Operation operation : operations )
+        for( CurrentOperation operation : currentOperations )
         {
             if( isNotResolved( operation ) )
             {
@@ -54,106 +57,6 @@ public class OperationsStatistics
         }
 
         calculateExpensesCategoriesPerMonth();
-    }
-
-
-    private void calculateExpenses( Operation operation )
-    {
-        Double currentSum = expenses.get( operation.getCategory().getCategoryName() );
-        if( currentSum == null )
-        {
-            currentSum = operation.getRawOperation().getAmount();
-        }
-        else
-        {
-            currentSum += operation.getRawOperation().getAmount();
-        }
-        expensesSum += operation.getRawOperation().getAmount();
-        expenses.put( operation.getCategory().getCategoryName(), currentSum );
-    }
-
-
-    private void calculateIncome( Operation operation )
-    {
-        Double currentSum = incomes.get( operation.getCategory().getCategoryName() );
-        if( currentSum == null )
-        {
-            currentSum = operation.getRawOperation().getAmount();
-
-        }
-        else
-        {
-            currentSum += operation.getRawOperation().getAmount();
-        }
-        incomeSum += operation.getRawOperation().getAmount();
-        incomes.put( operation.getCategory().getCategoryName(), currentSum );
-    }
-
-
-    private void calculateNotResolvedOperations( Operation operation )
-    {
-        Double currentSum = notResolvedOperations.get( operation.getCategory().getCategoryName() );
-        if( currentSum == null )
-        {
-            currentSum = operation.getRawOperation().getAmount();
-        }
-        else
-        {
-            currentSum += operation.getRawOperation().getAmount();
-        }
-        notResolvedSum += operation.getRawOperation().getAmount();
-        notResolvedOperations.put( operation.getCategory().getCategoryName(), currentSum );
-    }
-
-
-    private void calculateExpensesCategoriesPerMonth()
-    {
-        for( Operation operation : operations )
-        {
-            if( !isIncome( operation ) && !isNotResolved( operation ) )
-            {
-                LocalDate month = operation.getRawOperation().getDate();
-                String formattedDate = month.format( DateTimeFormatter.ofPattern( "yyyy/MM" ) );
-                String category = operation.getCategory().getCategoryName();
-                Double amount = operation.getRawOperation().getAmount();
-
-                Map<String, Double> monthCategoriesExpenses =
-                    expensesCategoriesPerMonth.get( formattedDate );
-                if( monthCategoriesExpenses == null )
-                {
-                    Map<String, Double> categoriesExpenses = new HashMap<>();
-                    categoriesExpenses.put( category, amount );
-                    expensesCategoriesPerMonth.put( formattedDate, categoriesExpenses );
-                }
-                else
-                {
-                    Double categoryExpenses = monthCategoriesExpenses.get( category );
-                    if( categoryExpenses == null )
-                    {
-                        monthCategoriesExpenses.put( category, amount );
-                    }
-                    else
-                    {
-                        Double newExpensesValue = categoryExpenses + amount;
-                        monthCategoriesExpenses.replace( category, newExpensesValue );
-                    }
-                }
-            }
-        }
-    }
-
-
-    private boolean isIncome( Operation operation )
-    {
-        return operation.getType().equals( OperationType.INCOME_TRANSFER ) ||
-            operation.getType().equals( OperationType.REFUND ) ||
-            operation.getType().equals( OperationType.PROFIT );
-    }
-
-
-    private boolean isNotResolved( Operation operation )
-    {
-        return operation.getType().equals( OperationType.NOT_RESOLVED );
     }
 
 
@@ -193,14 +96,113 @@ public class OperationsStatistics
     }
 
 
-    public List<Operation> getOperations()
+    public List<CurrentOperation> getCurrentOperations()
     {
-        return operations;
+        return currentOperations;
     }
 
 
     public Map<String, Map<String, Double>> getExpensesCategoriesPerMonth()
     {
         return expensesCategoriesPerMonth;
+    }
+
+
+    private void calculateExpenses( CurrentOperation currentOperation )
+    {
+        Double currentSum = expenses.get( currentOperation.getCategory().getCategoryName() );
+        if( currentSum == null )
+        {
+            currentSum = currentOperation.getOperation().getRawOperation().getAmount();
+        }
+        else
+        {
+            currentSum += currentOperation.getOperation().getRawOperation().getAmount();
+        }
+        expensesSum += currentOperation.getOperation().getRawOperation().getAmount();
+        expenses.put( currentOperation.getCategory().getCategoryName(), currentSum );
+    }
+
+
+    private void calculateIncome( CurrentOperation currentOperation )
+    {
+        Double currentSum = incomes.get( currentOperation.getCategory().getCategoryName() );
+        if( currentSum == null )
+        {
+            currentSum = currentOperation.getOperation().getRawOperation().getAmount();
+
+        }
+        else
+        {
+            currentSum += currentOperation.getOperation().getRawOperation().getAmount();
+        }
+        incomeSum += currentOperation.getOperation().getRawOperation().getAmount();
+        incomes.put( currentOperation.getCategory().getCategoryName(), currentSum );
+    }
+
+
+    private void calculateNotResolvedOperations( CurrentOperation currentOperation )
+    {
+        Double currentSum =
+            notResolvedOperations.get( currentOperation.getCategory().getCategoryName() );
+        if( currentSum == null )
+        {
+            currentSum = currentOperation.getOperation().getRawOperation().getAmount();
+        }
+        else
+        {
+            currentSum += currentOperation.getOperation().getRawOperation().getAmount();
+        }
+        notResolvedSum += currentOperation.getOperation().getRawOperation().getAmount();
+        notResolvedOperations.put( currentOperation.getCategory().getCategoryName(), currentSum );
+    }
+
+
+    private void calculateExpensesCategoriesPerMonth()
+    {
+        for( CurrentOperation currentOperation : currentOperations )
+        {
+            if( reportUtil.isExpense( currentOperation ) )
+            {
+                LocalDate month = currentOperation.getOperation().getRawOperation().getDate();
+                String formattedDate = month.format( DateTimeFormatter.ofPattern( "yyyy/MM" ) );
+                String category = currentOperation.getCategory().getCategoryName();
+                Double amount = currentOperation.getOperation().getRawOperation().getAmount();
+
+                Map<String, Double> monthCategoriesExpenses =
+                    expensesCategoriesPerMonth.get( formattedDate );
+                if( monthCategoriesExpenses == null )
+                {
+                    Map<String, Double> categoriesExpenses = new HashMap<>();
+                    categoriesExpenses.put( category, amount );
+                    expensesCategoriesPerMonth.put( formattedDate, categoriesExpenses );
+                }
+                else
+                {
+                    Double categoryExpenses = monthCategoriesExpenses.get( category );
+                    if( categoryExpenses == null )
+                    {
+                        monthCategoriesExpenses.put( category, amount );
+                    }
+                    else
+                    {
+                        Double newExpensesValue = categoryExpenses + amount;
+                        monthCategoriesExpenses.replace( category, newExpensesValue );
+                    }
+                }
+            }
+        }
+    }
+
+
+    private boolean isIncome( CurrentOperation currentOperation )
+    {
+        return reportUtil.isIncome( currentOperation );
+    }
+
+
+    private boolean isNotResolved( CurrentOperation currentOperation )
+    {
+        return reportUtil.isNotResolved( currentOperation );
     }
 }

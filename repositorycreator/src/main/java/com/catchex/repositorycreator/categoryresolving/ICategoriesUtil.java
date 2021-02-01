@@ -1,10 +1,10 @@
 package com.catchex.repositorycreator.categoryresolving;
 
-import com.catchex.models.Repository;
+import com.catchex.models.CurrentRepository;
 
 
 public interface ICategoriesUtil
 {
-    void updateCategories( Repository repository );
+    void updateCategories( CurrentRepository repository );
 
 }

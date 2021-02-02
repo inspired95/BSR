@@ -16,15 +16,12 @@ import static java.util.Set.of;
 public class RawOperationExtender
 {
     private OperationTypeResolver operationTypeResolver;
-    private OperationCategoryResolver operationCategoryResolver;
 
 
     public RawOperationExtender(
-        OperationTypeResolver operationTypeResolver,
-        OperationCategoryResolver operationCategoryResolver )
+        OperationTypeResolver operationTypeResolver )
     {
         this.operationTypeResolver = operationTypeResolver;
-        this.operationCategoryResolver = operationCategoryResolver;
     }
 
 
@@ -57,7 +54,7 @@ public class RawOperationExtender
             else
             {
                 category =
-                    operationCategoryResolver.resolve( rawOperation.getDesc(), operationType );
+                    OperationCategoryResolver.resolve( rawOperation.getDesc(), operationType );
             }
             if( category.equals( Category.OTHER_CATEGORY ) || operationType.equals( NOT_RESOLVED ) )
             {

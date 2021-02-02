@@ -26,8 +26,6 @@ public class CategoriesConfigurationChangeListener
     {
         new CurrentRepositoryUtil().recalculateCategories();
         controller.refreshView();
-        //controller.syncViewWithModelsCategories();
-
     }
 
 

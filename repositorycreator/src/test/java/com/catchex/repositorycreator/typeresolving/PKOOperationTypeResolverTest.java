@@ -1,17 +1,25 @@
 package com.catchex.repositorycreator.typeresolving;
 
 import com.catchex.models.OperationType;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
 import java.util.stream.Stream;
 
+import static com.catchex.logging.Log.initLogging;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 
 public class PKOOperationTypeResolverTest
 {
+    @BeforeAll
+    public static void setUpBeforeAll()
+    {
+        initLogging();
+    }
+
 
     @ParameterizedTest
     @MethodSource( "correctOperationIncomeTransferDescriptions" )

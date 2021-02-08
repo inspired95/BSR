@@ -37,7 +37,7 @@ public class PKOBankStmtEntryPdfMock
         firstLine.add( ID );
         firstLine.add( typeDescription );
         firstLine.add( amount );
-        firstLine.add( "99999,99" );
+        firstLine.add( "99 999,99" );
 
         StringJoiner secondLine = new StringJoiner( " " );
         secondLine.add( "31.12.2000" );

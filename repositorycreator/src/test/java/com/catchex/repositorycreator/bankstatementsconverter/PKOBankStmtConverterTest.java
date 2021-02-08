@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 
+import static com.catchex.logging.Log.initLogging;
 import static com.catchex.util.Constants.DEBIT_CARD_PAYMENT_RESOLVER_TXT_PL;
 import static com.catchex.util.Constants.PKO_DATE_FORMAT;
 import static com.catchex.util.Util.*;
@@ -28,14 +29,14 @@ public class PKOBankStmtConverterTest
     private static String correctID = "SOME_ID_123456789";
     private static String correctDate = "20.11.2018";
     private static String correctTypeDescription = DEBIT_CARD_PAYMENT_RESOLVER_TXT_PL;
-    private static String correctAmount = "-4 655,45";
+    private static String correctAmount = "4 655,45";
     private static String correctDescLine1 = "SOME_OPERATION_DESCRIPTION";
     private static String correctDescLine2 = "SOME_OPERATION_DESCRIPTION";
-
 
     @BeforeAll
     public static void setupSuite()
     {
+        initLogging();
         bankStmtConverter = new BankStmtConverterFactory().match( bankName ).get();
     }
 

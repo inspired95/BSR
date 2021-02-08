@@ -155,8 +155,8 @@ public class RawOperation
 
         public boolean isValid()
         {
-            return validID() && validOperationType() && validAmount() && validDescription() &&
-                validFileName();
+            return validID() && isDateValid() && validOperationType() && validAmount() &&
+                validDescription() && validFileName();
         }
 
 
@@ -181,6 +181,12 @@ public class RawOperation
         private boolean validID()
         {
             return ID.length() == 17;
+        }
+
+
+        private boolean isDateValid()
+        {
+            return date != LocalDate.MIN;
         }
 
 

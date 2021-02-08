@@ -121,32 +121,10 @@ public class UtilTest
         String[] strings = { "Ala", "ma", "kota", "a", "ja", "mam", "psa" };
 
         //WHEN
-        String combinedString = combineString( Optional.of( strings ), 1, 3 );
+        String combinedString = combineString( strings, 1, 3 );
 
         //THEN
         assertEquals( "ma kota a", combinedString );
-    }
-
-
-    @Test
-    public void should_Return_Empty_String_When_Null_As_Array_Given()
-    {
-        //WHEN
-        String combinedString = combineString( Optional.empty(), 1, 3 );
-
-        //THEN
-        assertEquals( "", combinedString );
-    }
-
-
-    @Test
-    public void should_Return_Empty_String_When_Given_LastIdx_Is_Lower_Then_FirstIdx()
-    {
-        //WHEN
-        String combinedString = combineString( Optional.empty(), 4, 3 );
-
-        //THEN
-        assertEquals( "", combinedString );
     }
 
 

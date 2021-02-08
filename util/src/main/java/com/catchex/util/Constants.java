@@ -36,6 +36,7 @@ public class Constants
     public static final String PKO_DATE_FORMAT = "dd.MM.yyyy";
 
     public static final String REGEX_AMOUNT = "-?[0-9 ]+,\\d{2}";
+    public static final String REGEX_AMOUNT2 = "-?[0-9 ]+\\,{1}\\d{2}";
 
     public static final char DOT = '.';
 

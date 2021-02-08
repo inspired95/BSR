@@ -22,90 +22,119 @@ public class PKOBankStmtConverter
 {
     public static final String BANK_NAME = PKO;
 
+    private String myFileName;
+    private String myBankStatementPdf;
+
+    private int lineToCheck = 0;
+
 
     @Override
     public List<RawOperation> convert( String name, String bankStatementPdf )
     {
-        LOGGER.info( "Converting bank statement:" + name + " started" );
-        String[] bankStmtLines = bankStatementPdf.split( "\\r?\\n" );
-        List<RawOperation> bankStmtEntries = new ArrayList<>();
+        myFileName = name;
+        myBankStatementPdf = bankStatementPdf;
+        LOGGER.info( "Converting bank statement:" + myFileName + " started" );
+        return prepare();
+    }
 
-        for( int currentLineNumber = 0;
-             currentLineNumber < bankStmtLines.length; currentLineNumber++ )
+
+    private List<RawOperation> prepare()
+    {
+        String[] bankStmtLines = myBankStatementPdf.split( "\\r?\\n" );
+        List<RawOperation> rawOperations = new ArrayList<>();
+        while( lineToCheck < bankStmtLines.length )
         {
-            String currentLine = bankStmtLines[currentLineNumber];
-            if( isFirstRowInEntry( currentLine ) )
+            if( isFirstRowInEntry( bankStmtLines[lineToCheck] ) )
             {
-                String[] splittedFirstLineIntoWords = splitLineIntoWords( currentLine );
-
-                RawOperation.Builder operationBuilder =
-                    new RawOperation.Builder( splittedFirstLineIntoWords[1] );
-                operationBuilder.setFileName( name );
-                operationBuilder.setDate( getDate( splittedFirstLineIntoWords[0] ) );
-                operationBuilder.setType(
-                    getOperationTypeDesc( Optional.ofNullable( splittedFirstLineIntoWords ) ) );
-                operationBuilder.setAmount( getAmount( currentLine ) );
-
-                currentLineNumber++;
-                String[] splittedSecondLineIntoWords =
-                    splitLineIntoWords( bankStmtLines[currentLineNumber] );
-
-                operationBuilder.setDesc(
-                    getDescription( currentLineNumber, splittedSecondLineIntoWords,
-                        bankStmtLines ) );
-                operationBuilder.setBank( BANK_NAME );
-
-                if( operationBuilder.isValid() )
+                RawOperationLines rawOperationLines = readNextRawOperationLines();
+                RawOperation rawOperation = buildRawOperation( rawOperationLines );
+                if( rawOperation.isValid() )
                 {
-                    bankStmtEntries.add( operationBuilder.build() );
+                    rawOperations.add( rawOperation );
                 }
                 else
                 {
-                    LOGGER.warning( "OperationBuilder is not valid: \n" + currentLine );
+                    LOGGER.warning( "Bank statement entry is not valid: \n" + rawOperationLines );
+                }
+            }
+            else
+            {
+                lineToCheck++;
+            }
+        }
+
+        return rawOperations;
+    }
+
+
+    private RawOperationLines readNextRawOperationLines()
+    {
+        String[] bankStmtLines = myBankStatementPdf.split( "\\r?\\n" );
+
+        String firstLine = bankStmtLines[lineToCheck];
+        String secondLine = bankStmtLines[++lineToCheck];
+        RawOperationLines rawOperationLines = new RawOperationLines( firstLine, secondLine );
+        lineToCheck++;
+        for( int i = 0; i < 2; i++ )
+        {
+            if( lineToCheck != bankStmtLines.length )
+            {
+                String line = bankStmtLines[lineToCheck];
+                if( !isFirstRowInEntry( line ) && !isBankStmtPageBalanceSummary( line ) &&
+                    !isBankStmtBalanceSummary( line ) )
+                {
+                    if( i == 0 )
+                    {
+                        rawOperationLines.setLine3( line );
+                    }
+                    else
+                        rawOperationLines.setLine4( line );
+                    lineToCheck++;
+                }
+                else
+                {
+                    break;
                 }
             }
         }
-        LOGGER.info( "Converting finished" );
-        return bankStmtEntries;
+        return rawOperationLines;
+    }
+
+
+    private RawOperation buildRawOperation(
+        RawOperationLines rawOperationLines )
+    {
+        String[] firstLineWords = splitLineIntoWords( rawOperationLines.getMyLine1() );
+        return new RawOperation.Builder( firstLineWords[1] ).setFileName( myFileName )
+            .setDate( getDate( firstLineWords[0] ) )
+            .setType( getOperationTypeDesc( firstLineWords ) )
+            .setAmount( getAmount( rawOperationLines.getMyLine1() ) )
+            .setDesc( getDescription( rawOperationLines ) ).setBank( BANK_NAME ).build();
     }
 
 
     private String getDescription(
-        int lineNumber, String[] splittedSecondLineIntoWords, String[] bankStmtLines )
+        RawOperationLines lines )
     {
         StringJoiner desc = new StringJoiner( " " );
-        for( int i = 1; i < splittedSecondLineIntoWords.length; i++ )
-        {
-            desc.add( splittedSecondLineIntoWords[i] );
-        }
-
-        //Read next line until not the end of bank statement entry
-        while( !isFirstRowInEntry( bankStmtLines[lineNumber + 1] ) &&
-            !isBankStmtPageBalanceSummary( bankStmtLines[lineNumber + 1] ) &&
-            !isBankStmtBalanceSummary( bankStmtLines[lineNumber + 1] ) )
-        {
-            lineNumber++;
-            String nextLine = bankStmtLines[lineNumber];
-            desc.add( nextLine );
-        }
+        desc.add( lines.getMyLine2().split( " ", 2 )[1] );
+        lines.getMyLine3().ifPresent( desc::add );
+        lines.getMyLine4().ifPresent( desc::add );
         return desc.toString();
     }
 
 
     private LocalDate getDate( String date )
     {
-        LocalDate parsedDate = LocalDate.MIN;
         try
         {
-            parsedDate = parseDate( Optional.ofNullable( date ), PKO_DATE_FORMAT );
+            return parseDate( Optional.ofNullable( date ), PKO_DATE_FORMAT );
         }
         catch( DateTimeParseException e )
         {
             LOGGER.warning( "Cannot parse date: " + date );
+            return LocalDate.MIN;
         }
-        if( parsedDate.equals( LocalDate.MIN ) )
-            LOGGER.warning( "Cannot parse date: " + date );
-        return parseDate( Optional.ofNullable( date ), PKO_DATE_FORMAT );
     }
 
 
@@ -150,7 +179,7 @@ public class PKOBankStmtConverter
 
     private Double getAmount( String line )
     {
-        List<MatchResult> matches = Pattern.compile( REGEX_AMOUNT ).matcher( line ).results()
+        List<MatchResult> matches = Pattern.compile( REGEX_AMOUNT2 ).matcher( line ).results()
             .collect( Collectors.toList() );
         if( matches.size() == 2 )
         {
@@ -162,16 +191,10 @@ public class PKOBankStmtConverter
     }
 
 
-    private String getOperationTypeDesc( Optional<String[]> splittedLineIntoWords )
+    private String getOperationTypeDesc( String[] splittedLineIntoWords )
     {
-        if( splittedLineIntoWords.isPresent() )
-        {
-            int lastWordIdx =
-                findLastWordIndexOfOperationTypeDesc( 2, splittedLineIntoWords.get() );
-            return combineString( splittedLineIntoWords, 2, lastWordIdx );
-        }
-        LOGGER.warning( "Cannot get description" );
-        return "";
+        int lastWordIdx = findLastWordIndexOfOperationTypeDesc( 2, splittedLineIntoWords );
+        return combineString( splittedLineIntoWords, 2, lastWordIdx );
     }
 
 
@@ -187,5 +210,64 @@ public class PKOBankStmtConverter
             }
         }
         return currentWordIdx;
+    }
+
+
+    private class RawOperationLines
+    {
+        private final String myLine1;
+        private final String myLine2;
+        private Optional<String> myLine3 = Optional.empty();
+        private Optional<String> myLine4 = Optional.empty();
+
+
+        public RawOperationLines( String line1, String line2 )
+        {
+            myLine1 = line1;
+            myLine2 = line2;
+        }
+
+
+        public void setLine3( String line )
+        {
+            myLine3 = Optional.of( line );
+        }
+
+
+        public void setLine4( String line )
+        {
+            myLine4 = Optional.of( line );
+        }
+
+
+        public String getMyLine1()
+        {
+            return myLine1;
+        }
+
+
+        public String getMyLine2()
+        {
+            return myLine2;
+        }
+
+
+        public Optional<String> getMyLine3()
+        {
+            return myLine3;
+        }
+
+
+        public Optional<String> getMyLine4()
+        {
+            return myLine4;
+        }
+
+
+        @Override
+        public String toString()
+        {
+            return myLine1 + '\n' + myLine2 + '\n' + myLine3 + '\n' + myLine4;
+        }
     }
 }

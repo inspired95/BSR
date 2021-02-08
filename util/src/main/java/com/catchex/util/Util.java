@@ -65,25 +65,19 @@ public class Util
 
 
     public static String combineString(
-        Optional<String[]> words, int firstWordIdx, int lastWordIdx )
+        String[] words, int firstWordIdx, int lastWordIdx )
     {
         if( lastWordIdx < firstWordIdx )
         {
             Log.LOGGER.warning( "Given last index is lower than first index" );
             return "";
         }
-        if( words.isPresent() )
+        StringJoiner combinedString = new StringJoiner( " " );
+        for( int currentWordIdx = firstWordIdx; currentWordIdx <= lastWordIdx; currentWordIdx++ )
         {
-            StringJoiner combinedString = new StringJoiner( " " );
-            for( int currentWordIdx = firstWordIdx;
-                 currentWordIdx <= lastWordIdx; currentWordIdx++ )
-            {
-                combinedString.add( words.get()[currentWordIdx] );
-            }
-            return combinedString.toString();
+            combinedString.add( words[currentWordIdx] );
         }
-        Log.LOGGER.warning( "Cannot combine null" );
-        return "";
+        return combinedString.toString();
     }
 
 

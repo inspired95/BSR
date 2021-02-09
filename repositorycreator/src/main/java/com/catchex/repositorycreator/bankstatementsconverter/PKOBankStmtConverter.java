@@ -23,7 +23,7 @@ public class PKOBankStmtConverter
     public static final String BANK_NAME = PKO;
 
     private String myFileName;
-    private String myBankStatementPdf;
+    private String[] myBankStmtLines;
 
     private int lineToCheck = 0;
 
@@ -32,19 +32,18 @@ public class PKOBankStmtConverter
     public List<RawOperation> convert( String name, String bankStatementPdf )
     {
         myFileName = name;
-        myBankStatementPdf = bankStatementPdf;
+        myBankStmtLines = bankStatementPdf.split( "\\r?\\n" );
         LOGGER.info( "Converting bank statement:" + myFileName + " started" );
-        return prepare();
+        return convert();
     }
 
 
-    private List<RawOperation> prepare()
+    private List<RawOperation> convert()
     {
-        String[] bankStmtLines = myBankStatementPdf.split( "\\r?\\n" );
         List<RawOperation> rawOperations = new ArrayList<>();
-        while( lineToCheck < bankStmtLines.length )
+        while( lineToCheck < myBankStmtLines.length )
         {
-            if( isFirstRowInEntry( bankStmtLines[lineToCheck] ) )
+            if( isFirstRowInEntry( myBankStmtLines[lineToCheck] ) )
             {
                 RawOperationLines rawOperationLines = readNextRawOperationLines();
                 RawOperation rawOperation = buildRawOperation( rawOperationLines );
@@ -60,26 +59,29 @@ public class PKOBankStmtConverter
             else
             {
                 lineToCheck++;
+
             }
         }
-
+        LOGGER.info( "Converting bank statement:" + myFileName + " finished" );
+        if( rawOperations.isEmpty() )
+        {
+            LOGGER.info( "File doesn't contain any PKO bank operations entries" );
+        }
         return rawOperations;
     }
 
 
     private RawOperationLines readNextRawOperationLines()
     {
-        String[] bankStmtLines = myBankStatementPdf.split( "\\r?\\n" );
-
-        String firstLine = bankStmtLines[lineToCheck];
-        String secondLine = bankStmtLines[++lineToCheck];
+        String firstLine = myBankStmtLines[lineToCheck];
+        String secondLine = myBankStmtLines[++lineToCheck];
         RawOperationLines rawOperationLines = new RawOperationLines( firstLine, secondLine );
         lineToCheck++;
         for( int i = 0; i < 2; i++ )
         {
-            if( lineToCheck != bankStmtLines.length )
+            if( lineToCheck != myBankStmtLines.length )
             {
-                String line = bankStmtLines[lineToCheck];
+                String line = myBankStmtLines[lineToCheck];
                 if( !isFirstRowInEntry( line ) && !isBankStmtPageBalanceSummary( line ) &&
                     !isBankStmtBalanceSummary( line ) )
                 {
@@ -88,7 +90,9 @@ public class PKOBankStmtConverter
                         rawOperationLines.setLine3( line );
                     }
                     else
+                    {
                         rawOperationLines.setLine4( line );
+                    }
                     lineToCheck++;
                 }
                 else
@@ -267,7 +271,8 @@ public class PKOBankStmtConverter
         @Override
         public String toString()
         {
-            return myLine1 + '\n' + myLine2 + '\n' + myLine3 + '\n' + myLine4;
+            return myLine1 + '\n' + myLine2 + '\n' + myLine3.orElse( "" ) + '\n' +
+                myLine4.orElse( "" );
         }
     }
 }

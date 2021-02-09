@@ -49,6 +49,14 @@ public class PKOBankStmtEntryPdfMock
     }
 
 
+    @Override
+    public String toString()
+    {
+        return "PKOBankStmtEntryPdfMock{" + "firstLine='" + firstLine + '\n' + ", secondLine='" +
+            secondLine + '\n' + ", thirdLine='" + thirdLine + '}';
+    }
+
+
     public static class Builder
     {
         private String date = "";

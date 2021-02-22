@@ -11,6 +11,14 @@
 
     <artifactId>repositorycreator</artifactId>
 
+    <build>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+            </resource>
+        </resources>
+    </build>
+
     <dependencies>
         <dependency>
             <groupId>org.openjfx</groupId>
@@ -56,6 +64,12 @@
             <artifactId>junit-jupiter-params</artifactId>
             <version>5.4.2</version>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>1.2.3</version>
+            <scope>compile</scope>
         </dependency>
     </dependencies>
     <build>

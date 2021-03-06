@@ -9,57 +9,59 @@ import com.catchex.repositorycreator.client.model.CurrentRepositoryUtil;
 import com.catchex.repositorycreator.typeresolving.NotApplicableTypeResolver;
 import com.catchex.repositorycreator.typeresolving.OperationTypeResolver;
 import dialogs.EventHandler;
-import javafx.event.ActionEvent;
 import javafx.scene.control.Alert;
 import javafx.scene.control.RadioButton;
+import org.apache.commons.lang3.exception.ExceptionUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Optional;
 import java.util.Set;
 
-import static com.catchex.logging.Log.LOGGER;
 import static com.catchex.util.Constants.LOSS;
 import static com.catchex.util.Constants.NOT_APPLICABLE;
 
 
 public class AddBankOperationBtnEventHandler
-    extends EventHandler<ActionEvent>
+    extends EventHandler<AddBankOperationDialogController>
 {
-    private AddBankOperationDialogController dialog;
+    private static final Logger logger =
+        LoggerFactory.getLogger( AddBankOperationBtnEventHandler.class );
 
-    private OperationTypeResolver typeResolver = new NotApplicableTypeResolver();
+    private final OperationTypeResolver typeResolver = new NotApplicableTypeResolver();
 
 
-    public AddBankOperationBtnEventHandler( AddBankOperationDialogController dialog )
+    public AddBankOperationBtnEventHandler( AddBankOperationDialogController controller )
     {
-        super( "AddBankOperation" );
-        this.dialog = dialog;
+        super( "AddOperation", controller );
     }
 
 
     @Override
-    public void handle( ActionEvent event )
+    public void handle()
     {
-        super.handle( event );
+        super.handle();
         String errorMessage =
-            new AddBankOperationDialogValidator().valid( dialog ).getErrorMessage();
+            new AddBankOperationDialogValidator().valid( getDialogController() ).getErrorMessage();
 
         if( !errorMessage.isEmpty() )
         {
-            LOGGER.warning( errorMessage );
+            logger.warn( errorMessage );
             Alerts.showAlert( Alert.AlertType.ERROR, "Error", "Validation error", errorMessage );
             return;
         }
 
-        String description = dialog.getView().getDescriptionField().getText();
+        String description = getDialogController().getView().getDescriptionField().getText();
         String operationType =
-            ((RadioButton)dialog.getView().getOperationTypeRadioGroup().getSelectedToggle())
-                .getText();
-        Double amount = Double.parseDouble( dialog.getView().getAmountField().getText() );
+            ((RadioButton)getDialogController().getView().getOperationTypeRadioGroup()
+                .getSelectedToggle()).getText();
+        Double amount =
+            Double.parseDouble( getDialogController().getView().getAmountField().getText() );
         if( operationType.equals( LOSS ) )
             amount *= -1;
 
         RawOperation.Builder builder = new RawOperation.Builder( NOT_APPLICABLE );
-        builder.setDate( dialog.getView().getDatePicker().getValue() );
+        builder.setDate( getDialogController().getView().getDatePicker().getValue() );
         builder.setAmount( amount );
         builder.setDesc( description );
         builder.setBank( NOT_APPLICABLE );
@@ -72,12 +74,12 @@ public class AddBankOperationBtnEventHandler
             .addCurrentOperations( Optional.of( Set.of( currentOperation ) ) );
         try
         {
-            dialog.closeDialog();
+            getDialogController().getView().getStage().close();
         }
         catch( Exception e )
         {
-            LOGGER.warning( "Issue during closing dialog " + dialog.getDIALOG_NAME() );
-            e.printStackTrace();
+            logger
+                .error( "Error during application staring {}", ExceptionUtils.getStackTrace( e ) );
         }
     }
 }

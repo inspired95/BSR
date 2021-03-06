@@ -1,22 +1,31 @@
-<configuration debug="true">
+<configuration>
     <property name="LOG_DIR" value="${user.home}/BSR/logs"/>
 
     <appender name="mainLog" class="ch.qos.logback.core.FileAppender">
         <file>${user.home}\BSR\logs\main.log</file>
         <append>true</append>
-        <encoder>
-            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+
+        <encoder class="ch.qos.logback.core.encoder.LayoutWrappingEncoder">
+            <layout class="ch.qos.logback.classic.PatternLayout">
+                <pattern>%d{HH:mm:ss.SSS} %-5level [%.-10thread] %50.50logger{36} - %msg%n</pattern>
+                <PresentationHeader>
+                    ----------------------------------------------------------------------------Start----------------------------------------------------------------------------
+                </PresentationHeader>
+                <PresentationFooter>
+                    ----------------------------------------------------------------------------Stop----------------------------------------------------------------------------
+                </PresentationFooter>
+            </layout>
         </encoder>
     </appender>
 
     <appender name="consoleLog" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
-            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+            <pattern>%d{HH:mm:ss.SSS} %-5level [%-10.-10thread] %-60.60logger{36} - %msg%n</pattern>
         </encoder>
     </appender>
 
 
-    <root level="debug">
+    <root>
         <appender-ref ref="consoleLog" level="debug"/>
         <appender-ref ref="mainLog" level="info"/>
     </root>

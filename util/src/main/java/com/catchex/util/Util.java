@@ -1,6 +1,7 @@
 package com.catchex.util;
 
-import com.catchex.logging.Log;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.text.NumberFormat;
 import java.text.ParseException;
@@ -14,6 +15,15 @@ import java.util.StringJoiner;
 
 public class Util
 {
+    private static final Logger logger = LoggerFactory.getLogger( Util.class );
+
+
+    private Util()
+    {
+
+    }
+
+
     public static LocalDate parseDate( Optional<String> date, String format )
         throws DateTimeParseException
     {
@@ -33,7 +43,7 @@ public class Util
             LocalDate parsedDate = LocalDate.MIN;
             try
             {
-                parsedDate = parseDate( Optional.of( date.get() ), format );
+                parsedDate = parseDate( date, format );
             }
             catch( DateTimeParseException e )
             {
@@ -57,7 +67,7 @@ public class Util
             }
             catch( ParseException e )
             {
-                Log.LOGGER.warning( "Cannot parse number:" + number.get() );
+                logger.warn( "Cannot parse number: {}", number.get() );
             }
         }
         return Double.NaN;
@@ -69,7 +79,7 @@ public class Util
     {
         if( lastWordIdx < firstWordIdx )
         {
-            Log.LOGGER.warning( "Given last index is lower than first index" );
+            logger.warn( "Given last index is lower than first index" );
             return "";
         }
         StringJoiner combinedString = new StringJoiner( " " );
@@ -89,15 +99,15 @@ public class Util
         }
         else if( string1.isPresent() && !string2.isPresent() )
         {
-            Log.LOGGER.warning( "Second string is null" );
+            logger.warn( "Second string is null" );
             return string1.get();
         }
         else if( !string1.isPresent() && string2.isPresent() )
         {
-            Log.LOGGER.warning( "First string is null" );
+            logger.warn( "First string is null" );
             return string2.get();
         }
-        Log.LOGGER.warning( "Cannot combine nulls" );
+        logger.warn( "Cannot combine nulls" );
         return "";
     }
 
@@ -111,4 +121,11 @@ public class Util
         }
         return joiner.toString();
     }
+
+
+    public static String getIntervalName( LocalDate date )
+    {
+        return date.format( Constants.intervalTreeItemFormatter );
+    }
+
 }

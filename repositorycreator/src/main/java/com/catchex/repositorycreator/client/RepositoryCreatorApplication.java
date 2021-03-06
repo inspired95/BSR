@@ -1,14 +1,12 @@
 package com.catchex.repositorycreator.client;
 
-import com.catchex.configuration.ConfigurationLoader;
+import com.catchex.core.configuration.ConfigurationLoader;
 import com.catchex.repositorycreator.client.control.RepositoryCreatorDialogController;
 import javafx.application.Application;
 import javafx.stage.Stage;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import static com.catchex.logging.Log.LOGGER;
-import static com.catchex.logging.Log.initLogging;
 
 
 public class RepositoryCreatorApplication
@@ -27,8 +25,7 @@ public class RepositoryCreatorApplication
 
     public static void main( String[] args )
     {
-        logger.info( "Repository Creator starting" );
-        initLogging();
+        logger.info( "Repository Creator application starting" );
         ConfigurationLoader.loadCategoriesConfiguration();
         launch();
     }
@@ -51,8 +48,8 @@ public class RepositoryCreatorApplication
         }
         catch( Exception e )
         {
-            LOGGER.severe( "Error during application staring" );
-            e.printStackTrace();
+            logger
+                .error( "Error during application staring {}", ExceptionUtils.getStackTrace( e ) );
         }
     }
 }

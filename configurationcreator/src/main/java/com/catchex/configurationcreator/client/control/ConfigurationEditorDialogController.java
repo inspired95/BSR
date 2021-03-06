@@ -1,262 +1,131 @@
 package com.catchex.configurationcreator.client.control;
 
-import GuiHelpers.Alerts;
+import com.catchex.configurationcreator.client.control.event.*;
 import com.catchex.configurationcreator.client.view.ConfigurationEditorDialogView;
-import com.catchex.core.configuration.ConfigurationUtil;
 import com.catchex.models.CategoriesConfiguration;
-import com.catchex.models.Category;
-import com.catchex.models.Keyword;
-import javafx.scene.control.ButtonType;
-import javafx.stage.Stage;
-
-import java.io.File;
-import java.util.Optional;
+import dialogs.DialogController;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 public class ConfigurationEditorDialogController
+    extends DialogController
 {
-    private CategoriesConfiguration currentCategoriesConfiguration;
-    private ConfigurationEditorDialogView view;
+    private static final Logger logger =
+        LoggerFactory.getLogger( ConfigurationEditorDialogController.class );
 
-    private Stage stage;
+    private CategoriesConfiguration currentCategoriesConfiguration;
 
 
     public ConfigurationEditorDialogController()
     {
-        this.view = new ConfigurationEditorDialogView( this );
+        super( "ConfigurationEditor" );
+        view = new ConfigurationEditorDialogView( this );
         this.currentCategoriesConfiguration = new CategoriesConfiguration();
-
     }
 
 
-    public void init( Stage stage )
+    @Override
+    public void initSpecificHandlers()
     {
-        this.stage = stage;
-        view.initView( stage );
-        stage.show();
+        loadDefaultConfigurationMenuItemActionEventHandling();
+        exportConfigurationMenuItemActionEventHandling();
+        setCurrentConfigurationAsDefaultMenuItemActionEventHandling();
+        addNewCategoryMenuItemActionEventHandling();
+        removeCategoryMenuItemActionEventHandling();
+        addNewKeywordMenuItemActionEventHandling();
+        importConfigurationMenuItemActionEventHandling();
+        exitMenuItemActionEventHandling();
     }
 
 
-    public CategoriesConfiguration getCategoriesConfiguration()
+    public CategoriesConfiguration getCurrentCategoriesConfiguration()
     {
         return this.currentCategoriesConfiguration;
     }
 
 
-    /*@Deprecated
-    public void loadOldConfiguration()
+    public void setCurrentCategoriesConfiguration( CategoriesConfiguration categoriesConfiguration )
     {
-        currentCategoriesConfiguration
-            .setCategories( Configuration.getCategoriesConfiguration().getCategories() );
-        view.refreshView();
-    }*/
-
-
-    public void loadDefaultConfiguration()
-    {
-        ConfigurationUtil.getDefaultConfiguration().ifPresentOrElse( categoriesConfiguration -> {
-            this.currentCategoriesConfiguration = categoriesConfiguration;
-            view.refreshView();
-        }, () -> Alerts.showWaringDialog( "Load default configuration",
-            "Error during default configuration loading\n" +
-                "Check logs to get to know issue root cause" ) );
+        this.currentCategoriesConfiguration = categoriesConfiguration;
     }
 
 
-    public void setConfigurationAsDefault()
+    public ConfigurationEditorDialogView getView()
     {
-        ConfigurationUtil.setConfigurationAsDefault( currentCategoriesConfiguration );
+        return (ConfigurationEditorDialogView)view;
     }
 
 
-    public void addNewCategory()
+    @Override
+    public void onClose()
     {
-        Optional<String> newCategoryName =
-            Alerts.showAskForStringDialog( "New category", "Enter new category's name", "" );
-        newCategoryName.ifPresent( categoryName -> {
-            Optional<Category> newCategory =
-                currentCategoriesConfiguration.addCategory( categoryName );
-            newCategory.ifPresentOrElse( category -> view.refreshView(), () -> {
-                Alerts.showWaringDialog( "New category",
-                    "Given category already exists in categories configuration" );
-                addNewCategory();
-            } );
-        } );
+        logOnDialogClose();
+        this.view = null;
+        this.currentCategoriesConfiguration = null;
     }
 
 
-    public void renameCategory( Category category )
+    private void loadDefaultConfigurationMenuItemActionEventHandling()
     {
-        Optional<String> newCategoryName = Alerts.showAskForStringDialog( "Category rename",
-            "Enter new " + "name for " + category.getCategoryName(), "" );
-        newCategoryName.ifPresent( categoryName -> {
-            Optional<Category> categoryWithName = findCategoryWithName( categoryName );
-            if( categoryWithName.isEmpty() )
-            {
-                category.setCategoryName( categoryName );
-                view.refreshView();
-            }
-            else
-            {
-                Alerts.showWaringDialog(
-                    "Category rename",
-                    "Given category name already exists in categories configuration. \n Please " +
-                        "enter other name" );
-                renameCategory( category );
-            }
-        } );
+        logger.debug( "Load default configuration menu item handler initialization" );
+        getView().getLoadDefaultConfigurationMenuItem()
+            .setOnAction( event -> new LoadDefaultConfigurationEventHandler( this ).handle() );
     }
 
 
-    public void removeCategory()
+    private void exportConfigurationMenuItemActionEventHandling()
     {
-        if( assertCategoriesSize() )
-            return;
-
-        Optional<String> categoryNameToRemove = Alerts
-            .showChoiceFromListDialog( "Remove category", "Select " + "category to remove",
-                this.currentCategoriesConfiguration.getCategories() );
-        categoryNameToRemove.ifPresent( categoryName -> {
-            Optional<ButtonType> choice = Alerts.showConfirmationDialog( "Remove category",
-                "Category " + categoryName + " will be removed with all keywords. \nDo you " +
-                    "confirm this operation?" );
-            if( choice.isPresent() && choice.get() == ButtonType.OK )
-            {
-                Optional<Category> categoryToRemove = findCategoryWithName( categoryName );
-                categoryToRemove.ifPresent(
-                    categoryV2 -> this.currentCategoriesConfiguration.getCategories()
-                        .remove( categoryV2 ) );
-
-                view.refreshView();
-            }
-        } );
+        logger.debug( "Export configuration menu item handler initialization" );
+        getView().getExportConfigurationMenuItem()
+            .setOnAction( event -> new ExportConfigurationEventHandler( this ).handle() );
     }
 
 
-    public void addNewKeyword()
+    private void setCurrentConfigurationAsDefaultMenuItemActionEventHandling()
     {
-        if( assertCategoriesSize() )
-            return;
-
-        Optional<String> selectedCategoryName = Alerts
-            .showChoiceFromListDialog( "New keyword", "Select category",
-                this.currentCategoriesConfiguration.getCategories() );
-        selectedCategoryName.ifPresent( categoryName -> {
-            Optional<Category> selectedCategory = findCategoryWithName( categoryName );
-            selectedCategory.ifPresentOrElse(
-                category -> {
-                    Optional<String> newKeyword = Alerts
-                        .showAskForStringDialog( "New keyword", "Enter new keyword's name", "" );
-                    newKeyword.ifPresent( keyword -> addNewKeyword( category, keyword ) );
-                }, () -> Alerts
-                    .showWaringDialog( "New keyword", "Category with given name already exists" ) );
-        } );
+        logger.debug( "Set current configuration as default menu item handler initialization" );
+        getView().getSetCurrentConfigurationAsDefaultMenuItem().setOnAction(
+            event -> new SetCurrentConfigurationAsDefaultEventHandler( this ).handle() );
     }
 
 
-    public void renameKeyword( Keyword keyword )
+    private void addNewCategoryMenuItemActionEventHandling()
     {
-        Optional<String> newKeywordName = Alerts
-            .showAskForStringDialog( "Keyword rename", "Enter new keyword name",
-                keyword.getValue() );
-        newKeywordName.ifPresent( newKeyword -> {
-            keyword.setValue( newKeyword );
-            view.refreshView();
-        } );
+        logger.debug( "Add new category menu item handler initialization" );
+        getView().getAddNewCategoryMenuItem()
+            .setOnAction( event -> new AddCategoryEventHandler( this ).handle() );
     }
 
 
-    public void removeKeyword( Category category, Keyword keyword )
+    private void removeCategoryMenuItemActionEventHandling()
     {
-        category.getKeywords().remove( keyword );
-        view.refreshView();
+        logger.debug( "Remove category menu item handler initialization" );
+        getView().getRemoveCategoryMenuItem()
+            .setOnAction( event -> new RemoveCategoryEventHandler( this ).handle() );
     }
 
 
-    public void importConfiguration()
+    private void addNewKeywordMenuItemActionEventHandling()
     {
-        Optional<File> configurationFileToImport =
-            view.showOpenFileChooser( "Select configuration to import" );
-        configurationFileToImport.flatMap(
-            configurationFile -> ConfigurationUtil.getConfiguration( configurationFile.toPath() ) )
-            .ifPresent( categoriesConfiguration -> {
-                this.currentCategoriesConfiguration = categoriesConfiguration;
-                view.refreshView();
-            } );
+        logger.debug( "Add new keyword menu item handler initialization" );
+        getView().getAddNewKeywordMenuItem()
+            .setOnAction( event -> new AddNewKeywordEventHandler( this ).handle() );
     }
 
 
-    public void exportConfiguration()
+    private void importConfigurationMenuItemActionEventHandling()
     {
-        Optional<File> configurationFileToImport =
-            view.showSaveFileChooser( "Select file to export current configuration" );
-        configurationFileToImport.ifPresent( configurationFile -> {
-            ConfigurationUtil.saveConfiguration( this.currentCategoriesConfiguration,
-                configurationFile.toPath() );
-        } );
+        logger.debug( "Import configuration menu item handler initialization" );
+        getView().getImportConfigurationMenuItem()
+            .setOnAction( event -> new ImportConfigurationEventHandler( this ).handle() );
     }
 
 
-    public void exitApplication()
+    private void exitMenuItemActionEventHandling()
     {
-        stage.close();
-    }
-
-
-    private boolean assertCategoriesSize()
-    {
-        if( this.currentCategoriesConfiguration.getCategories().size() == 0 )
-        {
-            Alerts.showWaringDialog( "Operation cannot be performed", "There are no categories" );
-            return true;
-        }
-        return false;
-    }
-
-
-    private void addNewKeyword( Category category, String newKeyword )
-    {
-        if( category != null )
-        {
-            if( !isKeywordAlreadyExists( newKeyword ) )
-            {
-                category.getKeywords().add( new Keyword( newKeyword ) );
-                view.refreshView();
-            }
-            else
-            {
-                Alerts.showWaringDialog( "New keyword",
-                    "Given keyword " + "already exists in categories configuration" );
-            }
-
-        }
-    }
-
-
-    private boolean isKeywordAlreadyExists( String keywordToCheck )
-    {
-        for( Category category : this.currentCategoriesConfiguration.getCategories() )
-        {
-            for( Keyword keyword : category.getKeywords() )
-            {
-                if( keyword.getValue().equals( keywordToCheck ) )
-                    return true;
-            }
-        }
-        return false;
-    }
-
-
-    private Optional<Category> findCategoryWithName( String categoryName )
-    {
-        for( Category category : this.currentCategoriesConfiguration.getCategories() )
-        {
-            if( category.getCategoryName().equals( categoryName.toUpperCase() ) )
-            {
-                return Optional.of( category );
-            }
-        }
-        return Optional.empty();
+        logger.debug( "Exit menu item handler initialization" );
+        getView().getExitMenuItem().setOnAction( event -> new ExitEventHandler( this ).handle() );
     }
 }
 

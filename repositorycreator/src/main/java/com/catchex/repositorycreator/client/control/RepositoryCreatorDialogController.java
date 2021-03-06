@@ -4,7 +4,8 @@ import com.catchex.repositorycreator.client.control.event.*;
 import com.catchex.repositorycreator.client.model.CurrentRepositoryUtil;
 import com.catchex.repositorycreator.client.view.RepositoryCreatorDialogView;
 import dialogs.DialogController;
-import javafx.stage.Stage;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Optional;
 
@@ -12,7 +13,8 @@ import java.util.Optional;
 public class RepositoryCreatorDialogController
     extends DialogController
 {
-
+    private static final Logger logger =
+        LoggerFactory.getLogger( RepositoryCreatorDialogController.class );
 
     private CategoriesConfigurationChangeListener categoriesConfigurationChangeListener;
 
@@ -23,15 +25,14 @@ public class RepositoryCreatorDialogController
         view = new RepositoryCreatorDialogView( this );
     }
 
+
     @Override
-    public void start( Stage stage ) throws Exception
+    public void initSpecificHandlers()
     {
-        super.start( stage );
         initMenuBtnsEventHandler();
         initCurrentRepository();
         this.categoriesConfigurationChangeListener =
             new CategoriesConfigurationChangeListener( this );
-        stage.show();
     }
 
 
@@ -65,16 +66,19 @@ public class RepositoryCreatorDialogController
 
     private void loadBankStatementsMenuItemActionEventHandling()
     {
+        logger.debug( "Load bank statements menu item handler initialization" );
         getView().getLoadBankStatementsMenuItem()
-            .setOnAction( new LoadBankStatementsBtnEventHandler( this )::handle );
+            .setOnAction( event -> new LoadBankStatementsBtnEventHandler( this ).handle() );
     }
 
 
     private void initMenuBtnsEventHandler()
     {
+        logger.debug( "Menu buttons handlers initialization" );
         loadBankStatementsMenuItemActionEventHandling();
         loadRepositoryMenuItemActionEventHandling();
         addBankOperationManuallyMenuItemActionEventHandling();
+
         saveRepositoryMenuItemActionEventHandling();
         generateReportMenuItemActionEventHandling();
         editConfigurationMenuItemActionEventHandling();
@@ -83,7 +87,7 @@ public class RepositoryCreatorDialogController
 
     private void initCurrentRepository()
     {
-
+        logger.debug( "Subscribe on current repository" );
         new CurrentRepositoryUtil()
             .addCurrentRepositoryListener( Optional.of( new CurrentRepositoryListener( this ) ) );
     }
@@ -91,36 +95,41 @@ public class RepositoryCreatorDialogController
 
     private void loadRepositoryMenuItemActionEventHandling()
     {
+        logger.debug( "Load repository menu item handler initialization" );
         getView().getLoadRepositoryMenuItem()
-            .setOnAction( new LoadRepositoryBtnEventHandler( this )::handle );
+            .setOnAction( event -> new LoadRepositoryBtnEventHandler( this ).handle() );
     }
 
 
     private void generateReportMenuItemActionEventHandling()
     {
+        logger.debug( "Generate report menu item handler initialization" );
         getView().getGenerateReportMenuItem()
-            .setOnAction( new GenerateReportBtnEventHandler( this )::handle );
+            .setOnAction( event -> new GenerateReportBtnEventHandler( this ).handle() );
     }
 
 
     private void editConfigurationMenuItemActionEventHandling()
     {
+        logger.debug( "Edit configuration menu item handler initialization" );
         getView().getEditConfigurationMenuItem()
-            .setOnAction( new EditConfigurationBtnEventHandler()::handle );
+            .setOnAction( event -> new EditConfigurationBtnEventHandler( this ).handle() );
     }
 
 
     private void saveRepositoryMenuItemActionEventHandling()
     {
+        logger.debug( "Save repository menu item handler initialization" );
         getView().getSaveRepositoryMenuItem()
-            .setOnAction( new SaveRepositoryBtnEventHandler( this )::handle );
+            .setOnAction( event -> new SaveRepositoryBtnEventHandler( this ).handle() );
     }
 
 
     private void addBankOperationManuallyMenuItemActionEventHandling()
     {
+        logger.debug( "Add bank operation manually menu item handler initialization" );
         getView().getAddBankOperationManuallyMenuItem()
-            .setOnAction( new AddBankOperationManuallyBtnEventHandler()::handle );
+            .setOnAction( event -> new AddBankOperationManuallyBtnEventHandler( this ).handle() );
     }
 
     /*private String getSortedByColumnName()

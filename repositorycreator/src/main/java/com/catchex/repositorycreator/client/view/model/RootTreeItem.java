@@ -20,4 +20,11 @@ public class RootTreeItem
     {
         //left blank intentionally
     }
+
+
+    @Override
+    public String toString()
+    {
+        return "RootTreeItem";
+    }
 }

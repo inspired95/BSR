@@ -5,6 +5,8 @@ import com.catchex.models.Operation;
 import com.catchex.models.Repository;
 import com.catchex.repositorycreator.client.control.CurrentOperationsUtil;
 import com.catchex.repositorycreator.client.model.repository.CurrentRepositoryHolder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.beans.PropertyChangeListener;
 import java.util.Optional;
@@ -12,45 +14,44 @@ import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
-import static com.catchex.logging.Log.LOGGER;
-
 
 public class CurrentRepositoryUtil
 {
-    private CurrentRepositoryHolder currentRepositoryHolder = CurrentRepositoryHolder.getInstance();
+    private static final Logger logger = LoggerFactory.getLogger( CurrentRepositoryUtil.class );
+
+    private final CurrentRepositoryHolder currentRepositoryHolder =
+        CurrentRepositoryHolder.getInstance();
 
 
     public void addCurrentRepositoryListener(
         Optional<PropertyChangeListener> propertyChangeListener )
     {
-        propertyChangeListener.ifPresentOrElse(
-            listener -> currentRepositoryHolder.addListener( listener ),
-            () -> LOGGER.warning( "Cannot add null as listener" ) );
+        propertyChangeListener
+            .ifPresentOrElse( listener -> currentRepositoryHolder.addListener( listener ),
+                () -> logger.warn( "Cannot add null as listener" ) );
     }
 
 
     public void addCurrentOperations( Optional<Set<CurrentOperation>> currentOperations )
     {
-        currentOperations.ifPresentOrElse(
-            this::addCurrentOperations,
-            () -> LOGGER.warning( "Cannot add null set of operations" ) );
+        currentOperations.ifPresentOrElse( this::addCurrentOperations,
+            () -> logger.warn( "Cannot add null set of operations" ) );
     }
 
 
-    public void applyRepository( Optional<Repository> repository )
+    public void applyRepository( Repository repository )
     {
         clearCurrentRepository();
         appendRepositoryToCurrentRepository( repository );
     }
 
 
-    public void appendRepositoryToCurrentRepository( Optional<Repository> repository )
+    public void appendRepositoryToCurrentRepository( Repository repository )
     {
-        repository.ifPresentOrElse( repo -> {
-            Set<CurrentOperation> currentOperations =
-                new CurrentOperationsUtil().mapToCurrentOperations( repo.getOperations() );
-            addCurrentOperations( currentOperations );
-        }, () -> LOGGER.warning( "Cannot load null repository" ) );
+
+        Set<CurrentOperation> currentOperations =
+            new CurrentOperationsUtil().mapToCurrentOperations( repository.getOperations() );
+        addCurrentOperations( currentOperations );
     }
 
 
@@ -74,9 +75,9 @@ public class CurrentRepositoryUtil
         boolean result = currentRepositoryHolder.get().getOperations().add( operation );
         if( !result )
         {
-            LOGGER.info(
-                "Operation cannot be added. Operation: " + operation.toString() + " already " +
-                    "exists in the repository" );
+            logger.info(
+                "Operation cannot be added. Operation: {} already exists in the repository",
+                operation );
         }
         return result;
     }
@@ -90,9 +91,8 @@ public class CurrentRepositoryUtil
             if( result )
                 addedCount.getAndIncrement();
         } );
-        LOGGER.info(
-            addedCount.get() + "/" + operations.size() + " operations have been added to " +
-                "repository" );
+        logger.info( "{}/{} operations have been added to repository", addedCount.get(),
+            operations.size() );
         if( addedCount.get() > 0 )
         {
             currentRepositoryHolder.notifyCurrentRepositorySizeChanged();

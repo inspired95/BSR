@@ -43,7 +43,12 @@ public class Constants
     public static final String CONFIGURATION_PATH =
         Paths.get( System.getProperty( "user.home" ), BSR ).toString();
 
+    public static final String BSR_REPOSITORY_EXTENSION_FILE_CHOOSER = "*.bsrrepository";
+
     public static final String BSR_CONFIGURATION_EXTENSION = ".bsrconfig";
+
+    public static final String BSR_CONFIGURATION_EXTENSION_FILE_CHOOSER =
+        "*" + BSR_CONFIGURATION_EXTENSION;
 
     public static final String DEFAULT_CONFIGURATION_FILE_NAME =
         "Configuration" + BSR_CONFIGURATION_EXTENSION;

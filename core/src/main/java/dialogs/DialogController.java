@@ -2,23 +2,30 @@ package dialogs;
 
 import javafx.application.Application;
 import javafx.stage.Stage;
-
-import static com.catchex.logging.Log.LOGGER;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 public abstract class DialogController
     extends Application
 {
+    private static final Logger logger = LoggerFactory.getLogger( DialogController.class );
+
     private final String DIALOG_NAME;
 
     protected DialogView view;
 
-    protected Stage stage;
-
 
     public DialogController( String dialogName )
     {
+        logger.info( "Dialog {} initialization", dialogName );
         this.DIALOG_NAME = dialogName;
+    }
+
+
+    public DialogView getDialogView()
+    {
+        return view;
     }
 
 
@@ -26,12 +33,17 @@ public abstract class DialogController
     public void start( Stage stage ) throws Exception
     {
         logOnDialogStart();
-        this.stage = stage;
         view.initView( stage );
+        initSpecificHandlers();
+        stage.setOnHiding( actionEvent -> onClose() );
+        view.getStage().show();
     }
 
 
-    public String getDIALOG_NAME()
+    public abstract void initSpecificHandlers();
+
+
+    public String getDialogName()
     {
         return DIALOG_NAME;
     }
@@ -42,18 +54,18 @@ public abstract class DialogController
 
     public void closeDialog()
     {
-        stage.close();
+        onClose();
     }
 
 
     protected void logOnDialogStart()
     {
-        LOGGER.info( DIALOG_NAME + " dialog opening" );
+        logger.info( "{} dialog starting", DIALOG_NAME );
     }
 
 
     protected void logOnDialogClose()
     {
-        LOGGER.info( DIALOG_NAME + " dialog closing" );
+        logger.info( "{} dialog closing", DIALOG_NAME );
     }
 }

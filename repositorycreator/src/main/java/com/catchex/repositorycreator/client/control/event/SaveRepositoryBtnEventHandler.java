@@ -1,72 +1,38 @@
 package com.catchex.repositorycreator.client.control.event;
 
+import GuiHelpers.Alerts;
+import com.catchex.io.writer.ObjectToFileWriter;
 import com.catchex.repositorycreator.client.control.RepositoryCreatorDialogController;
 import com.catchex.repositorycreator.client.model.CurrentRepositoryUtil;
 import dialogs.EventHandler;
-import javafx.event.ActionEvent;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.ObjectOutputStream;
+import java.util.Optional;
 
 
 public class SaveRepositoryBtnEventHandler
-    extends EventHandler<ActionEvent>
+    extends EventHandler<RepositoryCreatorDialogController>
 {
-
-    private RepositoryCreatorDialogController controller;
-
 
     public SaveRepositoryBtnEventHandler( RepositoryCreatorDialogController controller )
     {
-        super( "SaveRepository" );
-        this.controller = controller;
+        super( "SaveRepository", controller );
     }
 
 
     @Override
-    public void handle( ActionEvent event )
+    public void handle()
     {
-        super.handle( event );
-        File fileToFile = getFileToSave();
-        if( fileToFile == null )
-        {
-            actionCancelled();
-            return;
-        }
-        saveRepositoryToFile( fileToFile );
+        super.handle();
+        Stage window = (Stage)getDialogController().getView().getScene().getWindow();
+        FileChooser fileChooser = Alerts.getRepositoryFileChooser( "Save repository" );
+        Optional<File> fileToFile = Alerts.showSaveFileChooser( window, fileChooser );
+        fileToFile.ifPresentOrElse(
+            file -> ObjectToFileWriter.getInstance()
+                .writeToFile( new CurrentRepositoryUtil().getRepositoryFromCurrentRepository(),
+                    file.toPath() ), this::actionCancelled );
     }
 
-
-    private void saveRepositoryToFile( File selectedFile )
-    {
-        if( selectedFile != null )
-        {
-            try (FileOutputStream fileOutputStream = new FileOutputStream( selectedFile );
-                ObjectOutputStream objectOutputStream = new ObjectOutputStream( fileOutputStream ))
-            {
-                objectOutputStream.writeObject(
-                    new CurrentRepositoryUtil().getRepositoryFromCurrentRepository() );
-            }
-            catch( IOException e )
-            {
-                e.printStackTrace();
-                //TODO GUI alert
-            }
-        }
-    }
-
-
-    private File getFileToSave()
-    {
-        Stage window = (Stage)controller.getView().getScene().getWindow();
-        FileChooser repositorySaveFileChooser = new FileChooser();
-        repositorySaveFileChooser.setTitle( "Save repository" );
-        repositorySaveFileChooser.getExtensionFilters().add(
-            new FileChooser.ExtensionFilter( "BSR repository selectedFile", "*.bsrrepository" ) );
-        return repositorySaveFileChooser.showSaveDialog( window );
-    }
 }

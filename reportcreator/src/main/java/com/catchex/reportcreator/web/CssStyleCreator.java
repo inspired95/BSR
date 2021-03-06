@@ -1,7 +1,8 @@
 package com.catchex.reportcreator.web;
 
-import com.catchex.logging.Log;
 import com.catchex.util.Constants;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
@@ -12,6 +13,8 @@ import java.nio.file.StandardCopyOption;
 
 public class CssStyleCreator
 {
+    private static final Logger logger = LoggerFactory.getLogger( CssStyleCreator.class );
+
 
     public static void createCssStyle()
     {
@@ -23,21 +26,21 @@ public class CssStyleCreator
 
             if( !cssStyleFile.exists() )
             {
-                Log.LOGGER.info( "Css style file doesn't exist - creating" );
+                logger.info( "Css style file doesn't exist - creating" );
                 createDirectoryIfNeeded();
 
                 Files.copy( cssStyleStream, cssStyleFile.toPath(),
                     StandardCopyOption.REPLACE_EXISTING );
-                Log.LOGGER.info( "Css style file created" );
+                logger.info( "Css style file created" );
             }
             else
             {
-                Log.LOGGER.info( "Css style file exists" );
+                logger.info( "Css style file exists" );
             }
         }
         catch( IOException e )
         {
-            Log.LOGGER.warning( "Error during an attempt to css style file" );
+            logger.warn( "Error during an attempt to css style file" );
         }
     }
 

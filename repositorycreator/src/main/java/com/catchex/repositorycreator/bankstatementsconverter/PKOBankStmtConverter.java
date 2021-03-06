@@ -1,6 +1,9 @@
 package com.catchex.repositorycreator.bankstatementsconverter;
 
+import com.catchex.io.reader.ConfigurationReader;
 import com.catchex.models.RawOperation;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
@@ -12,7 +15,6 @@ import java.util.regex.MatchResult;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-import static com.catchex.logging.Log.LOGGER;
 import static com.catchex.util.Constants.*;
 import static com.catchex.util.Util.*;
 
@@ -20,6 +22,8 @@ import static com.catchex.util.Util.*;
 public class PKOBankStmtConverter
     implements BankStmtConverter
 {
+    private static final Logger logger = LoggerFactory.getLogger( ConfigurationReader.class );
+
     public static final String BANK_NAME = PKO;
 
     private String myFileName;
@@ -33,7 +37,7 @@ public class PKOBankStmtConverter
     {
         myFileName = name;
         myBankStmtLines = bankStatementPdf.split( "\\r?\\n" );
-        LOGGER.info( "Converting bank statement:" + myFileName + " started" );
+        logger.info( "Converting bank statement:" + myFileName + " started" );
         return convert();
     }
 
@@ -53,7 +57,7 @@ public class PKOBankStmtConverter
                 }
                 else
                 {
-                    LOGGER.warning( "Bank statement entry is not valid: \n" + rawOperationLines );
+                    logger.warn( "Bank statement entry is not valid: \n" + rawOperationLines );
                 }
             }
             else
@@ -62,10 +66,10 @@ public class PKOBankStmtConverter
 
             }
         }
-        LOGGER.info( "Converting bank statement:" + myFileName + " finished" );
+        logger.info( "Converting bank statement:" + myFileName + " finished" );
         if( rawOperations.isEmpty() )
         {
-            LOGGER.info( "File doesn't contain any PKO bank operations entries" );
+            logger.info( "File doesn't contain any PKO bank operations entries" );
         }
         return rawOperations;
     }
@@ -136,7 +140,7 @@ public class PKOBankStmtConverter
         }
         catch( DateTimeParseException e )
         {
-            LOGGER.warning( "Cannot parse date: " + date );
+            logger.warn( "Cannot parse date: " + date );
             return LocalDate.MIN;
         }
     }
@@ -190,7 +194,7 @@ public class PKOBankStmtConverter
             Optional<String> numberToParse = Optional.ofNullable( matches.get( 0 ).group( 0 ) );
             return getNumberBasedOnLocale( numberToParse ).doubleValue();
         }
-        LOGGER.warning( "Amount cannot be read correctly." );
+        logger.warn( "Amount cannot be read correctly." );
         return Double.NaN;
     }
 

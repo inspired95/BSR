@@ -54,4 +54,13 @@ public class OperationTreeItem
             setCategory( (Category)newValue );
         }
     }
+
+
+    @Override
+    public String toString()
+    {
+        return "OperationTreeItem{" + "operation=" + operation + ", date=" + date + ", ID=" + ID +
+            ", type=" + type + ", amount=" + amount + ", desc=" + desc + ", category=" + category +
+            ", fileName=" + fileName + ", bankName=" + bankName + '}';
+    }
 }

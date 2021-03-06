@@ -1,6 +1,7 @@
 package com.catchex.repositorycreator.client.view.model;
 
 import com.catchex.models.CurrentOperation;
+import com.catchex.util.Util;
 import javafx.beans.property.SimpleDoubleProperty;
 
 import java.beans.PropertyChangeEvent;
@@ -28,5 +29,12 @@ public class IntervalTreeItem
     private void overrideDefaultNanValue()
     {
         this.amount = new SimpleDoubleProperty( 0.0 );
+    }
+
+
+    @Override
+    public String toString()
+    {
+        return "IntervalTreeItem{" + "name=" + Util.getIntervalName( date ) + '}';
     }
 }

@@ -1,9 +1,10 @@
 package com.catchex.repositorycreator.client.view.columns;
 
-import com.catchex.logging.Log;
 import com.catchex.repositorycreator.client.control.RepositoryCreatorDialogController;
 import com.catchex.util.Constants;
 import javafx.beans.property.ReadOnlyObjectWrapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.text.NumberFormat;
 import java.text.ParseException;
@@ -13,6 +14,8 @@ import java.util.Locale;
 public class AmountColumn
     extends RepositoryColumn<String>
 {
+    private static final Logger logger = LoggerFactory.getLogger( AmountColumn.class );
+
     private NumberFormat numberFormatter = NumberFormat.getInstance( Locale.getDefault() );
 
 
@@ -45,7 +48,7 @@ public class AmountColumn
         }
         catch( ParseException e )
         {
-            Log.LOGGER.warning( "Cannot amount to double value:" + s );
+            logger.warn( "Cannot amount to double value:" + s );
         }
         return Double.NaN;
     }

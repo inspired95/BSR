@@ -17,7 +17,19 @@
                 <directory>src/main/resources</directory>
             </resource>
         </resources>
+        <plugins>
+            <plugin>
+                <groupId>org.openjfx</groupId>
+                <artifactId>javafx-maven-plugin</artifactId>
+                <version>0.0.5</version>
+                <configuration>
+                    <mainClass>com.catchex.repositorycreator.client.RepositoryCreatorApplication
+                    </mainClass>
+                </configuration>
+            </plugin>
+        </plugins>
     </build>
+
 
     <dependencies>
         <dependency>
@@ -44,14 +56,8 @@
         </dependency>
         <dependency>
             <groupId>com.catchex</groupId>
-            <artifactId>configuration</artifactId>
+            <artifactId>core</artifactId>
             <version>1.0</version>
-        </dependency>
-        <dependency>
-            <groupId>com.catchex</groupId>
-            <artifactId>report</artifactId>
-            <version>1.0</version>
-            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>com.catchex</groupId>
@@ -71,18 +77,17 @@
             <version>1.2.3</version>
             <scope>compile</scope>
         </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>3.11</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>3.11</version>
+        </dependency>
     </dependencies>
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.openjfx</groupId>
-                <artifactId>javafx-maven-plugin</artifactId>
-                <version>0.0.5</version>
-                <configuration>
-                    <mainClass>com.catchex.repositorycreator.client.RepositoryCreatorApplication
-                    </mainClass>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
+
 </project>

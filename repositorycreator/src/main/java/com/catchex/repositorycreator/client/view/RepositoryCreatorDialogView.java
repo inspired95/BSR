@@ -7,12 +7,15 @@ import com.catchex.repositorycreator.client.view.model.AbstractTreeItem;
 import com.catchex.repositorycreator.client.view.model.IntervalTreeItem;
 import com.catchex.repositorycreator.client.view.model.OperationTreeItem;
 import com.catchex.util.Constants;
+import com.catchex.util.Util;
 import dialogs.DialogView;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.time.LocalDate;
 import java.util.Optional;
@@ -21,6 +24,9 @@ import java.util.Optional;
 public class RepositoryCreatorDialogView
     extends DialogView
 {
+    private static final Logger logger =
+        LoggerFactory.getLogger( RepositoryCreatorDialogView.class );
+
     RepositoryCreatorDialogController controller;
     private Scene scene;
     private MenuItem loadBankStatementsMenuItem;
@@ -40,6 +46,7 @@ public class RepositoryCreatorDialogView
 
     public void initView( Stage stage )
     {
+        super.initView( stage );
         //Menu
         loadRepositoryMenuItem = new MenuItem( "Load repository" );
         saveRepositoryMenuItem = new MenuItem( "Save repository" );
@@ -71,13 +78,19 @@ public class RepositoryCreatorDialogView
 
         scene = new Scene( container, 1280, 800 );
         stage.setScene( scene );
+    }
 
-        stage.setOnHiding( actionEvent -> controller.onClose() );
+
+    @Override
+    public void refreshView()
+    {
+        //implement if needed
     }
 
 
     public void applyCurrentRepository()
     {
+        logger.debug( "Current repository applying" );
         getTreeTableView().getRoot().getChildren().clear();
         CurrentRepositoryHolder.getInstance().get().getOperations()
             .forEach( this::applyCurrentOperation );
@@ -86,6 +99,7 @@ public class RepositoryCreatorDialogView
 
     public void applyCurrentOperation( CurrentOperation operation )
     {
+        logger.trace( "CurrentOperation {} applying", operation );
         Optional<TreeItem<AbstractTreeItem>> intervalTreeItemToPutOperation =
             findIntervalTreeItemOfOperation( operation.getOperation().getRawOperation().getDate() );
 
@@ -95,12 +109,14 @@ public class RepositoryCreatorDialogView
 
         if( intervalTreeItemToPutOperation.isPresent() ) //interval for particular operation exists
         {
+            logger.trace( "Interval tree item found" );
             putOperationTreeItem( intervalTreeItemToPutOperation.get(), treeItemToPut );
             increaseIntervalAmount(
                 intervalTreeItemToPutOperation.get(), treeItemToPut.getValue().getAmount() );
         }
         else //there is no interval for particular operation yet
         {
+            logger.trace( "Interval tree item not found" );
             TreeItem<AbstractTreeItem> newIntervalTreeItem =
                 generateNewInterval( treeItemToPut.getValue().getDate(),
                     treeItemToPut.getValue().getAmount() );
@@ -113,6 +129,7 @@ public class RepositoryCreatorDialogView
 
     public void refresh()
     {
+        logger.debug( "TreeTableView refresh" );
         treeTableView.refresh();
     }
 
@@ -168,11 +185,13 @@ public class RepositoryCreatorDialogView
     private Optional<TreeItem<AbstractTreeItem>> findIntervalTreeItemOfOperation(
         LocalDate date )
     {
-        String intervalToFind = getIntervalName( date );
+        String intervalToFind = Util.getIntervalName( date );
+
+        logger.trace( "Interval tree item {} to find", intervalToFind );
 
         return treeTableView.getRoot().getChildren().stream().filter(
-            interval -> getIntervalName( interval.getValue().getDate() ).equals( intervalToFind ) )
-            .findFirst();
+            interval -> Util.getIntervalName( interval.getValue().getDate() )
+                .equals( intervalToFind ) ).findFirst();
     }
 
 
@@ -205,6 +224,7 @@ public class RepositoryCreatorDialogView
     private void putTreeItem(
         TreeItem<AbstractTreeItem> parent, TreeItem<AbstractTreeItem> child )
     {
+        logger.trace( "Putting tree item {} under parent {}", child, parent );
         parent.getChildren().add( child );
     }
 

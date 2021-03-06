@@ -1,16 +1,21 @@
 package com.catchex.repositorycreator.typeresolving;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import javax.swing.*;
 import java.util.Optional;
 import java.util.StringJoiner;
 
-import static com.catchex.logging.Log.LOGGER;
 import static com.catchex.util.Constants.NOT_APPLICABLE;
 import static com.catchex.util.Constants.PKO;
 
 
 public class OperationTypeResolverFactory
 {
+    private static final Logger logger =
+        LoggerFactory.getLogger( OperationTypeResolverFactory.class );
+
     private static OperationTypeResolverFactory instance;
 
 
@@ -53,7 +58,7 @@ public class OperationTypeResolverFactory
 
     private void reportError( String errorMessage )
     {
-        LOGGER.warning( errorMessage );
+        logger.warn( errorMessage );
         JOptionPane.showMessageDialog( null, errorMessage, "Error", JOptionPane.ERROR_MESSAGE );
     }
 }

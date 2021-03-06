@@ -1,37 +1,34 @@
 package com.catchex.io.reader;
 
 import com.catchex.models.CategoriesConfiguration;
+import org.apache.commons.lang3.exception.ExceptionUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.nio.file.Path;
 import java.util.Optional;
 
-import static com.catchex.logging.Log.LOGGER;
-
 
 public class ConfigurationReader
 {
+    private static final Logger logger = LoggerFactory.getLogger( ConfigurationReader.class );
+
+
     public static Optional<CategoriesConfiguration> readConfiguration( Path path )
     {
-        try
+        try (ObjectInputStream oi = new ObjectInputStream( new FileInputStream( path.toString() ) ))
         {
-            FileInputStream fi = new FileInputStream( new File( path.toString() ) );
-            ObjectInputStream oi = new ObjectInputStream( fi );
-
             CategoriesConfiguration categoriesConfiguration =
                 (CategoriesConfiguration)oi.readObject();
 
-            oi.close();
-            fi.close();
             return Optional.of( categoriesConfiguration );
         }
         catch( IOException | ClassNotFoundException e )
         {
-            e.printStackTrace();
-            LOGGER.warning( e.getMessage() );
+            logger.error( ExceptionUtils.getStackTrace( e ) );
         }
         return Optional.empty();
     }

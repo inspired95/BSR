@@ -1,7 +1,10 @@
 package com.catchex.repositorycreator.client.control.dialog;
 
 import com.catchex.util.Util;
+import javafx.scene.control.RadioButton;
 import javafx.scene.control.Toggle;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -12,6 +15,9 @@ import java.util.stream.Stream;
 public class AddBankOperationDialogValidator
     extends Validator<AddBankOperationDialogController>
 {
+    private static final Logger logger =
+        LoggerFactory.getLogger( AddBankOperationDialogValidator.class );
+
     private String errorMessage = "";
 
 
@@ -24,11 +30,16 @@ public class AddBankOperationDialogValidator
         Toggle operationTypeToggle =
             dialog.getView().getOperationTypeRadioGroup().getSelectedToggle();
 
-        List<String> errorMessages = Stream.of(
-            new LocalDateValidator().valid( date ).getErrorMessage(),
-            new AmountValidator().valid( amountString ).getErrorMessage(),
-            new DescriptionValidator().valid( description ).getErrorMessage(),
-            new OperationTypeValidator().valid( operationTypeToggle ).getErrorMessage() )
+        logger.info( "date=[{}], amount[{}], description=[{}], operationTypeToggle=[{}]", date,
+            amountString, description, operationTypeToggle == null ? null :
+                ((RadioButton)dialog.getView().getOperationTypeRadioGroup().getSelectedToggle())
+                    .getText() );
+
+        List<String> errorMessages = Stream
+            .of( new LocalDateValidator().valid( date ).getErrorMessage(),
+                new AmountValidator().valid( amountString ).getErrorMessage(),
+                new DescriptionValidator().valid( description ).getErrorMessage(),
+                new OperationTypeValidator().valid( operationTypeToggle ).getErrorMessage() )
             .filter( errorMessage -> !errorMessage.isEmpty() ).collect( Collectors.toList() );
 
         if( errorMessages.size() > 0 )

@@ -22,8 +22,6 @@ public class AddBankOperationDialogView
 
     private AddBankOperationDialogController controller;
 
-    private Stage stage;
-
 
     public AddBankOperationDialogView( AddBankOperationDialogController controller )
     {
@@ -33,7 +31,7 @@ public class AddBankOperationDialogView
 
     public void initView( Stage stage )
     {
-        this.stage = stage;
+        super.initView( stage );
         Label operationDateLabel = new Label( "Operation date" );
         datePicker = new DatePicker();
 
@@ -80,12 +78,18 @@ public class AddBankOperationDialogView
         container.setPadding( new Insets( 10 ) );
         container.setSpacing( 10 );
 
-        this.stage.setScene( new Scene( container, 400, 270 ) );
-        this.stage.show();
+        stage.setScene( new Scene( container, 400, 270 ) );
 
         stage.setOnHiding( actionEvent -> {
             controller.onClose();
         } );
+    }
+
+
+    @Override
+    public void refreshView()
+    {
+        //implement if needed
     }
 
 

@@ -9,7 +9,6 @@ import com.catchex.repositorycreator.client.control.RepositoryCreatorDialogContr
 import com.catchex.repositorycreator.client.model.CurrentRepositoryUtil;
 import com.catchex.util.Constants;
 import dialogs.EventHandler;
-import javafx.event.ActionEvent;
 import javafx.stage.Stage;
 
 import java.io.File;
@@ -17,24 +16,21 @@ import java.util.*;
 
 
 public class LoadBankStatementsBtnEventHandler
-    extends EventHandler<ActionEvent>
+    extends EventHandler<RepositoryCreatorDialogController>
 {
     private SortedSet<String> banks = new TreeSet<>( Arrays.asList( Constants.supportedBanks ) );
-
-    private RepositoryCreatorDialogController controller;
 
 
     public LoadBankStatementsBtnEventHandler( RepositoryCreatorDialogController controller )
     {
-        super( "LoadBankStatements" );
-        this.controller = controller;
+        super( "LoadBankStatements", controller );
     }
 
 
     @Override
-    public void handle( ActionEvent event )
+    public void handle()
     {
-        super.handle( event );
+        super.handle();
         Optional<String> selectedBankName = getSelectedBank();
 
         selectedBankName.ifPresentOrElse( bankName -> {
@@ -42,7 +38,8 @@ public class LoadBankStatementsBtnEventHandler
 
             if( selectedBankStatementsFiles != null )
             {
-                Set<Operation> operations = new OperationsFromBankStatementsFilesProvider( bankName,
+                Set<Operation> operations = new OperationsFromBankStatementsFilesProvider(
+                    bankName,
                     selectedBankStatementsFiles ).get();
 
                 Set<CurrentOperation> currentRepository =
@@ -67,7 +64,8 @@ public class LoadBankStatementsBtnEventHandler
 
     private List<File> getBankStatementsFileToLoad()
     {
-        return Alerts.showOpenMultipleDialog( (Stage)controller.getView().getScene().getWindow(),
+        return Alerts.showOpenMultipleDialog(
+            (Stage)getDialogController().getView().getScene().getWindow(),
             "Select bank statements" );
     }
 }

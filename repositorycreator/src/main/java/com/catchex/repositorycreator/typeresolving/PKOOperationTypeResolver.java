@@ -1,14 +1,18 @@
 package com.catchex.repositorycreator.typeresolving;
 
 import com.catchex.models.OperationType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import static com.catchex.logging.Log.LOGGER;
 import static com.catchex.util.Constants.*;
 
 
 public class PKOOperationTypeResolver
     implements OperationTypeResolver
 {
+    private static final Logger logger = LoggerFactory.getLogger( PKOOperationTypeResolver.class );
+
+
     @Override
     public OperationType resolve( String typeOperationDesc )
     {
@@ -35,7 +39,7 @@ public class PKOOperationTypeResolver
         {
             return OperationType.REFUND;
         }
-        LOGGER.warning( "Operation type can not be resolved: " + typeOperationDesc );
+        logger.warn( "Operation type can not be resolved: {}", typeOperationDesc );
         return OperationType.NOT_RESOLVED;
     }
 }

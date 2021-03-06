@@ -1,37 +1,46 @@
 package dialogs;
 
-import static com.catchex.logging.Log.LOGGER;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
-public abstract class EventHandler<T>
+public abstract class EventHandler<V>
 {
+    private static final Logger logger = LoggerFactory.getLogger( EventHandler.class );
+
     private final String eventName;
 
+    private final DialogController controller;
 
-    public EventHandler( String eventName )
+
+    protected EventHandler( String eventName, DialogController controller )
     {
         this.eventName = eventName;
+        this.controller = controller;
     }
 
 
-    public void handle( T event )
+    public void handle()
     {
-        actionHandle();
+        logAction();
     }
 
 
-    ;
-
-
-    void actionHandle()
+    void logAction()
     {
-        LOGGER.info( "Action " + eventName + " handling" );
+        logger.info( "Handling action {}", eventName );
     }
 
 
     protected void actionCancelled()
     {
-        LOGGER.info( "Action " + eventName + " has been cancelled" );
+        logger.info( "Cancelling action {}", eventName );
+    }
+
+
+    protected V getDialogController()
+    {
+        return (V)controller;
     }
 
 }

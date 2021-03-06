@@ -20,9 +20,9 @@ public class CurrentOperationsUtil
 
     public Set<CurrentOperation> mapToCurrentOperations( Set<Operation> operations )
     {
-        return operations.stream().map( operation -> new CurrentOperation( operation,
-            OperationCategoryResolver
-                .resolve( operation.getRawOperation().getDesc(), operation.getType() ) ) )
+        return operations.stream().map( operation -> new CurrentOperation(
+            operation, OperationCategoryResolver
+            .resolve( operation.getRawOperation().getDesc(), operation.getType() ) ) )
             .collect( Collectors.toSet() );
     }
 

@@ -1,9 +1,11 @@
 package com.catchex.repositorycreator.operationextention;
 
-import com.catchex.logging.Log;
+import com.catchex.io.reader.ConfigurationReader;
 import com.catchex.models.*;
 import com.catchex.repositorycreator.categoryresolving.OperationCategoryResolver;
 import com.catchex.repositorycreator.typeresolving.OperationTypeResolver;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.HashSet;
 import java.util.List;
@@ -15,6 +17,8 @@ import static java.util.Set.of;
 
 public class RawOperationExtender
 {
+    private static final Logger logger = LoggerFactory.getLogger( ConfigurationReader.class );
+
     private OperationTypeResolver operationTypeResolver;
 
 
@@ -36,7 +40,7 @@ public class RawOperationExtender
             }
             return operations;
         }
-        Log.LOGGER.warning( "Cannot transform null" );
+        logger.warn( "Cannot transform null" );
         return of();
     }
 
@@ -58,12 +62,12 @@ public class RawOperationExtender
             }
             if( category.equals( Category.OTHER_CATEGORY ) || operationType.equals( NOT_RESOLVED ) )
             {
-                Log.LOGGER.warning( "Cannot resolve category of\n" + rawOperation.getDesc() );
+                logger.warn( "Cannot resolve category of\n" + rawOperation.getDesc() );
             }
 
             return new CurrentOperation( new Operation( rawOperation, operationType ), category );
         }
-        Log.LOGGER.warning( "Cannot transform null" );
+        logger.warn( "Cannot transform null" );
         return null;
     }
 }

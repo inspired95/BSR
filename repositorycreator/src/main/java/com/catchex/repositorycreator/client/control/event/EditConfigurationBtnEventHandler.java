@@ -1,32 +1,41 @@
 package com.catchex.repositorycreator.client.control.event;
 
-import com.catchex.configuration.editor.ConfigurationEditorApplication;
+import com.catchex.configurationcreator.client.control.ConfigurationEditorDialogController;
+import com.catchex.repositorycreator.client.control.RepositoryCreatorDialogController;
 import dialogs.EventHandler;
 import javafx.application.Platform;
 import javafx.stage.Stage;
+import org.apache.commons.lang3.exception.ExceptionUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 public class EditConfigurationBtnEventHandler
-    extends EventHandler
+    extends EventHandler<RepositoryCreatorDialogController>
 {
-    public EditConfigurationBtnEventHandler()
+    private static final Logger logger =
+        LoggerFactory.getLogger( EditConfigurationBtnEventHandler.class );
+
+
+    public EditConfigurationBtnEventHandler( RepositoryCreatorDialogController controller )
     {
-        super( "EditConfiguration" );
+        super( "EditConfiguration", controller );
     }
 
 
     @Override
-    public void handle( Object event )
+    public void handle()
     {
-        super.handle( event );
+        super.handle();
         Platform.runLater( () -> {
             try
             {
-                new ConfigurationEditorApplication().start( new Stage() );
+                new ConfigurationEditorDialogController().start( new Stage() );
             }
             catch( Exception e )
             {
-                e.printStackTrace();
+                logger.error( "Error during application staring {}",
+                    ExceptionUtils.getStackTrace( e ) );
             }
         } );
 

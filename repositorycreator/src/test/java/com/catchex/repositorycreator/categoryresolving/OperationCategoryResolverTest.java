@@ -1,7 +1,6 @@
 package com.catchex.repositorycreator.categoryresolving;
 
 import com.catchex.models.*;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -11,7 +10,6 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 import java.util.stream.Stream;
 
-import static com.catchex.logging.Log.initLogging;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 
@@ -19,13 +17,6 @@ class OperationCategoryResolverTest
 {
     private final String categoryName = "CAR";
     private final String categoryKeyword = "fuel";
-
-
-    @BeforeAll
-    public static void setUpBeforeAll()
-    {
-        initLogging();
-    }
 
 
     private static Stream<Arguments> provideDescriptionsTypesAndExpectedResults()

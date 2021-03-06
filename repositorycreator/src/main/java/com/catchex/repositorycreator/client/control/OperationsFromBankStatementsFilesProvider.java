@@ -7,6 +7,8 @@ import com.catchex.repositorycreator.bankstatementsconverter.BankStmtConverter;
 import com.catchex.repositorycreator.bankstatementsconverter.BankStmtConverterFactory;
 import com.catchex.repositorycreator.typeresolving.OperationTypeResolver;
 import com.catchex.repositorycreator.typeresolving.OperationTypeResolverFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.util.*;
@@ -15,6 +17,9 @@ import java.util.*;
 public class OperationsFromBankStatementsFilesProvider
     implements Provider<Operation>
 {
+    private static final Logger logger =
+        LoggerFactory.getLogger( OperationsFromBankStatementsFilesProvider.class );
+
     private final String bankName;
     private final List<File> bankStatementFiles;
 
@@ -37,15 +42,25 @@ public class OperationsFromBankStatementsFilesProvider
         typeResolver.ifPresent( resolver -> {
             for( File bankStatementFile : bankStatementFiles )
             {
-                PDFReader.read( bankStatementFile.getAbsolutePath() ).ifPresent(
-                    bankStatementContent -> createRawOperationsList( bankStatementFile.getName(),
-                        bankStatementContent ).forEach( rawOperation -> operations.add(
-                        new Operation( rawOperation,
-                            resolver.resolve( rawOperation.getType() ) ) ) ) );
+                PDFReader.read( bankStatementFile.getAbsolutePath() ).ifPresentOrElse(
+                    bankStatementContent -> handleBankStatementFileContent( operations, resolver,
+                        bankStatementFile, bankStatementContent ), () -> logger
+                        .warn( "PDF file {} could not be read",
+                            bankStatementFile.getAbsolutePath() ) );
             }
         } );
 
         return operations;
+    }
+
+
+    private void handleBankStatementFileContent(
+        Set<Operation> operations, OperationTypeResolver resolver, File bankStatementFile,
+        String bankStatementContent )
+    {
+        createRawOperationsList( bankStatementFile.getName(), bankStatementContent ).forEach(
+            rawOperation -> operations
+                .add( new Operation( rawOperation, resolver.resolve( rawOperation.getType() ) ) ) );
     }
 
 

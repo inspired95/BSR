@@ -19,7 +19,7 @@ public class Category
 
     public Category( String categoryName, SortedSet<Keyword> keywords )
     {
-        this.categoryName = categoryName.toUpperCase();
+        this.categoryName = categoryName;
         this.keywords = keywords;
     }
 
@@ -92,5 +92,12 @@ public class Category
     protected Object clone()
     {
         return new Category( categoryName, new TreeSet<>( keywords ) );
+    }
+
+
+    @Override
+    public String toString()
+    {
+        return categoryName;
     }
 }

@@ -1,5 +1,9 @@
 package com.catchex.io.writer;
 
+import org.apache.commons.lang3.exception.ExceptionUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -8,6 +12,7 @@ import java.nio.file.Path;
 public class ReportWriter
     implements IWriter<String>
 {
+    private static final Logger logger = LoggerFactory.getLogger( ReportWriter.class );
 
     private static ReportWriter instance;
 
@@ -37,7 +42,7 @@ public class ReportWriter
         }
         catch( IOException e )
         {
-            e.printStackTrace();
+            logger.error( ExceptionUtils.getStackTrace( e ) );
             return false;
         }
     }

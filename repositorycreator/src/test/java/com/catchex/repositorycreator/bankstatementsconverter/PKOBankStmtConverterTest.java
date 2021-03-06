@@ -11,7 +11,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-import static com.catchex.logging.Log.initLogging;
 import static com.catchex.util.Constants.*;
 import static com.catchex.util.Util.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -36,7 +35,6 @@ public class PKOBankStmtConverterTest
     @BeforeAll
     public static void setupSuite()
     {
-        initLogging();
         bankStmtConverter = new BankStmtConverterFactory().match( PKO ).get();
     }
 

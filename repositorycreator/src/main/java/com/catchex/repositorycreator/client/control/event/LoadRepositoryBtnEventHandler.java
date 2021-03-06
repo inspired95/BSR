@@ -1,73 +1,55 @@
 package com.catchex.repositorycreator.client.control.event;
 
+import com.catchex.io.reader.RepositoryReader;
 import com.catchex.models.Repository;
 import com.catchex.repositorycreator.client.control.RepositoryCreatorDialogController;
 import com.catchex.repositorycreator.client.model.CurrentRepositoryUtil;
 import dialogs.EventHandler;
-import javafx.event.ActionEvent;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
 import java.util.Optional;
 
 
 public class LoadRepositoryBtnEventHandler
-    extends EventHandler<ActionEvent>
+    extends EventHandler<RepositoryCreatorDialogController>
 {
-
-    private RepositoryCreatorDialogController controller;
+    private static final Logger logger =
+        LoggerFactory.getLogger( LoadRepositoryBtnEventHandler.class );
 
 
     public LoadRepositoryBtnEventHandler( RepositoryCreatorDialogController controller )
     {
-        super( "LoadRepository" );
-        this.controller = controller;
+        super( "LoadRepository", controller );
     }
 
 
     @Override
-    public void handle( ActionEvent event )
+    public void handle()
     {
-        super.handle( event );
+        super.handle();
         File selectedRepository = getFileToLoad();
         if( selectedRepository == null )
         {
             actionCancelled();
             return;
         }
-        loadRepositoryFromFile( selectedRepository );
-    }
+        Optional<Repository> loadedRepository =
+            RepositoryReader.loadRepository( selectedRepository );
+        loadedRepository.ifPresentOrElse(
+            repository -> new CurrentRepositoryUtil().applyRepository( repository ), () -> logger
+                .error( "Error while loading repository from file {}",
+                    selectedRepository.getName() ) );
 
-
-    private void loadRepositoryFromFile( File selectedRepository )
-    {
-        if( selectedRepository != null )
-        {
-            Repository loadedRepository = null;
-            try (ObjectInputStream oi = new ObjectInputStream(
-                new FileInputStream( selectedRepository ) ))
-            {
-                loadedRepository = (Repository)oi.readObject();
-            }
-            catch( IOException | ClassNotFoundException exp )
-            {
-                exp.printStackTrace();
-            }
-            if( loadedRepository != null )
-            {
-                new CurrentRepositoryUtil().applyRepository( Optional.of( loadedRepository ) );
-            }
-        }
     }
 
 
     private File getFileToLoad()
     {
-        Stage window = (Stage)controller.getView().getScene().getWindow();
+        Stage window = getDialogController().getDialogView().getStage();
         FileChooser repositoryToLoadFileChooser = new FileChooser();
         repositoryToLoadFileChooser.setTitle( "Select repository" );
         repositoryToLoadFileChooser.getExtensionFilters()

@@ -2,11 +2,16 @@ package com.catchex.repositorycreator.client.control.dialog;
 
 import dialogs.DialogController;
 import javafx.stage.Stage;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 public class AddBankOperationDialogController
     extends DialogController
 {
+    private static final Logger logger =
+        LoggerFactory.getLogger( AddBankOperationDialogController.class );
+
 
     public AddBankOperationDialogController()
     {
@@ -19,10 +24,13 @@ public class AddBankOperationDialogController
     public void start( Stage stage ) throws Exception
     {
         super.start( stage );
+    }
+
+
+    @Override
+    public void initSpecificHandlers()
+    {
         addOperationButtonActionEventHandling();
-        stage.setOnHiding( actionEvent -> {
-            logOnDialogClose();
-        } );
     }
 
 
@@ -31,13 +39,6 @@ public class AddBankOperationDialogController
     {
         logOnDialogClose();
         view = null;
-        stage = null;
-    }
-
-
-    public void closeDialog()
-    {
-        stage.close();
     }
 
 
@@ -50,6 +51,6 @@ public class AddBankOperationDialogController
     private void addOperationButtonActionEventHandling()
     {
         getView().getAddOperationBtn()
-            .setOnAction( new AddBankOperationBtnEventHandler( this )::handle );
+            .setOnAction( event -> new AddBankOperationBtnEventHandler( this ).handle() );
     }
 }

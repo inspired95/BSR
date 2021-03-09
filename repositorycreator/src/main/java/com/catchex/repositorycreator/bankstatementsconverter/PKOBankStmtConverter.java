@@ -37,7 +37,7 @@ public class PKOBankStmtConverter
     {
         myFileName = name;
         myBankStmtLines = bankStatementPdf.split( "\\r?\\n" );
-        logger.info( "Converting bank statement:" + myFileName + " started" );
+        logger.info( "Converting bank statement: {} started", myFileName );
         return convert();
     }
 
@@ -57,7 +57,7 @@ public class PKOBankStmtConverter
                 }
                 else
                 {
-                    logger.warn( "Bank statement entry is not valid: \n" + rawOperationLines );
+                    logger.warn( "Bank statement entry is not valid: \n{}", rawOperationLines );
                 }
             }
             else
@@ -66,7 +66,7 @@ public class PKOBankStmtConverter
 
             }
         }
-        logger.info( "Converting bank statement:" + myFileName + " finished" );
+        logger.info( "Converting bank statement: {} finished", myFileName );
         if( rawOperations.isEmpty() )
         {
             logger.info( "File doesn't contain any PKO bank operations entries" );
@@ -140,7 +140,7 @@ public class PKOBankStmtConverter
         }
         catch( DateTimeParseException e )
         {
-            logger.warn( "Cannot parse date: " + date );
+            logger.warn( "Cannot parse date: {}", date );
             return LocalDate.MIN;
         }
     }

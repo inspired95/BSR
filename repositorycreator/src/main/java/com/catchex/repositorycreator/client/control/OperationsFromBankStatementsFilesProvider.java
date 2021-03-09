@@ -7,6 +7,7 @@ import com.catchex.repositorycreator.bankstatementsconverter.BankStmtConverter;
 import com.catchex.repositorycreator.bankstatementsconverter.BankStmtConverterFactory;
 import com.catchex.repositorycreator.typeresolving.OperationTypeResolver;
 import com.catchex.repositorycreator.typeresolving.OperationTypeResolverFactory;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -23,7 +24,7 @@ public class OperationsFromBankStatementsFilesProvider
     private final String bankName;
     private final List<File> bankStatementFiles;
 
-    private Optional<OperationTypeResolver> typeResolver;
+    private final Optional<OperationTypeResolver> typeResolver;
 
 
     public OperationsFromBankStatementsFilesProvider(
@@ -38,18 +39,36 @@ public class OperationsFromBankStatementsFilesProvider
     @Override
     public Set<Operation> get()
     {
-        Set<Operation> operations = new HashSet<>();
+        Set<Operation> operations = Collections.synchronizedSet( new HashSet<>() );
+        List<Thread> readingThreads = new ArrayList<>();
         typeResolver.ifPresent( resolver -> {
             for( File bankStatementFile : bankStatementFiles )
             {
-                PDFReader.read( bankStatementFile.getAbsolutePath() ).ifPresentOrElse(
-                    bankStatementContent -> handleBankStatementFileContent( operations, resolver,
-                        bankStatementFile, bankStatementContent ), () -> logger
-                        .warn( "PDF file {} could not be read",
-                            bankStatementFile.getAbsolutePath() ) );
+                Thread thread = new Thread(
+                    () -> PDFReader.read( bankStatementFile.getAbsolutePath() ).ifPresentOrElse(
+                        bankStatementContent -> handleBankStatementFileContent( operations,
+                            resolver, bankStatementFile, bankStatementContent ), () -> logger
+                            .warn( "PDF file {} could not be read",
+                                bankStatementFile.getAbsolutePath() ) ),
+                    bankStatementFile.getName() );
+                thread.start();
+                readingThreads.add( thread );
             }
         } );
 
+        for( Thread thread : readingThreads )
+        {
+            try
+            {
+                thread.join();
+            }
+            catch( InterruptedException e )
+            {
+                logger.error( "Error during application staring {}",
+                    ExceptionUtils.getStackTrace( e ) );
+                Thread.currentThread().interrupt();
+            }
+        }
         return operations;
     }
 

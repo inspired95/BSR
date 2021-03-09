@@ -2,6 +2,7 @@ package com.catchex.repositorycreator.client;
 
 import com.catchex.core.configuration.ConfigurationLoader;
 import com.catchex.repositorycreator.client.control.RepositoryCreatorDialogController;
+import com.catchex.util.Util;
 import javafx.application.Application;
 import javafx.stage.Stage;
 import org.apache.commons.lang3.exception.ExceptionUtils;
@@ -26,8 +27,15 @@ public class RepositoryCreatorApplication
     public static void main( String[] args )
     {
         logger.info( "Repository Creator application starting" );
-        ConfigurationLoader.loadCategoriesConfiguration();
-        launch();
+        if( Util.createDirectoryIfNeeded() )
+        {
+            ConfigurationLoader.loadCategoriesConfiguration();
+            launch();
+        }
+        else
+        {
+            logger.error( "BSR configuration directory cannot be created" );
+        }
     }
 
 

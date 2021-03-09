@@ -1,8 +1,10 @@
 package com.catchex.util;
 
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.File;
 import java.text.NumberFormat;
 import java.text.ParseException;
 import java.time.LocalDate;
@@ -11,6 +13,8 @@ import java.time.format.DateTimeParseException;
 import java.util.Collection;
 import java.util.Optional;
 import java.util.StringJoiner;
+
+import static com.catchex.util.Constants.CONFIGURATION_PATH;
 
 
 public class Util
@@ -126,6 +130,27 @@ public class Util
     public static String getIntervalName( LocalDate date )
     {
         return date.format( Constants.intervalTreeItemFormatter );
+    }
+
+
+    public static boolean createDirectoryIfNeeded()
+    {
+        File bsrConfigurationDirectory = new File( CONFIGURATION_PATH );
+        if( !bsrConfigurationDirectory.exists() )
+        {
+            try
+            {
+                return bsrConfigurationDirectory.mkdir();
+            }
+            catch( SecurityException e )
+            {
+                logger.error(
+                    "Error during creating BSR configuration directory {}",
+                    ExceptionUtils.getStackTrace( e ) );
+            }
+
+        }
+        return true;
     }
 
 }

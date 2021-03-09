@@ -23,6 +23,7 @@ public class PDFReader
 
     public static Optional<String> read( String path )
     {
+        logger.error( "Thread {}", Thread.currentThread().getName() );
         String pdfContent = null;
 
         PDFTextStripper stripper = null;

@@ -1,9 +1,10 @@
 package com.catchex.configurationcreator.client.control.event;
 
-import GuiHelpers.Alerts;
 import com.catchex.configurationcreator.client.control.ConfigurationEditorDialogController;
 import com.catchex.core.configuration.ConfigurationUtil;
 import dialogs.EventHandler;
+import guihelpers.Alerts;
+import guihelpers.FileChoosers;
 import javafx.stage.FileChooser;
 
 import java.io.File;
@@ -24,8 +25,8 @@ public class ExportConfigurationEventHandler
     public void handle()
     {
         super.handle();
-        FileChooser fileChooser =
-            Alerts.getConfigurationFileChooser( "Select file to export current configuration" );
+        FileChooser fileChooser = FileChoosers
+            .getConfigurationFileChooser( "Select file to export current " + "configuration" );
         Optional<File> configurationFileToImport =
             Alerts.showSaveFileChooser( getDialogController().getView().getStage(), fileChooser );
         configurationFileToImport

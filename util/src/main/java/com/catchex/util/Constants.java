@@ -10,14 +10,23 @@ import static java.util.Arrays.asList;
 
 public class Constants
 {
+    public static final String PDF_EXTENSION_LABEL = "Bank statements";
+
     public static final String BSR = "BSR";
     public static final String APP_TITLE = "Bank Statement Reader";
     public static final String APP_CONFIGURATION_EDITOR_TITLE =
         APP_TITLE + " - Configuration " + "Editor";
     public static final String SELECT_BANK_TXT = "Select bank";
     public static final String SELECT_BANK_STATEMENT_TXT = "Select bank statement";
+    public static final String PDF_EXTENSION = "*.pdf";
+    public static final String[] BANK_STATEMENT_EXTENSIONS = { PDF_EXTENSION };
+    public static final List<String> BANK_STMT_ALLOWED_EXTENSIONS = asList( ".pdf" );
 
-    public static final List BANK_STMT_ALLOWED_EXTENSIONS = asList( ".pdf" );
+
+    private Constants()
+    {
+    }
+
 
     public static final String TRANSFER_PL = "PRZELEW";
     public static final String TRANSFER_TYPE_INCOME_SHORT_PL = "PRZYCH";

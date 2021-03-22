@@ -48,7 +48,7 @@ public class AmountColumn
         }
         catch( ParseException e )
         {
-            logger.warn( "Cannot amount to double value:" + s );
+            logger.warn( "Cannot amount to double value: {}", s );
         }
         return Double.NaN;
     }

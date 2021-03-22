@@ -1,14 +1,10 @@
 package com.catchex.repositorycreator.client.control.event;
 
-import GuiHelpers.Alerts;
-import com.catchex.models.CurrentOperation;
-import com.catchex.models.Operation;
-import com.catchex.repositorycreator.client.control.CurrentOperationsUtil;
-import com.catchex.repositorycreator.client.control.OperationsFromBankStatementsFilesProvider;
 import com.catchex.repositorycreator.client.control.RepositoryCreatorDialogController;
-import com.catchex.repositorycreator.client.model.CurrentRepositoryUtil;
 import com.catchex.util.Constants;
 import dialogs.EventHandler;
+import guihelpers.Alerts;
+import guihelpers.FileChoosers;
 import javafx.stage.Stage;
 
 import java.io.File;
@@ -35,22 +31,17 @@ public class LoadBankStatementsBtnEventHandler
 
         selectedBankName.ifPresentOrElse( bankName -> {
             List<File> selectedBankStatementsFiles = getBankStatementsFileToLoad();
-
             if( selectedBankStatementsFiles != null )
             {
-                Set<Operation> operations = new OperationsFromBankStatementsFilesProvider(
-                    bankName,
-                    selectedBankStatementsFiles ).get();
-
-                Set<CurrentOperation> currentRepository =
-                    new CurrentOperationsUtil().mapToCurrentOperations( operations );
-                new CurrentRepositoryUtil()
-                    .addCurrentOperations( Optional.of( currentRepository ) );
+                BankStatementReadingTask bankStatementReadingTask =
+                    new BankStatementReadingTask( bankName, selectedBankStatementsFiles );
+                new Thread( bankStatementReadingTask ).start();
             }
             else
             {
                 actionCancelled();
             }
+
         }, this::actionCancelled );
     }
 
@@ -66,6 +57,7 @@ public class LoadBankStatementsBtnEventHandler
     {
         return Alerts.showOpenMultipleDialog(
             (Stage)getDialogController().getView().getScene().getWindow(),
-            "Select bank statements" );
+            FileChoosers.getBankStatementsFileChooser( "Select bank statements" ) );
     }
+
 }

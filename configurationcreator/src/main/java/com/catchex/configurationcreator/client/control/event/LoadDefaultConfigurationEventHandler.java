@@ -1,9 +1,9 @@
 package com.catchex.configurationcreator.client.control.event;
 
-import GuiHelpers.Alerts;
 import com.catchex.configurationcreator.client.control.ConfigurationEditorDialogController;
 import com.catchex.core.configuration.ConfigurationUtil;
 import dialogs.EventHandler;
+import guihelpers.Alerts;
 
 
 public class LoadDefaultConfigurationEventHandler

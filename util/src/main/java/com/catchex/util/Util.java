@@ -101,12 +101,12 @@ public class Util
         {
             return new StringJoiner( " " ).add( string1.get() ).add( string2.get() ).toString();
         }
-        else if( string1.isPresent() && !string2.isPresent() )
+        else if( string1.isPresent() )
         {
             logger.warn( "Second string is null" );
             return string1.get();
         }
-        else if( !string1.isPresent() && string2.isPresent() )
+        else if( string2.isPresent() )
         {
             logger.warn( "First string is null" );
             return string2.get();

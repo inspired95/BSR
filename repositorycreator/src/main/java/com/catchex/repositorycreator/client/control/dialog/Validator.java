@@ -11,5 +11,5 @@ public abstract class Validator<T>
     }
 
 
-    abstract Validator valid( T object );
+    abstract Validator<T> valid( T object );
 }

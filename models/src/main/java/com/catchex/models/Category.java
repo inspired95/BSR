@@ -11,8 +11,9 @@ public class Category
 {
     private static final long serialVersionUID = -7588980448693010398L;
 
-    public static Category OTHER_CATEGORY = new Category( "OTHER", new TreeSet<>() );
-    public static Category CASH_WITHDRAWAL = new Category( "CASH WITHDRAWAL", new TreeSet<>() );
+    public static final Category OTHER_CATEGORY = new Category( "OTHER", new TreeSet<>() );
+    public static final Category CASH_WITHDRAWAL =
+        new Category( "CASH WITHDRAWAL", new TreeSet<>() );
     private String categoryName;
     private SortedSet<Keyword> keywords;
 

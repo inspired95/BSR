@@ -7,7 +7,6 @@ import com.catchex.repositorycreator.bankstatementsconverter.BankStmtConverter;
 import com.catchex.repositorycreator.bankstatementsconverter.BankStmtConverterFactory;
 import com.catchex.repositorycreator.typeresolving.OperationTypeResolver;
 import com.catchex.repositorycreator.typeresolving.OperationTypeResolverFactory;
-import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -22,16 +21,16 @@ public class OperationsFromBankStatementsFilesProvider
         LoggerFactory.getLogger( OperationsFromBankStatementsFilesProvider.class );
 
     private final String bankName;
-    private final List<File> bankStatementFiles;
+    private final File bankStatementFile;
 
-    private final Optional<OperationTypeResolver> typeResolver;
+    private final OperationTypeResolver typeResolver;
 
 
     public OperationsFromBankStatementsFilesProvider(
-        String bankName, List<File> bankStatementsFiles )
+        String bankName, File bankStatementsFile )
     {
         this.bankName = bankName;
-        this.bankStatementFiles = bankStatementsFiles;
+        this.bankStatementFile = bankStatementsFile;
         typeResolver = OperationTypeResolverFactory.getInstance().match( bankName );
     }
 
@@ -39,47 +38,22 @@ public class OperationsFromBankStatementsFilesProvider
     @Override
     public Set<Operation> get()
     {
-        Set<Operation> operations = Collections.synchronizedSet( new HashSet<>() );
-        List<Thread> readingThreads = new ArrayList<>();
-        typeResolver.ifPresent( resolver -> {
-            for( File bankStatementFile : bankStatementFiles )
-            {
-                Thread thread = new Thread(
-                    () -> PDFReader.read( bankStatementFile.getAbsolutePath() ).ifPresentOrElse(
-                        bankStatementContent -> handleBankStatementFileContent( operations,
-                            resolver, bankStatementFile, bankStatementContent ), () -> logger
-                            .warn( "PDF file {} could not be read",
-                                bankStatementFile.getAbsolutePath() ) ),
-                    bankStatementFile.getName() );
-                thread.start();
-                readingThreads.add( thread );
-            }
-        } );
-
-        for( Thread thread : readingThreads )
-        {
-            try
-            {
-                thread.join();
-            }
-            catch( InterruptedException e )
-            {
-                logger.error( "Error during application staring {}",
-                    ExceptionUtils.getStackTrace( e ) );
-                Thread.currentThread().interrupt();
-            }
-        }
+        Set<Operation> operations = new HashSet<>();
+        PDFReader.read( bankStatementFile.getAbsolutePath() ).ifPresentOrElse(
+            bankStatementContent -> handleBankStatementFileContent( operations, bankStatementFile,
+                bankStatementContent ), () -> logger
+                .warn( "File {} could not be read", bankStatementFile.getAbsolutePath() ) );
+        logger.info( "size: {}", operations.size() );
         return operations;
     }
 
 
     private void handleBankStatementFileContent(
-        Set<Operation> operations, OperationTypeResolver resolver, File bankStatementFile,
-        String bankStatementContent )
+        Set<Operation> operations, File bankStatementFile, String bankStatementContent )
     {
         createRawOperationsList( bankStatementFile.getName(), bankStatementContent ).forEach(
-            rawOperation -> operations
-                .add( new Operation( rawOperation, resolver.resolve( rawOperation.getType() ) ) ) );
+            rawOperation -> operations.add(
+                new Operation( rawOperation, typeResolver.resolve( rawOperation.getType() ) ) ) );
     }
 
 
@@ -103,5 +77,4 @@ public class OperationsFromBankStatementsFilesProvider
     {
         return BankStmtConverterFactory.match( bankChoiceDialog );
     }
-
 }

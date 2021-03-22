@@ -1,10 +1,11 @@
 package com.catchex.repositorycreator.client.control.event;
 
-import GuiHelpers.Alerts;
 import com.catchex.io.writer.ObjectToFileWriter;
 import com.catchex.repositorycreator.client.control.RepositoryCreatorDialogController;
 import com.catchex.repositorycreator.client.model.CurrentRepositoryUtil;
 import dialogs.EventHandler;
+import guihelpers.Alerts;
+import guihelpers.FileChoosers;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
@@ -27,7 +28,7 @@ public class SaveRepositoryBtnEventHandler
     {
         super.handle();
         Stage window = (Stage)getDialogController().getView().getScene().getWindow();
-        FileChooser fileChooser = Alerts.getRepositoryFileChooser( "Save repository" );
+        FileChooser fileChooser = FileChoosers.getRepositoryFileChooser( "Save repository" );
         Optional<File> fileToFile = Alerts.showSaveFileChooser( window, fileChooser );
         fileToFile.ifPresentOrElse(
             file -> ObjectToFileWriter.getInstance()

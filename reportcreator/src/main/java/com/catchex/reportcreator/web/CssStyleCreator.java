@@ -16,6 +16,11 @@ public class CssStyleCreator
     private static final Logger logger = LoggerFactory.getLogger( CssStyleCreator.class );
 
 
+    private CssStyleCreator()
+    {
+    }
+
+
     public static void createCssStyle()
     {
         try (InputStream cssStyleStream = CssStyleCreator.class

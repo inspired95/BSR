@@ -13,6 +13,11 @@ public class ConfigurationLoader
     private static final Logger logger = LoggerFactory.getLogger( ConfigurationLoader.class );
 
 
+    private ConfigurationLoader()
+    {
+    }
+
+
     public static void loadCategoriesConfiguration()
     {
         Optional<CategoriesConfiguration> defaultConfiguration =
@@ -20,9 +25,7 @@ public class ConfigurationLoader
         defaultConfiguration.ifPresentOrElse( categoriesConfiguration -> {
             Configuration.getInstance().setCategoriesConfiguration( categoriesConfiguration );
             logger.info( "Default configuration loaded" );
-        }, () -> {
-            logger.info( "Cannot load default configuration" );
-        } );
+        }, () -> logger.info( "Cannot load default configuration" ) );
     }
 
 }

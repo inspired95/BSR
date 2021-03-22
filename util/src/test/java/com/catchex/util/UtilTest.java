@@ -11,10 +11,10 @@ import static com.catchex.util.Util.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 
-public class UtilTest
+class UtilTest
 {
     @Test
-    public void should_Parse_Corretly_When_Date_In_Format_Given()
+    void should_Parse_Corretly_When_Date_In_Format_Given()
     {
         //GIVEN
         String dateToParse = "01.01.2001";
@@ -29,7 +29,7 @@ public class UtilTest
 
 
     @Test
-    public void should_Return_LocalDate_MIN_When_Wrong_Date_Given()
+    void should_Return_LocalDate_MIN_When_Wrong_Date_Given()
     {
         //GIVEN
         String dateToParse = "wr/on/gDate";
@@ -43,7 +43,7 @@ public class UtilTest
 
 
     @Test
-    public void should_Return_LocalDate_MIN_When_Null_Given()
+    void should_Return_LocalDate_MIN_When_Null_Given()
     {
         //GIVEN
         String format = "dd.MM.yyyy";
@@ -57,7 +57,7 @@ public class UtilTest
 
 
     @Test
-    public void should_Return_False_When_Null_Given()
+    void should_Return_False_When_Null_Given()
     {
         //GIVEN
         String format = "dd.MM.yyyy";
@@ -71,7 +71,7 @@ public class UtilTest
 
 
     @Test
-    public void should_Return_False_When_Wrong_Date_Given()
+    void should_Return_False_When_Wrong_Date_Given()
     {
         //GIVEN
         String dateToParse = "wr/on/gDate";
@@ -86,7 +86,7 @@ public class UtilTest
 
 
     @Test
-    public void should_Return_True_When_Date_In_Format_Given_Given()
+    void should_Return_True_When_Date_In_Format_Given_Given()
     {
         //GIVEN
         String dateToParse = "01.01.2001";
@@ -101,7 +101,7 @@ public class UtilTest
 
 
     @Test
-    public void should_Return_NaN_When_Wrong_Number_Given()
+    void should_Return_NaN_When_Wrong_Number_Given()
     {
         //GIVEN
         String numberToParse = "O.SD";
@@ -115,7 +115,7 @@ public class UtilTest
 
 
     @Test
-    public void should_Combine_String_When_Correct_Parameters_Given()
+    void should_Combine_String_When_Correct_Parameters_Given()
     {
         //GIVEN
         String[] strings = { "Ala", "ma", "kota", "a", "ja", "mam", "psa" };
@@ -129,7 +129,7 @@ public class UtilTest
 
 
     @Test
-    public void should_Combine_When_Strings_Given()
+    void should_Combine_When_Strings_Given()
     {
         //GIVEN
         String string1 = "Ala";
@@ -144,7 +144,7 @@ public class UtilTest
 
 
     @Test
-    public void should_Return_String1_When_Null_As_String2_Given()
+    void should_Return_String1_When_Null_As_String2_Given()
     {
         //GIVEN
         String string1 = "Ala";
@@ -158,7 +158,7 @@ public class UtilTest
 
 
     @Test
-    public void should_Return_String2_When_Null_As_String1_Given()
+    void should_Return_String2_When_Null_As_String1_Given()
     {
         //GIVEN
         String string2 = "ma kota";
@@ -172,7 +172,7 @@ public class UtilTest
 
 
     @Test
-    public void should_Return_Empty_String_When_Nulls_As_Strings_Given()
+    void should_Return_Empty_String_When_Nulls_As_Strings_Given()
     {
         //WHEN
         String combinedString = combineString( Optional.empty(), Optional.empty() );

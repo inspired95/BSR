@@ -10,12 +10,12 @@ import java.util.stream.Stream;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 
-public class PKOOperationTypeResolverTest
+class PKOOperationTypeResolverTest
 {
 
     @ParameterizedTest
     @MethodSource( "correctOperationIncomeTransferDescriptions" )
-    public void testCorrectOperationIncomeTransferDescription( String operationIncomeDescription )
+    void testCorrectOperationIncomeTransferDescription( String operationIncomeDescription )
     {
         //Given
         PKOOperationTypeResolver operationTypeResolver = new PKOOperationTypeResolver();
@@ -39,7 +39,7 @@ public class PKOOperationTypeResolverTest
 
     @ParameterizedTest
     @MethodSource( "correctOperationOutgoingTransferDescriptions" )
-    public void testCorrectOperationOutgoingTransferDescription( String operationIncomeDescription )
+    void testCorrectOperationOutgoingTransferDescription( String operationIncomeDescription )
     {
         //Given
         PKOOperationTypeResolver operationTypeResolver = new PKOOperationTypeResolver();
@@ -61,7 +61,7 @@ public class PKOOperationTypeResolverTest
 
     @ParameterizedTest
     @MethodSource( "correctOperationDebitCardPaymentDescriptions" )
-    public void testCorrectOperationDebitCardPaymentDescription( String operationIncomeDescription )
+    void testCorrectOperationDebitCardPaymentDescription( String operationIncomeDescription )
     {
         //Given
         PKOOperationTypeResolver operationTypeResolver = new PKOOperationTypeResolver();
@@ -83,7 +83,7 @@ public class PKOOperationTypeResolverTest
 
     @ParameterizedTest
     @MethodSource( "correctOperationMobileCodePaymentDescriptions" )
-    public void testCorrectOperationMobileCodePaymentDescription(
+    void testCorrectOperationMobileCodePaymentDescription(
         String operationIncomeDescription )
     {
         //Given
@@ -106,7 +106,7 @@ public class PKOOperationTypeResolverTest
 
     @ParameterizedTest
     @MethodSource( "notCorrectOperationDescriptions" )
-    public void testNotCorrectOperationDescription( String operationIncomeDescription )
+    void testNotCorrectOperationDescription( String operationIncomeDescription )
     {
         //Given
         PKOOperationTypeResolver operationTypeResolver = new PKOOperationTypeResolver();

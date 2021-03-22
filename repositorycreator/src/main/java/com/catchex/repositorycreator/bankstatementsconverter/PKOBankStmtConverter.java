@@ -1,6 +1,5 @@
 package com.catchex.repositorycreator.bankstatementsconverter;
 
-import com.catchex.io.reader.ConfigurationReader;
 import com.catchex.models.RawOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,10 +21,8 @@ import static com.catchex.util.Util.*;
 public class PKOBankStmtConverter
     implements BankStmtConverter
 {
-    private static final Logger logger = LoggerFactory.getLogger( ConfigurationReader.class );
-
     public static final String BANK_NAME = PKO;
-
+    private static final Logger logger = LoggerFactory.getLogger( PKOBankStmtConverter.class );
     private String myFileName;
     private String[] myBankStmtLines;
 

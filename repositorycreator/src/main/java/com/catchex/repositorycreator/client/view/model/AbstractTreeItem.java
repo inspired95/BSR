@@ -35,7 +35,7 @@ public abstract class AbstractTreeItem
     {
         this.operation = operation;
         this.date = operation.getOperation().getRawOperation().getDate();
-        this.ID = new SimpleStringProperty( operation.getOperation().getRawOperation().getID() );
+        this.ID = new SimpleStringProperty( operation.getOperation().getRawOperation().getId() );
         this.type = new SimpleStringProperty( operation.getOperation().getType().toString() );
         this.amount =
             new SimpleDoubleProperty( operation.getOperation().getRawOperation().getAmount() );

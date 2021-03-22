@@ -4,7 +4,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
-import java.util.Optional;
 import java.util.StringJoiner;
 
 import static com.catchex.util.Constants.NOT_APPLICABLE;
@@ -34,17 +33,17 @@ public class OperationTypeResolverFactory
     }
 
 
-    public Optional<OperationTypeResolver> match( String chosenBank )
+    public OperationTypeResolver match( String chosenBank )
     {
         switch( chosenBank )
         {
             case PKO:
-                return Optional.of( new PKOOperationTypeResolver() );
+                return new PKOOperationTypeResolver();
             case NOT_APPLICABLE:
-                return Optional.of( new NotApplicableTypeResolver() );
+                return new NotApplicableTypeResolver();
             default:
                 reportError( getErrorMessage( chosenBank ) );
-                return Optional.empty();
+                return new ResolverNotFoundTypeResolver();
         }
     }
 

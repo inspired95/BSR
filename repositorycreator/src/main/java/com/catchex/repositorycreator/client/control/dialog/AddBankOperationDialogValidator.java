@@ -18,8 +18,6 @@ public class AddBankOperationDialogValidator
     private static final Logger logger =
         LoggerFactory.getLogger( AddBankOperationDialogValidator.class );
 
-    private String errorMessage = "";
-
 
     @Override
     public Validator valid( AddBankOperationDialogController dialog )
@@ -42,17 +40,11 @@ public class AddBankOperationDialogValidator
                 new OperationTypeValidator().valid( operationTypeToggle ).getErrorMessage() )
             .filter( errorMessage -> !errorMessage.isEmpty() ).collect( Collectors.toList() );
 
-        if( errorMessages.size() > 0 )
+        if( !errorMessages.isEmpty() )
         {
             errorMessage = Util.joinString( "\n", errorMessages );
         }
         return this;
-    }
-
-
-    public String getErrorMessage()
-    {
-        return errorMessage;
     }
 
 
@@ -75,7 +67,7 @@ public class AddBankOperationDialogValidator
     {
 
         @Override
-        public Validator valid( String amount )
+        public Validator<String> valid( String amount )
         {
             if( amount.isEmpty() )
             {
@@ -90,7 +82,7 @@ public class AddBankOperationDialogValidator
         extends Validator<String>
     {
         @Override
-        public Validator valid( String description )
+        public Validator<String> valid( String description )
         {
             if( description.isEmpty() )
             {
@@ -106,7 +98,7 @@ public class AddBankOperationDialogValidator
     {
 
         @Override
-        Validator valid( Toggle operationType )
+        Validator<Toggle> valid( Toggle operationType )
         {
             if( operationType == null )
             {

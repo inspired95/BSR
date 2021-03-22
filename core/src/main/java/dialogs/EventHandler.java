@@ -28,13 +28,13 @@ public abstract class EventHandler<V>
 
     void logAction()
     {
-        logger.info( "Handling action {}", eventName );
+        logger.info( "Handling action [{}]", eventName );
     }
 
 
     protected void actionCancelled()
     {
-        logger.info( "Cancelling action {}", eventName );
+        logger.info( "Cancelling action [{}]", eventName );
     }
 
 

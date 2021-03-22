@@ -9,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.beans.PropertyChangeListener;
+import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -26,18 +27,10 @@ public class CurrentRepositoryUtil
     public void addCurrentRepositoryListener(
         Optional<PropertyChangeListener> propertyChangeListener )
     {
-        propertyChangeListener
-            .ifPresentOrElse( listener -> currentRepositoryHolder.addListener( listener ),
-                () -> logger.warn( "Cannot add null as listener" ) );
+        propertyChangeListener.ifPresentOrElse(
+            currentRepositoryHolder::addListener,
+            () -> logger.warn( "Cannot add null as listener" ) );
     }
-
-
-    public void addCurrentOperations( Optional<Set<CurrentOperation>> currentOperations )
-    {
-        currentOperations.ifPresentOrElse( this::addCurrentOperations,
-            () -> logger.warn( "Cannot add null set of operations" ) );
-    }
-
 
     public void applyRepository( Repository repository )
     {
@@ -51,7 +44,10 @@ public class CurrentRepositoryUtil
 
         Set<CurrentOperation> currentOperations =
             new CurrentOperationsUtil().mapToCurrentOperations( repository.getOperations() );
-        addCurrentOperations( currentOperations );
+        synchronized( currentRepositoryHolder )
+        {
+            addCurrentOperations( currentOperations );
+        }
     }
 
 
@@ -65,14 +61,21 @@ public class CurrentRepositoryUtil
 
     public void recalculateCategories()
     {
-        CurrentRepositoryHolder.getInstance().get().getOperations()
-            .forEach( currOp -> new CurrentOperationsUtil().recalculateCategory( currOp ) );
+        synchronized( currentRepositoryHolder )
+        {
+            currentRepositoryHolder.get().getOperations()
+                .forEach( currOp -> new CurrentOperationsUtil().recalculateCategory( currOp ) );
+        }
     }
 
 
     public boolean addCurrentOperation( CurrentOperation operation )
     {
-        boolean result = currentRepositoryHolder.get().getOperations().add( operation );
+        boolean result;
+        synchronized( currentRepositoryHolder )
+        {
+            result = currentRepositoryHolder.get().getOperations().add( operation );
+        }
         if( !result )
         {
             logger.info(
@@ -85,6 +88,7 @@ public class CurrentRepositoryUtil
 
     public void addCurrentOperations( Set<CurrentOperation> operations )
     {
+
         AtomicInteger addedCount = new AtomicInteger();
         operations.forEach( currentOperation -> {
             boolean result = addCurrentOperation( currentOperation );
@@ -103,8 +107,22 @@ public class CurrentRepositoryUtil
 
     public void clearCurrentRepository()
     {
-        currentRepositoryHolder.get().getOperations().clear();
+        synchronized( currentRepositoryHolder )
+        {
+            currentRepositoryHolder.get().getOperations().clear();
+        }
         currentRepositoryHolder.notifyCurrentRepositorySizeChanged();
+    }
+
+
+    public Set<CurrentOperation> getCurrentOperations()
+    {
+        Set<CurrentOperation> operations = new HashSet<>();
+        synchronized( currentRepositoryHolder )
+        {
+            operations.addAll( currentRepositoryHolder.get().getOperations() );
+        }
+        return operations;
     }
 
 }

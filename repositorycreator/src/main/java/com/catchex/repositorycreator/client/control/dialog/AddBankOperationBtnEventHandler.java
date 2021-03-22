@@ -1,6 +1,5 @@
 package com.catchex.repositorycreator.client.control.dialog;
 
-import GuiHelpers.Alerts;
 import com.catchex.models.CurrentOperation;
 import com.catchex.models.Operation;
 import com.catchex.models.RawOperation;
@@ -9,13 +8,13 @@ import com.catchex.repositorycreator.client.model.CurrentRepositoryUtil;
 import com.catchex.repositorycreator.typeresolving.NotApplicableTypeResolver;
 import com.catchex.repositorycreator.typeresolving.OperationTypeResolver;
 import dialogs.EventHandler;
+import guihelpers.Alerts;
 import javafx.scene.control.Alert;
 import javafx.scene.control.RadioButton;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Optional;
 import java.util.Set;
 
 import static com.catchex.util.Constants.LOSS;
@@ -70,8 +69,12 @@ public class AddBankOperationBtnEventHandler
         Operation operation = new Operation( builder.build(), typeResolver.resolve( description ) );
         CurrentOperation currentOperation =
             new CurrentOperationsUtil().mapToCurrentOperation( operation );
-        new CurrentRepositoryUtil()
-            .addCurrentOperations( Optional.of( Set.of( currentOperation ) ) );
+
+        if( currentOperation != null )
+        {
+            new CurrentRepositoryUtil().addCurrentOperations( Set.of( currentOperation ) );
+        }
+
         try
         {
             getDialogController().getView().getStage().close();

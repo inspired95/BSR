@@ -1,4 +1,4 @@
-package GuiHelpers;
+package guihelpers;
 
 import com.catchex.models.Category;
 import javafx.scene.control.Alert;
@@ -15,12 +15,18 @@ import java.util.List;
 import java.util.Optional;
 import java.util.SortedSet;
 
-import static com.catchex.util.Constants.*;
+import static com.catchex.util.Constants.APP_CONFIGURATION_EDITOR_TITLE;
+import static com.catchex.util.Constants.APP_TITLE;
 
 
 public class Alerts
 {
     private static final Logger logger = LoggerFactory.getLogger( Alerts.class );
+
+
+    private Alerts()
+    {
+    }
 
 
     public static void showAlert(
@@ -44,29 +50,6 @@ public class Alerts
     public static Optional<File> showSaveFileChooser( Stage stage, FileChooser fileChooser )
     {
         return Optional.ofNullable( fileChooser.showSaveDialog( stage ) );
-    }
-
-
-    public static FileChooser getRepositoryFileChooser( String title )
-    {
-        FileChooser fileChooser = new FileChooser();
-        fileChooser.setInitialDirectory( new File( CONFIGURATION_PATH ) );
-        fileChooser.setTitle( title );
-        fileChooser.getExtensionFilters().add( new FileChooser.ExtensionFilter( "BSR repository",
-            BSR_REPOSITORY_EXTENSION_FILE_CHOOSER ) );
-        return fileChooser;
-    }
-
-
-    public static FileChooser getConfigurationFileChooser( String title )
-    {
-        FileChooser fileChooser = new FileChooser();
-        fileChooser.setInitialDirectory( new File( CONFIGURATION_PATH ) );
-        fileChooser.setTitle( title );
-        fileChooser.getExtensionFilters().add(
-            new FileChooser.ExtensionFilter( "BSR configuration" + "configuration",
-                BSR_CONFIGURATION_EXTENSION_FILE_CHOOSER ) );
-        return fileChooser;
     }
 
 
@@ -106,11 +89,8 @@ public class Alerts
     }
 
 
-    public static List<File> showOpenMultipleDialog( Stage stage, String title )
+    public static List<File> showOpenMultipleDialog( Stage stage, FileChooser fileChooser )
     {
-        FileChooser fileChooser = new FileChooser();
-        fileChooser.setTitle( title );
-
         return fileChooser.showOpenMultipleDialog( stage );
     }
 

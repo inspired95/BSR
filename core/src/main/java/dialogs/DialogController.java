@@ -11,7 +11,7 @@ public abstract class DialogController
 {
     private static final Logger logger = LoggerFactory.getLogger( DialogController.class );
 
-    private final String DIALOG_NAME;
+    private final String dialogName;
 
     protected DialogView view;
 
@@ -19,7 +19,7 @@ public abstract class DialogController
     public DialogController( String dialogName )
     {
         logger.info( "Dialog {} initialization", dialogName );
-        this.DIALOG_NAME = dialogName;
+        this.dialogName = dialogName;
     }
 
 
@@ -45,7 +45,7 @@ public abstract class DialogController
 
     public String getDialogName()
     {
-        return DIALOG_NAME;
+        return dialogName;
     }
 
 
@@ -60,12 +60,12 @@ public abstract class DialogController
 
     protected void logOnDialogStart()
     {
-        logger.info( "{} dialog starting", DIALOG_NAME );
+        logger.info( "{} dialog starting", dialogName );
     }
 
 
     protected void logOnDialogClose()
     {
-        logger.info( "{} dialog closing", DIALOG_NAME );
+        logger.info( "{} dialog closing", dialogName );
     }
 }

@@ -12,6 +12,11 @@ public class OperationCategoryResolver
     private static final Logger logger = LoggerFactory.getLogger( OperationCategoryResolver.class );
 
 
+    private OperationCategoryResolver()
+    {
+    }
+
+
     public static Category resolve( String operationDescription )
     {
         if( !isDescriptionValid( operationDescription ) )
@@ -26,7 +31,8 @@ public class OperationCategoryResolver
                 keyword -> descriptionCaseLowered.contains( keyword.getValue().toLowerCase() ) ) )
                 return category;
         }
-        logger.warn( "Operation category of based on description cannot be resolved : " +
+        logger.warn(
+            "Operation category of based on description cannot be resolved : {}",
             operationDescription );
         return Category.OTHER_CATEGORY;
     }

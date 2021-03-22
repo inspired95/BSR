@@ -17,7 +17,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 
-public class PKOBankStmtConverterTest
+class PKOBankStmtConverterTest
 {
     static BankStmtConverter bankStmtConverter;
     private static String dummyBankStatementFileName = "bankStatement.pdf";
@@ -35,7 +35,7 @@ public class PKOBankStmtConverterTest
     @BeforeAll
     public static void setupSuite()
     {
-        bankStmtConverter = new BankStmtConverterFactory().match( PKO ).get();
+        bankStmtConverter = BankStmtConverterFactory.match( PKO ).get();
     }
 
 
@@ -81,7 +81,7 @@ public class PKOBankStmtConverterTest
 
 
     @Test
-    public void should_Add_Entry_When_Correct_Entry_Given()
+    void should_Add_Entry_When_Correct_Entry_Given()
     {
         //GIVEN
         PKOBankStmtEntryPdfMock stmtEntryPdfMock = getCorrectEntry( correctID );
@@ -99,8 +99,8 @@ public class PKOBankStmtConverterTest
         assertEquals( 2, converted.size() );
         RawOperation convertedEntry = converted.get( 0 );
         RawOperation convertedEntry2 = converted.get( 1 );
-        assertEquals( correctID, convertedEntry.getID() );
-        assertEquals( correctID2, convertedEntry2.getID() );
+        assertEquals( correctID, convertedEntry.getId() );
+        assertEquals( correctID2, convertedEntry2.getId() );
         assertEquals(
             parseDate( Optional.of( correctDate ), PKO_DATE_FORMAT ), convertedEntry.getDate() );
         assertEquals(
@@ -120,7 +120,7 @@ public class PKOBankStmtConverterTest
 
     @ParameterizedTest
     @MethodSource( "incompletePKOStmtEntries" )
-    public void should_Skip_Entry_When_Incomplete(
+    void should_Skip_Entry_When_Incomplete(
         String testName, PKOBankStmtEntryPdfMock stmtEntryPdfMock )
     {
         //GIVEN

@@ -1,10 +1,10 @@
 package com.catchex.configurationcreator.client.control.event;
 
-import GuiHelpers.Alerts;
 import com.catchex.configurationcreator.client.control.ConfigurationEditorDialogController;
 import com.catchex.models.Category;
 import com.catchex.models.Keyword;
 import dialogs.EventHandler;
+import guihelpers.Alerts;
 
 import java.util.Optional;
 
@@ -12,6 +12,7 @@ import java.util.Optional;
 public class AddNewKeywordEventHandler
     extends EventHandler<ConfigurationEditorDialogController>
 {
+    private static final String DIALOG_HEADER = "New keyword";
 
     public AddNewKeywordEventHandler( ConfigurationEditorDialogController controller )
     {
@@ -27,11 +28,11 @@ public class AddNewKeywordEventHandler
             return;
 
         Optional<Category> selectedCategory = Alerts
-            .showChoiceFromListDialog( "New keyword", "Select category",
+            .showChoiceFromListDialog( DIALOG_HEADER, "Select category",
                 getDialogController().getCurrentCategoriesConfiguration().getCategories() );
         selectedCategory.ifPresent( category -> {
             Optional<String> newKeyword =
-                Alerts.showAskForStringDialog( "New keyword", "Enter new keyword's name", "" );
+                Alerts.showAskForStringDialog( DIALOG_HEADER, "Enter new keyword's name", "" );
             newKeyword.ifPresent( keyword -> {
                 if( !assertKeywordValue( keyword ) )
                     return;
@@ -72,7 +73,7 @@ public class AddNewKeywordEventHandler
             Keyword keywordToAdd = new Keyword( newKeyword );
             getDialogController().getCurrentCategoriesConfiguration()
                 .isKeywordAlreadyExists( keywordToAdd ).ifPresentOrElse( keyword -> Alerts
-                .showWaringDialog( "New keyword",
+                .showWaringDialog( DIALOG_HEADER,
                     "Given keyword " + "already exists in categories configuration" ), () -> {
                 category.getKeywords().add( keywordToAdd );
                 getDialogController().getView().refreshView();

@@ -1,7 +1,6 @@
 package com.catchex.repositorycreator.client.control.dialog;
 
 import dialogs.DialogController;
-import javafx.stage.Stage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -17,13 +16,6 @@ public class AddBankOperationDialogController
     {
         super( "AddBankOperation" );
         view = new AddBankOperationDialogView( this );
-    }
-
-
-    @Override
-    public void start( Stage stage ) throws Exception
-    {
-        super.start( stage );
     }
 
 
@@ -50,6 +42,7 @@ public class AddBankOperationDialogController
 
     private void addOperationButtonActionEventHandling()
     {
+        logger.debug( "Add operation button handler initialization" );
         getView().getAddOperationBtn()
             .setOnAction( event -> new AddBankOperationBtnEventHandler( this ).handle() );
     }

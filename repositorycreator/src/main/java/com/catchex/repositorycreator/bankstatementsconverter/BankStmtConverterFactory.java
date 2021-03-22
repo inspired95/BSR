@@ -14,6 +14,11 @@ public class BankStmtConverterFactory
     private static final Logger logger = LoggerFactory.getLogger( BankStmtConverterFactory.class );
 
 
+    private BankStmtConverterFactory()
+    {
+    }
+
+
     public static Optional<BankStmtConverter> match( String chosenBank )
     {
         if( PKO.equals( chosenBank ) )

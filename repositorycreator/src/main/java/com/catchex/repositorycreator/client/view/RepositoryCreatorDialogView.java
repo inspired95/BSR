@@ -2,7 +2,7 @@ package com.catchex.repositorycreator.client.view;
 
 import com.catchex.models.CurrentOperation;
 import com.catchex.repositorycreator.client.control.RepositoryCreatorDialogController;
-import com.catchex.repositorycreator.client.model.repository.CurrentRepositoryHolder;
+import com.catchex.repositorycreator.client.model.CurrentRepositoryUtil;
 import com.catchex.repositorycreator.client.view.model.AbstractTreeItem;
 import com.catchex.repositorycreator.client.view.model.IntervalTreeItem;
 import com.catchex.repositorycreator.client.view.model.OperationTreeItem;
@@ -44,6 +44,7 @@ public class RepositoryCreatorDialogView
     }
 
 
+    @Override
     public void initView( Stage stage )
     {
         super.initView( stage );
@@ -92,8 +93,7 @@ public class RepositoryCreatorDialogView
     {
         logger.debug( "Current repository applying" );
         getTreeTableView().getRoot().getChildren().clear();
-        CurrentRepositoryHolder.getInstance().get().getOperations()
-            .forEach( this::applyCurrentOperation );
+        new CurrentRepositoryUtil().getCurrentOperations().forEach( this::applyCurrentOperation );
     }
 
 

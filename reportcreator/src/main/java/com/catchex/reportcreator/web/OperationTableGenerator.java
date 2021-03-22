@@ -157,15 +157,14 @@ public class OperationTableGenerator
 
     private ContainerTag generateContent( CurrentOperation currentOperation )
     {
-        return tr()
-            .with( td().with( span( currentOperation.getOperation().getRawOperation().getID() ) ),
-                td().with( span(
-                    currentOperation.getOperation().getRawOperation().getDate().toString() ) ),
-                td().with( span( currentOperation.getOperation().getType().name() ) ),
-                td().with( span( currentOperation.getCategory().getCategoryName() ) ), td().with(
-                    span( currentOperation.getOperation().getRawOperation().getAmount()
-                        .toString() ) ),
-                td().with( span( currentOperation.getOperation().getRawOperation().getDesc() ) ) );
+        return tr().with(
+            td().with( span( currentOperation.getOperation().getRawOperation().getId() ) ),
+            td().with(
+                span( currentOperation.getOperation().getRawOperation().getDate().toString() ) ),
+            td().with( span( currentOperation.getOperation().getType().name() ) ),
+            td().with( span( currentOperation.getCategory().getCategoryName() ) ), td().with(
+                span( currentOperation.getOperation().getRawOperation().getAmount().toString() ) ),
+            td().with( span( currentOperation.getOperation().getRawOperation().getDesc() ) ) );
 
     }
 

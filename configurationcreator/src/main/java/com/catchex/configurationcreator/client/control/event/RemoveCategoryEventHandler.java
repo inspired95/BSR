@@ -1,9 +1,9 @@
 package com.catchex.configurationcreator.client.control.event;
 
-import GuiHelpers.Alerts;
 import com.catchex.configurationcreator.client.control.ConfigurationEditorDialogController;
 import com.catchex.models.Category;
 import dialogs.EventHandler;
+import guihelpers.Alerts;
 import javafx.scene.control.ButtonType;
 
 import java.util.Optional;

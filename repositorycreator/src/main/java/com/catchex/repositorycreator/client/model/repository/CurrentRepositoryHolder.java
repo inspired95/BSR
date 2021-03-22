@@ -9,7 +9,7 @@ import java.beans.PropertyChangeSupport;
 public class CurrentRepositoryHolder
     implements Holder<CurrentRepository>
 {
-    private static CurrentRepositoryHolder INSTANCE;
+    private static CurrentRepositoryHolder instance;
 
     private final CurrentRepository currentRepository;
 
@@ -24,11 +24,11 @@ public class CurrentRepositoryHolder
 
     public static CurrentRepositoryHolder getInstance()
     {
-        if( INSTANCE == null )
+        if( instance == null )
         {
-            INSTANCE = new CurrentRepositoryHolder();
+            instance = new CurrentRepositoryHolder();
         }
-        return INSTANCE;
+        return instance;
     }
 
 
@@ -42,7 +42,7 @@ public class CurrentRepositoryHolder
     {
         if( currentRepositoryChangeSupport == null )
         {
-            currentRepositoryChangeSupport = new PropertyChangeSupport( INSTANCE );
+            currentRepositoryChangeSupport = new PropertyChangeSupport( instance );
         }
         currentRepositoryChangeSupport.addPropertyChangeListener( propertyChangeListener );
     }

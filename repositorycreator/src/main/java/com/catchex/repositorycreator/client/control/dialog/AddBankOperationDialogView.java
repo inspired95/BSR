@@ -29,6 +29,7 @@ public class AddBankOperationDialogView
     }
 
 
+    @Override
     public void initView( Stage stage )
     {
         super.initView( stage );
@@ -80,9 +81,7 @@ public class AddBankOperationDialogView
 
         stage.setScene( new Scene( container, 400, 270 ) );
 
-        stage.setOnHiding( actionEvent -> {
-            controller.onClose();
-        } );
+        stage.setOnHiding( actionEvent -> controller.onClose() );
     }
 
 

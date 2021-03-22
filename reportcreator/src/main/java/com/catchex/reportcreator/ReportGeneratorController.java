@@ -1,6 +1,5 @@
 package com.catchex.reportcreator;
 
-import GuiHelpers.Alerts;
 import com.catchex.io.writer.ReportWriter;
 import com.catchex.models.CurrentOperation;
 import com.catchex.reportcreator.statictics.OperationsStatistics;
@@ -8,6 +7,7 @@ import com.catchex.reportcreator.web.CssStyleCreator;
 import com.catchex.reportcreator.web.OperationsTableComparatorFactory;
 import com.catchex.reportcreator.web.ReportGeneratorEngine;
 import com.catchex.util.Constants;
+import guihelpers.Alerts;
 import javafx.scene.control.Alert;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -59,7 +59,7 @@ public class ReportGeneratorController
             Alerts
                 .showAlert( Alert.AlertType.INFORMATION, "Report generator - saving", "Successful",
                     "Report has been saved in:\n" + path );
-            logger.info( "Report has been saved successfully in: " + path );
+            logger.info( "Report has been saved successfully in: {}", path );
         }
         else
         {

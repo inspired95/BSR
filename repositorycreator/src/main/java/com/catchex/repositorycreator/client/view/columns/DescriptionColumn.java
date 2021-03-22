@@ -43,7 +43,6 @@ public class DescriptionColumn
     private void initEventHandler()
     {
         setOnEditCommit( new DescriptionCellEditEventHandler( controller ) );
-        //new DescriptionCellEditEventHandler(controller);
     }
 
 }

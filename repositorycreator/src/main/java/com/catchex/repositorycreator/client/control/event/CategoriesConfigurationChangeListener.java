@@ -22,7 +22,6 @@ public class CategoriesConfigurationChangeListener
     public CategoriesConfigurationChangeListener( RepositoryCreatorDialogController controller )
     {
         this.controller = controller;
-        logger.debug( "Subscribe on configuration change" );
         Configuration.getInstance().addCategoriesConfigurationChangeListener( this );
     }
 

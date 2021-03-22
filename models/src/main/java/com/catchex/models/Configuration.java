@@ -10,11 +10,11 @@ public class Configuration
 {
     private static final long serialVersionUID = -7588980448693010399L;
 
-    private static Configuration INSTANCE;
+    private static Configuration instance;
 
     private CategoriesConfiguration categoriesConfiguration;
 
-    private PropertyChangeSupport categoriesConfigurationChangeSupport;
+    private final PropertyChangeSupport categoriesConfigurationChangeSupport;
 
 
     private Configuration()
@@ -26,11 +26,11 @@ public class Configuration
 
     public static Configuration getInstance()
     {
-        if( INSTANCE == null )
+        if( instance == null )
         {
-            INSTANCE = new Configuration();
+            instance = new Configuration();
         }
-        return INSTANCE;
+        return instance;
     }
 
 

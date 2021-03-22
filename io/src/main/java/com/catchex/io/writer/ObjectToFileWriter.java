@@ -15,7 +15,7 @@ public class ObjectToFileWriter
 {
     private static final Logger logger = LoggerFactory.getLogger( ObjectToFileWriter.class );
 
-    private static ObjectToFileWriter INSTANCE;
+    private static ObjectToFileWriter instance;
 
 
     private ObjectToFileWriter()
@@ -25,11 +25,11 @@ public class ObjectToFileWriter
 
     public static ObjectToFileWriter getInstance()
     {
-        if( INSTANCE == null )
+        if( instance == null )
         {
-            INSTANCE = new ObjectToFileWriter();
+            instance = new ObjectToFileWriter();
         }
-        return INSTANCE;
+        return instance;
     }
 
 

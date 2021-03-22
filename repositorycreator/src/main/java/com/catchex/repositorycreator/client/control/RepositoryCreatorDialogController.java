@@ -31,6 +31,13 @@ public class RepositoryCreatorDialogController
     {
         initMenuBtnsEventHandler();
         initCurrentRepository();
+        initConfigurationChangeListener();
+    }
+
+
+    private void initConfigurationChangeListener()
+    {
+        logger.debug( "Subscribe on configuration change" );
         this.categoriesConfigurationChangeListener =
             new CategoriesConfigurationChangeListener( this );
     }

@@ -21,6 +21,11 @@ public class ConfigurationUtil
         Paths.get( Constants.CONFIGURATION_PATH, Constants.DEFAULT_CONFIGURATION_FILE_NAME );
 
 
+    private ConfigurationUtil()
+    {
+    }
+
+
     public static Optional<CategoriesConfiguration> getConfiguration( Path path )
     {
         logger.debug( "Reading configuration from file {}", path );

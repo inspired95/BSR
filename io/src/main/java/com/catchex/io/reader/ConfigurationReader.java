@@ -17,6 +17,11 @@ public class ConfigurationReader
     private static final Logger logger = LoggerFactory.getLogger( ConfigurationReader.class );
 
 
+    private ConfigurationReader()
+    {
+    }
+
+
     public static Optional<CategoriesConfiguration> readConfiguration( Path path )
     {
         try (ObjectInputStream oi = new ObjectInputStream( new FileInputStream( path.toString() ) ))

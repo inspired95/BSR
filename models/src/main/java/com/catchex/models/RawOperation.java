@@ -12,7 +12,7 @@ public class RawOperation
         new RawOperation( LocalDate.MIN, "", "", Double.NaN, "", "", "" );
 
     private LocalDate date;
-    private String ID;
+    private String id;
     private String type;
     private Double amount;
     private String desc;
@@ -32,10 +32,18 @@ public class RawOperation
     }
 
 
-    public String getID()
+    protected RawOperation(
+        LocalDate date, String id, String type, Double amount, String desc, String fileName,
+        String bank )
     {
-        return ID;
-    }//new SimpleStringProperty(ID)
+        this.date = date;
+        this.id = id;
+        this.type = type;
+        this.amount = amount;
+        this.desc = desc;
+        this.fileName = fileName;
+        this.bank = bank;
+    }
 
 
     public String getType()
@@ -80,24 +88,127 @@ public class RawOperation
     }
 
 
-    protected RawOperation(
-        LocalDate date, String ID, String type, Double amount, String desc, String fileName,
-        String bank )
+    public String getId()
     {
-        this.date = date;
-        this.ID = ID;
-        this.type = type;
-        this.amount = amount;
-        this.desc = desc;
-        this.fileName = fileName;
-        this.bank = bank;
+        return id;
+    }//new SimpleStringProperty(ID)
+
+
+    @Override
+    public String toString()
+    {
+        return "RawOperation{" + "date=" + date + "ID='" + id + '\'' + "type='" + type + '\'' +
+            "amount=" + amount + "desc='" + desc + '\'' + "}";
+    }
+
+
+    public boolean isValid()
+    {
+        return validID() && validOperationType() && validAmount() && validDescription() &&
+            validFileName();
+    }
+
+
+    private boolean validDescription()
+    {
+        return !desc.isEmpty();
+    }
+
+
+    private boolean validAmount()
+    {
+        return !amount.equals( Double.NaN );
+    }
+
+
+    private boolean validOperationType()
+    {
+        return !type.isEmpty();
+    }
+
+
+    @Override
+    public int hashCode()
+    {
+        return Objects.hash( id, date, desc, type, amount );
+    }
+
+
+    private boolean validFileName()
+    {
+        return !fileName.isEmpty();
+    }
+
+
+    @Override
+    public boolean equals( Object obj )
+    {
+        if( this == obj )
+            return true;
+        if( obj == null )
+            return false;
+        if( getClass() != obj.getClass() )
+            return false;
+
+        RawOperation other = (RawOperation)obj;
+
+        if( id == null )
+        {
+            if( other.id != null )
+                return false;
+        }
+        else if( !id.equals( other.id ) )
+            return false;
+
+        if( date == null )
+        {
+            if( other.date != null )
+                return false;
+        }
+        else if( !date.equals( other.date ) )
+            return false;
+
+        if( type == null )
+        {
+            return other.type == null;
+        }
+        else if( !type.equals( other.type ) )
+            return false;
+
+        if( amount == null )
+        {
+            return other.amount == null;
+        }
+        else if( !amount.equals( other.amount ) )
+            return false;
+
+        if( desc == null )
+        {
+            return other.desc == null;
+        }
+        else if( !desc.equals( other.desc ) )
+            return false;
+
+        if( fileName == null )
+        {
+            return other.fileName == null;
+        }
+        else
+            return fileName.equals( other.fileName );
+
+    }
+
+
+    private boolean validID()
+    {
+        return id.length() == 17;
     }
 
 
     public static final class Builder
     {
         private LocalDate date;
-        private String ID;
+        private String id;
         private String type;
         private Double amount;
         private String desc;
@@ -105,9 +216,9 @@ public class RawOperation
         private String bank;
 
 
-        public Builder( String ID )
+        public Builder( String id )
         {
-            this.ID = ID;
+            this.id = id;
         }
 
 
@@ -160,6 +271,12 @@ public class RawOperation
         }
 
 
+        public RawOperation build()
+        {
+            return new RawOperation( date, id, type, amount, desc, fileName, bank );
+        }
+
+
         private boolean validDescription()
         {
             return !desc.isEmpty();
@@ -178,12 +295,6 @@ public class RawOperation
         }
 
 
-        private boolean validID()
-        {
-            return ID.length() == 17;
-        }
-
-
         private boolean isDateValid()
         {
             return date != LocalDate.MIN;
@@ -196,120 +307,9 @@ public class RawOperation
         }
 
 
-        public RawOperation build()
+        private boolean validID()
         {
-            return new RawOperation( date, ID, type, amount, desc, fileName, bank );
+            return id.length() == 17;
         }
-    }
-
-
-    public boolean isValid()
-    {
-        return validID() && validOperationType() && validAmount() && validDescription() &&
-            validFileName();
-    }
-
-
-    private boolean validDescription()
-    {
-        return !desc.isEmpty();
-    }
-
-
-    private boolean validAmount()
-    {
-        return !amount.equals( Double.NaN );
-    }
-
-
-    private boolean validOperationType()
-    {
-        return !type.isEmpty();
-    }
-
-
-    private boolean validID()
-    {
-        return ID.length() == 17;
-    }
-
-
-    private boolean validFileName()
-    {
-        return !fileName.isEmpty();
-    }
-
-
-    @Override
-    public String toString()
-    {
-        return "RawOperation{" + "date=" + date + "ID='" + ID + '\'' + "type='" + type + '\'' +
-            "amount=" + amount + "desc='" + desc + '\'' + "}";
-    }
-
-
-    @Override
-    public int hashCode()
-    {
-        return Objects.hash( ID, date, desc, type, amount );
-    }
-
-
-    @Override
-    public boolean equals( Object obj )
-    {
-        if( this == obj )
-            return true;
-        if( obj == null )
-            return false;
-        if( getClass() != obj.getClass() )
-            return false;
-
-        RawOperation other = (RawOperation)obj;
-
-        if( ID == null )
-        {
-            if( other.ID != null )
-                return false;
-        }
-        else if( !ID.equals( other.ID ) )
-            return false;
-
-        if( date == null )
-        {
-            if( other.date != null )
-                return false;
-        }
-        else if( !date.equals( other.date ) )
-            return false;
-
-        if( type == null )
-        {
-            return other.type == null;
-        }
-        else if( !type.equals( other.type ) )
-            return false;
-
-        if( amount == null )
-        {
-            return other.amount == null;
-        }
-        else if( !amount.equals( other.amount ) )
-            return false;
-
-        if( desc == null )
-        {
-            return other.desc == null;
-        }
-        else if( !desc.equals( other.desc ) )
-            return false;
-
-        if( fileName == null )
-        {
-            return other.fileName == null;
-        }
-        else
-            return fileName.equals( other.fileName );
-
     }
 }

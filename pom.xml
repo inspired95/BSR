@@ -67,6 +67,7 @@
         <module>configurationcreator</module>
         <module>repositorycreator</module>
         <module>core</module>
+        <module>persistence</module>
     </modules>
     <dependencies>
         <!-- https://mvnrepository.com/artifact/org.apache.pdfbox/pdfbox -->

@@ -2,7 +2,7 @@
 
 An application to analyse your bank account traffic
 Features:
-- ####Create a configuration which contains a map of categories where key is category's name and value is a list of phrases named "Keywords" in the app
+- Create a configuration which contains a map of categories where key is category's name and value is a list of phrases named "Keywords" in the app
   - Add new categories (Alt + C)
   - Remove categories 
   - Add keywords (Alt + K)
@@ -11,7 +11,7 @@ Features:
   - Import configuration from a drive
   - Set current configuration as default configuration (Ctrl + S)
   - Load default configuration
-- ####Create repository of bank operations
+- Create repository of bank operations
   - The list of bank operations is represented as a table with columns:
     - ID - filled in based on an ID field from a bank statement
     - Date - filled in based on a date field from a bank statement or date which was entered 
